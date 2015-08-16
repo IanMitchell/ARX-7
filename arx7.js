@@ -25,6 +25,12 @@ client.addListener('registered', (message) => {
   console.log('Identified');
 });
 
+// Respond to Version requests
+client.addListener('ctcp-version', (from, to, message) => {
+  console.log(`CTCP request from ${from}`);
+  client.ctcp(from, 'notice', `VERSION Bot running on node-irc.`);
+});
+
 // Praise the Creator
 client.addListener('join', (channel, nick, message) => {
   if (nick === 'Desch') {
