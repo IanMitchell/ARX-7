@@ -21,8 +21,8 @@ let commands = [
 // On Server Connect
 client.addListener('registered', (message) => {
   console.log('Connected to Server');
-  // TODO: Identify. Below doesn't work (err_nosuchnick)
-  // client.say('ns', `identify ${config.password}`);
+  client.say('NickServ', `identify ${config.password}`);
+  console.log('Identified');
 });
 
 // Praise the Creator
