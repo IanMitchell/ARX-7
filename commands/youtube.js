@@ -5,10 +5,11 @@ import {Command} from './command.js';
 export class Youtube extends Command {
   message(from, to, text, message) {
     // Respond to Youtube Requests
-    if (text.toLowerCase().startsWith('.youtube ') ||
-        text.toLowerCase().startsWith('.ty')) {
-      console.log('Youtube Message Received');
-      // TODO: http://pastebin.com/nuaGJXf1
+    let search = text.match(/.(yt\s|youtube\s)(.*)/, '$2');
+    if (search) {
+      this.search(search[2]).then(video => {
+        this.client.say(to, `[YouTube] ${video.title} | ${video.url}`);
+      }, (error) => this.client.say(to, 'Sorry, could not find a video.'));
     }
 
     // Respond to Youtube Links
@@ -17,7 +18,7 @@ export class Youtube extends Command {
     if (match) {
       this.info(match[2]).then(video => {
         this.client.say(to, `[YouTube] ${video.title} | Views: ${video.views}`);
-      });
+      }, (error) => this.client.say(to, 'Sorry, coud not find video info.'));
     }
   }
 
@@ -52,7 +53,35 @@ export class Youtube extends Command {
     });
   }
 
-  search(message) {
+  search(title) {
+    let uri = `https://www.googleapis.com/youtube/v3/search?part=snippet` +
+              `&q=${title}&key=${config.keys.youtube}`
 
+    console.log(`Searching YouTube for ${title}`);
+
+    return new Promise((resolve, reject) => {
+      request(uri, (error, response, body) => {
+        if (!error && response.statusCode == 200) {
+          let data = JSON.parse(body);
+
+          data['items'].forEach(v => {
+            if (v['id']['kind'] != 'youtube#video') {
+              return;
+            }
+
+            resolve({
+              title: v['snippet']['title'],
+              url: `https://youtu.be/${v['id']['videoId']}`
+            });
+          });
+
+          reject();
+        }
+        else {
+          console.log(`ERROR: YouTube Search - ${error}`);
+          reject();
+        }
+      });
+    });
   }
 }
