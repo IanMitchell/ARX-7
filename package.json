@@ -1,0 +1,14 @@
+{
+  "name": "ARX-7",
+  "version": "0.0.1",
+  "description": "An IRC Bot",
+  "main": "app.js",
+  "author": "Ian Mitchell",
+  "dependencies": {
+    "babel": "~5.8.0",
+    "irc": "~0.3.0"
+  },
+  "devDependencies": {
+    "eslint": "~1.1.0"
+  }
+}
