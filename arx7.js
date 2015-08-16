@@ -1,13 +1,26 @@
-let irc = require("irc");
-let config = require('./config');
+import irc from 'irc';
+import config from './config';
+
+import {Choose} from './commands/choose.js';
+import {Debug} from './commands/debug.js';
+import {Youtube} from './commands/youtube.js';
+
 
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
   channels: config.channels
 });
 
+// Command List Setup
+let commands = [
+  new Choose(client),
+  new Debug(client),
+  new Youtube(client)
+]
+
 // On Server Connect
 client.addListener('registered', (message) => {
+  console.log('Connected to Server');
   // TODO: Identify. Below doesn't work (err_nosuchnick)
   // client.say('ns', `identify ${config.password}`);
 });
@@ -19,29 +32,9 @@ client.addListener('join', (channel, nick, message) => {
   }
 });
 
-// TODO: Make a callback register function or something. This is nasty already
 // Listen for channel / personal Messages
 client.addListener('message', (from, to, text, message) => {
-  // Debug messages
-  if (text.toLowerCase() === 'ping') {
-    client.say(to, 'Pong');
-  }
-
-  if (text.toLowerCase() === 'bot respond') {
-    client.say(to, 'I\'m a pretty stupid bot');
-  }
-
-  // Choose from List
-  if (text.toLowerCase().startsWith('.c ') ||
-      text.toLowerCase().startsWith('.choose ')) {
-    client.say(to, 'Under development. Blame Jukey for making it hard');
-    //https://github.com/Poorchop/hexchat-scripts/blob/master/Arnavion-scripts/choose.py
-  }
-
-  // Youtube
-  if (text.toLowerCase().startsWith('.yt ')) {
-    client.say(to, 'Under development');
-  }
+  commands.forEach(c => c.message(from, to, text, message));
 });
 
 // Something happened. If we don't log it, the app will crash
