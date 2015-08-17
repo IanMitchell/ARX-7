@@ -9,5 +9,9 @@ export class Debug extends Command {
     if (text.toLowerCase() === 'bot respond') {
       this.client.say(to, "I'm a pretty stupid bot.");
     }
+
+    if (text.toLowerCase() === 'bot be nice') {
+      this.client.say(to, "Sorry :(");
+    }
   }
 }
