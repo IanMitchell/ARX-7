@@ -16,19 +16,6 @@ export class Choose extends Command {
     }
   }
 
-  checkBlacklist(message) {
-    let triggered = false;
-
-    this.blacklist.forEach(k => {
-      if (message.toLowerCase().includes(k.toLowerCase())) {
-        console.log('Choose Blacklist triggered');
-        triggered = true;
-      }
-    });
-
-    return triggered;
-  }
-
   choose(input) {
     console.log(`Choose command on: ${input}`);
 

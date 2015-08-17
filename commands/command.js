@@ -20,4 +20,17 @@ export class Command {
   }
 
   message(to, from, text, message) { }
+
+  checkBlacklist(message) {
+    let triggered = false;
+
+    this.blacklist.forEach(k => {
+      if (message.toLowerCase().includes(k.toLowerCase())) {
+        console.log('Choose Blacklist triggered');
+        triggered = true;
+      }
+    });
+
+    return triggered;
+  }
 }

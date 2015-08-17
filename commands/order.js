@@ -106,17 +106,4 @@ export class Order extends Command {
 
     return choices;
   }
-
-  checkBlacklist(message) {
-    let triggered = false;
-
-    this.blacklist.forEach(k => {
-      if (message.toLowerCase().includes(k.toLowerCase())) {
-        console.log('Choose Blacklist triggered');
-        triggered = true;
-      }
-    });
-
-    return triggered;
-  }
 }
