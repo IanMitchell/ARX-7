@@ -1,26 +1,6 @@
 import {Command} from './command.js';
 
 export class Choose extends Command {
-  constructor(client) {
-    super(client);
-
-    this.blacklist = [
-      'XD',
-      'attention attention',
-      'scion',
-      'touhou',
-      'erep',
-      'esim',
-      'republik',
-      'cereal ceral',
-      '!sw',
-      '!loli',
-      'tinyurl',
-      '4294967295',
-      '4294967294'
-    ];
-  }
-
   message(from, to, text, message) {
     let regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/
     let choose = text.match(regex);
