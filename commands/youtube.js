@@ -55,7 +55,7 @@ export class Youtube extends Command {
 
   search(title) {
     let uri = `https://www.googleapis.com/youtube/v3/search?part=snippet` +
-              `&q=${title}&key=${config.keys.youtube}`
+              `&q=${title}&key=${config.keys.youtube}`;
 
     console.log(`Searching YouTube for ${title}`);
 
