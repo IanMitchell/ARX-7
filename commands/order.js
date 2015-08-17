@@ -12,12 +12,10 @@ export class Order extends Command {
         this.client.say(to, 'Nope.');
       }
       else {
-        console.log('Order command received');
         let range_regex = /(-?\d+)-(-?\d+)$/;
         let range = text.match(range_regex);
 
         if (range) {
-          console.log("Range request");
           let result = this.orderRange(range);
           this.client.say(to, `${from}: ${result}`);
         }
@@ -32,11 +30,9 @@ export class Order extends Command {
   orderRange(order) {
     let min = Math.min(parseInt(order[1]), parseInt(order[2])),
         max = Math.max(parseInt(order[1]), parseInt(order[2]));
-    console.log(`Min: ${min}, Max: ${max}`);
+
     order[1] = Math.min(max, min + 9);
-    console.log(order);
     let choices = this.getRange(min, max);
-    console.log(choices);
     return choices.join(', ');
   }
 
