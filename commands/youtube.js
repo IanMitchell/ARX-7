@@ -13,7 +13,7 @@ export class Youtube extends Command {
     }
 
     // Respond to Youtube Links
-    let info_regex = /.*(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+).*/;
+    let info_regex = /.*(youtube\.com\/watch\S*v=|youtu\.be\/)([\w-]+).*/;
     let match = text.match(info_regex);
     if (match) {
       this.info(match[2]).then(video => {
