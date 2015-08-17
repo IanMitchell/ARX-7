@@ -3,6 +3,7 @@ import config from './config';
 
 import {Choose} from './commands/choose.js';
 import {Debug} from './commands/debug.js';
+import {Order} from './commands/order.js';
 import {Youtube} from './commands/youtube.js';
 
 
@@ -15,6 +16,7 @@ let client = new irc.Client(config.server, config.name, {
 let commands = [
   new Choose(client),
   new Debug(client),
+  new Order(client),
   new Youtube(client)
 ]
 
