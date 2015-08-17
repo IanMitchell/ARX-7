@@ -3,7 +3,7 @@ import {Command} from './command.js';
 export class Debug extends Command {
   message(from, to, text, message) {
     if (text.toLowerCase() === 'ping') {
-      this.client.say(to, 'Pong');
+      this.client.say(to, 'pong');
     }
 
     if (text.toLowerCase() === 'bot respond') {
@@ -11,7 +11,7 @@ export class Debug extends Command {
     }
 
     if (text.toLowerCase() === 'bot be nice') {
-      this.client.say(to, "Sorry :(");
+      this.client.say(to, "sorry :(");
     }
 
     if (text.toLowerCase() === 'gj bot') {
