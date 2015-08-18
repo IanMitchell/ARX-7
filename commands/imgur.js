@@ -30,7 +30,7 @@ export class Imgur extends Command {
         if (!error && response.statusCode == 200) {
           let data = JSON.parse(body);
           let imgur = {
-            title: data['data']['title'],
+            title: data['data']['title'] || 'Untitled',
             views: this.addCommas(data['data']['views']),
           }
 
