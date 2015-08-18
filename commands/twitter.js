@@ -7,10 +7,10 @@ export class Twitter extends Command {
     // Respond to Twitter Links
     let tweet_regex = /.*(twitter\.com\/)([\w]+)(\/status\/)(\d*).*/;
     let match = text.match(tweet_regex);
-    
+
     if (match) {
       this.info(match[2], match[4]).then(tweet => {
-        this.client.say(to, `[Twitter]: ${tweet.text} | Tweeted by ${tweet.username} (@${match[2]})`);
+        this.client.say(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
       }, (error) => this.client.say(to, 'Sorry, coud not find tweet info.'));
     }
   }
@@ -35,7 +35,8 @@ export class Twitter extends Command {
           let data = JSON.parse(success);
 
           resolve({
-            text: data.text,
+            // Remove linebreaks
+            text: data.text.replace(/\r?\n|\r/g, ' '),
             username: data.user.name
           });
         }
