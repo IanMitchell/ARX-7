@@ -5,7 +5,7 @@ import {Command} from './command.js';
 export class Youtube extends Command {
   message(from, to, text, message) {
     // Respond to Youtube Requests
-    let search = text.match(/.(yt\s|youtube\s)(.*)/, '$2');
+    let search = text.match(/^\.(yt\s|youtube\s)(.*)$/, '$2');
     if (search) {
       this.search(search[2]).then(video => {
         this.client.say(to, `[YouTube] ${video.title} | ${video.url}`);
