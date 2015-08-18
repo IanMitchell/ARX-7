@@ -28,6 +28,7 @@ export class Order extends Command {
   }
 
   orderRange(order) {
+    console.log(`Ordering Range: ${order}`);
     let min = Math.min(parseInt(order[1]), parseInt(order[2])),
         max = Math.max(parseInt(order[1]), parseInt(order[2]));
 
@@ -60,6 +61,7 @@ export class Order extends Command {
   }
 
   orderList(text) {
+    console.log(`Ordering List: ${list}`);
     let choices = this.getChoices(text, ',');
 
     if (choices) {

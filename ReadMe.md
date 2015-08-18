@@ -36,11 +36,25 @@ You'll need to create a config file that looks like the following:
 ```
 {
   "name": "ARX-7",
-  "server": "irc.rizon.net",
   "password": "password",
-  "channels": [
-    "#arx-7"
-  ],
+  "server": "irc.rizon.net",
+  "channels": {
+    "#channel": [
+      "choose",
+      "debug",
+      "order",
+      "twitter",
+      "youtube"
+    ],
+    "#channel2": [
+      "choose",
+      "debug",
+      "imgur",
+      "order",
+      "twitter",
+      "youtube"
+    ]
+  },
   "keys": {
     "youtube": "key",
     "twitter_consumer": "key",

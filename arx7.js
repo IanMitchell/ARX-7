@@ -8,10 +8,9 @@ import {Order} from './commands/order.js';
 import {Twitter} from './commands/twitter.js';
 import {Youtube} from './commands/youtube.js';
 
-
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
-  channels: config.channels
+  channels: Object.keys(config.channels)
 });
 
 // Command List Setup
@@ -46,7 +45,11 @@ client.addListener('join', (channel, nick, message) => {
 
 // Listen for channel / personal Messages
 client.addListener('message', (from, to, text, message) => {
-  commands.forEach(c => c.message(from, to, text, message));
+  commands.forEach(c => {
+    if (config.channels[to].indexOf(c.constructor.name.toLowerCase()) > 0) {
+      c.message(from, to, text, message);
+    }
+  });
 });
 
 // Something happened. If we don't log it, the app will crash
