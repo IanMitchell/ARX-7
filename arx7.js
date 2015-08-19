@@ -46,7 +46,7 @@ client.addListener('join', (channel, nick, message) => {
 // Listen for channel / personal Messages
 client.addListener('message', (from, to, text, message) => {
   commands.forEach(c => {
-    if (config.channels[to].indexOf(c.constructor.name.toLowerCase()) > 0) {
+    if (config.channels[to].indexOf(c.constructor.name.toLowerCase()) > -1) {
       c.message(from, to, text, message);
     }
   });
