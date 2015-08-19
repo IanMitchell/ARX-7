@@ -61,7 +61,7 @@ export class Order extends Command {
   }
 
   orderList(text) {
-    console.log(`Ordering List: ${list}`);
+    console.log(`Ordering List: ${text}`);
     let choices = this.getChoices(text, ',');
 
     if (choices) {
