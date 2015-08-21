@@ -10,7 +10,8 @@ import {Youtube} from './commands/youtube.js';
 
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
-  channels: Object.keys(config.channels)
+  channels: Object.keys(config.channels),
+  autoRejoin: true
 });
 
 // Command List Setup
@@ -36,13 +37,6 @@ client.addListener('ctcp-version', (from, to, message) => {
   client.ctcp(from, 'notice', `VERSION Bot running on node-irc.`);
 });
 
-// Praise the Creator
-client.addListener('join', (channel, nick, message) => {
-  if (nick === 'Desch') {
-    client.say(channel, 'Hello Master.');
-  }
-});
-
 // Listen for channel / personal Messages
 client.addListener('message', (from, to, text, message) => {
   commands.forEach(c => {
@@ -52,5 +46,22 @@ client.addListener('message', (from, to, text, message) => {
   });
 });
 
-// Something happened. If we don't log it, the app will crash
-client.addListener('error', message => console.log(`Error: ${message.command}`));
+// Praise the Creator
+client.addListener('join', (channel, nick, message) => {
+  if (nick === 'Desch' && channel == '#arx-7') {
+    client.say(channel, 'Hello Master.');
+  }
+});
+
+// Catch errors, attempt to rejoin banned channels
+client.addListener('error', message => {
+  if (message.command == 'err_bannedfromchan') {
+    console.log(`Banned from ${message.args[1]}. Rejoining in in 3 minutes`);
+
+    // `()=>` ensures there is a delay; otherwise it continuously fires
+    setTimeout(() => client.join(message.args[1]), 1000 * 60 * 3);
+  }
+  else {
+    console.log(`Error: ${message.command}`);
+  }
+});
