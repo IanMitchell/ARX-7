@@ -29,6 +29,9 @@ A dumb IRC bot that wishes it had a Lambda Drive.
 $ npm install
 $ npm app.js
 ```
+
+Docker instructions further down.
+
 You'll need to create a config file that looks like the following:
 
 `config.json` file:
@@ -66,6 +69,15 @@ You'll need to create a config file that looks like the following:
   }
 }
 
+```
+
+### Using Docker
+
+Create the `config.json` file, then build and run the image:
+
+```
+docker build -ti arx-7 .
+docker run --rm -ti arx-7
 ```
 
 ## Discussion
