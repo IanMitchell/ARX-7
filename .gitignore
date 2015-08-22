@@ -3,3 +3,6 @@ node_modules/
 
 # Don't want Bot Password
 config.json
+
+# Log files
+npm-debug.log

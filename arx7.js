@@ -8,9 +8,11 @@ import {Order} from './commands/order.js';
 import {Twitter} from './commands/twitter.js';
 import {Youtube} from './commands/youtube.js';
 
+let channels = Object.keys(config.channels);
+
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
-  channels: Object.keys(config.channels),
+  channels: channels,
   autoRejoin: true
 });
 
@@ -40,7 +42,19 @@ client.addListener('ctcp-version', (from, to, message) => {
 // Listen for channel / personal Messages
 client.addListener('message', (from, to, text, message) => {
   commands.forEach(c => {
-    if (config.channels[to].indexOf(c.constructor.name.toLowerCase()) > -1) {
+    let i = -1;
+    let plugin = c.constructor.name.toLowerCase();
+
+    // Search config for non-lowercase values
+    channels.some((element, index) => {
+      if (element.toLowerCase() === to) {
+        i = index;
+        return true;
+      }
+    });
+
+    // Check for plugin presence
+    if (config.channels[channels[i]].indexOf(plugin) > -1) {
       c.message(from, to, text, message);
     }
   });
