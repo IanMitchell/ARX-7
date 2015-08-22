@@ -8,21 +8,16 @@ export class Order extends Command {
     let order = text.match(order_regex);
 
     if (order) {
-      if (this.checkBlacklist(text)) {
-        this.client.say(to, 'Nope.');
+      let range_regex = /(-?\d+)-(-?\d+)$/;
+      let range = text.match(range_regex);
+
+      if (range) {
+        let result = this.orderRange(range);
+        this.send(to, `${from}: ${result}`);
       }
       else {
-        let range_regex = /(-?\d+)-(-?\d+)$/;
-        let range = text.match(range_regex);
-
-        if (range) {
-          let result = this.orderRange(range);
-          this.client.say(to, `${from}: ${result}`);
-        }
-        else {
-          let result = this.orderList(order[1]);
-          this.client.say(to, `${from}: ${result}`);
-        }
+        let result = this.orderList(order[1]);
+        this.send(to, `${from}: ${result}`);
       }
     }
   }

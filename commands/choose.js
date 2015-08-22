@@ -6,13 +6,8 @@ export class Choose extends Command {
     let choose = text.match(regex);
 
     if (choose) {
-      if (this.checkBlacklist(text)) {
-        this.client.say(to, 'Nope.');
-      }
-      else {
-        let result = this.choose(choose[1]);
-        this.client.say(to, `${from}: ${result}`);
-      }
+      let result = this.choose(choose[1]);
+      this.send(to, `${from}: ${result}`);
     }
   }
 

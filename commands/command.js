@@ -21,6 +21,14 @@ export class Command {
 
   message(to, from, text, message) { }
 
+  send(to, text) {
+    if (this.checkBlacklist(text)) {
+      this.client.say(to, "Nope.");
+    } else {
+      this.client.say(to, text);
+    }
+  }
+
   checkBlacklist(message) {
     let triggered = false;
 

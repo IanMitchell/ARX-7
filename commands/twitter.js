@@ -10,8 +10,8 @@ export class Twitter extends Command {
 
     if (match) {
       this.info(match[2], match[4]).then(tweet => {
-        this.client.say(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
-      }, (error) => this.client.say(to, 'Sorry, coud not find tweet info.'));
+        this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
+      }, (error) => this.send(to, 'Sorry, coud not find tweet info.'));
     }
   }
 

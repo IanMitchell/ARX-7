@@ -10,8 +10,8 @@ export class Imgur extends Command {
 
     if (match) {
       this.info(match[3]).then(imgur => {
-        this.client.say(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
-      }, (error) => this.client.say(to, 'Sorry, coud not find imgur info.'));
+        this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
+      }, (error) => this.send(to, 'Sorry, coud not find imgur info.'));
     }
   }
 
