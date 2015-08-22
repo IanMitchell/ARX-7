@@ -8,8 +8,8 @@ export class Youtube extends Command {
     let search = text.match(/^\.(yt\s|youtube\s)(.*)$/, '$2');
     if (search) {
       this.search(search[2]).then(video => {
-        this.client.say(to, `[YouTube] ${video.title} | ${video.url}`);
-      }, (error) => this.client.say(to, 'Sorry, could not find a video.'));
+        this.send(to, `[YouTube] ${video.title} | ${video.url}`);
+      }, (error) => this.send(to, 'Sorry, could not find a video.'));
     }
 
     // Respond to Youtube Links
@@ -17,8 +17,8 @@ export class Youtube extends Command {
     let match = text.match(info_regex);
     if (match) {
       this.info(match[2]).then(video => {
-        this.client.say(to, `[YouTube] ${video.title} | Views: ${video.views}`);
-      }, (error) => this.client.say(to, 'Sorry, coud not find video info.'));
+        this.send(to, `[YouTube] ${video.title} | Views: ${video.views}`);
+      }, (error) => this.send(to, 'Sorry, coud not find video info.'));
     }
   }
 
