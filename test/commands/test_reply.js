@@ -5,7 +5,7 @@ import {Reply} from "./../../src/commands/reply";
 let client = new Client();
 let reply = new Reply(client);
 
-describe('Debug', () => {
+describe('Reply', () => {
   describe("> ping", () => {
     it('should respond', () => {
       reply.message('Mocha', '#test', 'ping', null);
