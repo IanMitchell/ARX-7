@@ -25,7 +25,6 @@ describe('Choose', () => {
       client.resetLog();
     });
 
-
     it("should include user's name", () => {
       choose.message('Mocha', '#test', '.choose this, that', null);
       assert(client.lastMessage.startsWith('Mocha: '));
@@ -76,10 +75,34 @@ describe('Choose', () => {
   });
 
   describe('Range', () => {
-    // TODO
+    it('should choose from within range', () => {
+      assert(false, 'Not implemented');
+    });
+
+    it('should handle reverse ranges', () => {
+      assert(false, 'Not implemented');
+    });
+
+    it('should handle negative ranges', () => {
+      assert(false, 'Not implemented');
+    });
+
+    it('should include lower and upper bounds', () => {
+      assert(false, 'Not implemented');
+    });
   });
 
-  describe('Decimal', () => {
-    // TODO
+  describe('Decimal Range', () => {
+    it('should choose from within range', () => {
+      assert(false, 'Not implemented');
+    });
+
+    it('should handle integer and float mixes', () => {
+      assert(false, 'Not implemented');
+    });
+
+    it('should handle different mantissas', () => {
+      assert(false, 'Not implemented');
+    });
   });
 });
