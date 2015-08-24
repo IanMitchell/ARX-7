@@ -1,6 +1,9 @@
+import debug from 'debug';
 import request from 'request';
-import config from './../config';
+import config from './../../config';
 import {Command} from './command.js';
+
+let log = debug('YouTube');
 
 export class Youtube extends Command {
   message(from, to, text, message) {
@@ -32,7 +35,7 @@ export class Youtube extends Command {
               `&fields=items(id,snippet(channelId,title),statistics)` +
               `&part=snippet,statistics`
 
-    console.log(`Retrieving YouTube information for ${id}`);
+    log(`Retrieving YouTube information for ${id}`);
 
     return new Promise((resolve, reject) => {
       request(uri, (error, response, body) => {
@@ -46,7 +49,7 @@ export class Youtube extends Command {
           resolve(video);
         }
         else {
-          console.log(`ERROR: YouTube Info - ${error}`);
+          log(`ERROR: YouTube Info - ${error}`);
           reject();
         }
       });
@@ -57,7 +60,7 @@ export class Youtube extends Command {
     let uri = `https://www.googleapis.com/youtube/v3/search?part=snippet` +
               `&q=${encodeURIComponent(title.trim())}&key=${config.keys.youtube}`;
 
-    console.log(`Searching YouTube for ${title}`);
+    log(`Searching YouTube for ${title}`);
 
     return new Promise((resolve, reject) => {
       request(uri, (error, response, body) => {
@@ -78,7 +81,7 @@ export class Youtube extends Command {
           reject();
         }
         else {
-          console.log(`ERROR: YouTube Search - ${error}`);
+          log(`ERROR: YouTube Search - ${error}`);
           reject();
         }
       });

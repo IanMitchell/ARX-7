@@ -1,3 +1,7 @@
+import debug from 'debug';
+
+let log = debug('Command');
+
 export class Command {
   constructor(c) {
     this.client = c;
@@ -34,7 +38,7 @@ export class Command {
 
     this.blacklist.forEach(k => {
       if (message.toLowerCase().includes(k.toLowerCase())) {
-        console.log('Choose Blacklist triggered');
+        log('Choose Blacklist triggered');
         triggered = true;
       }
     });

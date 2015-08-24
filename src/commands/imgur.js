@@ -1,6 +1,9 @@
+import debug from 'debug';
 import request from 'request';
-import config from './../config';
+import config from './../../config';
 import {Command} from './command.js';
+
+let log = debug('Imgur');
 
 export class Imgur extends Command {
   message(from, to, text, message) {
@@ -16,7 +19,7 @@ export class Imgur extends Command {
   }
 
   info(id) {
-    console.log(`Retrieving Imgur information for ${id}`);
+    log(`Retrieving Imgur information for ${id}`);
 
     let options = {
       url: `https://api.imgur.com/3/image/${id}`,
@@ -37,7 +40,7 @@ export class Imgur extends Command {
           resolve(imgur);
         }
         else {
-          console.log(`ERROR: Imgur Info - ${error}`);
+          log(`ERROR: Imgur Info - ${error}`);
           reject();
         }
       });

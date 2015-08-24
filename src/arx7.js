@@ -1,13 +1,15 @@
+import debug from 'debug';
 import irc from 'irc';
-import config from './config';
+import config from './../config';
 
 import {Choose} from './commands/choose.js';
-import {Debug} from './commands/debug.js';
+import {Reply} from './commands/reply.js';
 import {Imgur} from './commands/imgur.js';
 import {Order} from './commands/order.js';
 import {Twitter} from './commands/twitter.js';
 import {Youtube} from './commands/youtube.js';
 
+let log = debug('ARX-7');
 let channels = Object.keys(config.channels);
 
 // Initialize the Bot
@@ -19,7 +21,7 @@ let client = new irc.Client(config.server, config.name, {
 // Command List Setup
 let commands = [
   new Choose(client),
-  new Debug(client),
+  new Reply(client),
   new Imgur(client),
   new Order(client),
   new Twitter(client),
@@ -28,14 +30,14 @@ let commands = [
 
 // On Server Connect
 client.addListener('registered', (message) => {
-  console.log('Connected to Server');
+  log('Connected to Server');
   client.say('NickServ', `identify ${config.password}`);
-  console.log('Identified');
+  log('Identified');
 });
 
 // Respond to Version requests
 client.addListener('ctcp-version', (from, to, message) => {
-  console.log(`CTCP request from ${from}`);
+  log(`CTCP request from ${from}`);
   client.ctcp(from, 'notice', `VERSION Bot running on node-irc.`);
 });
 
@@ -70,12 +72,12 @@ client.addListener('join', (channel, nick, message) => {
 // Catch errors, attempt to rejoin banned channels
 client.addListener('error', message => {
   if (message.command == 'err_bannedfromchan') {
-    console.log(`Banned from ${message.args[1]}. Rejoining in in 3 minutes`);
+    log(`Banned from ${message.args[1]}. Rejoining in in 3 minutes`);
 
     // `()=>` ensures there is a delay; otherwise it continuously fires
     setTimeout(() => client.join(message.args[1]), 1000 * 60 * 3);
   }
   else {
-    console.log(`Error: ${message.command}`);
+    log(`ERROR: ${message.command}`);
   }
 });

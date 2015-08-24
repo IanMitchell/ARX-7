@@ -1,4 +1,7 @@
+import debug from 'debug';
 import {Command} from './command.js';
+
+let log = debug('Choose');
 
 export class Choose extends Command {
   message(from, to, text, message) {
@@ -12,7 +15,7 @@ export class Choose extends Command {
   }
 
   choose(input) {
-    console.log(`Choose command on: ${input}`);
+    log(`Choose command on: ${input}`);
 
     let range_regex = /^(-?\d+(\.\d+)?)-(-?\d+(\.\d+)?)$/;
     let range = input.match(range_regex);

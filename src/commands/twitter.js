@@ -1,6 +1,9 @@
+import debug from 'debug';
 import * as TwitterClient from 'twitter-node-client';
-import config from './../config';
+import config from './../../config';
 import {Command} from './command.js';
+
+let log = debug('Twitter');
 
 export class Twitter extends Command {
   message(from, to, text, message) {
@@ -16,7 +19,7 @@ export class Twitter extends Command {
   }
 
   info(username, tweet_id) {
-    console.log(`Retrieving Twitter information for ${username}/${tweet_id}`);
+    log(`Retrieving Twitter information for ${username}/${tweet_id}`);
 
     let twitter = new TwitterClient.Twitter({
       "consumerKey": config.keys.twitter_consumer,
@@ -28,7 +31,7 @@ export class Twitter extends Command {
     return new Promise((resolve, reject) => {
       twitter.getTweet({id: tweet_id},
         (error) => {
-          console.log(`ERROR: Twitter Info - ${error}`);
+          log(`ERROR: Twitter Info - ${error}`);
           reject();
         },
         (success) => {

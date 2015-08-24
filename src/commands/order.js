@@ -1,5 +1,7 @@
+import debug from 'debug';
 import {Command} from './command.js';
 
+let log = debug('Order');
 const ORDER_LIMIT = 20;
 
 export class Order extends Command {
@@ -23,7 +25,7 @@ export class Order extends Command {
   }
 
   orderRange(order) {
-    console.log(`Ordering Range: ${order}`);
+    log(`Ordering Range: ${order}`);
     let min = Math.min(parseInt(order[1]), parseInt(order[2])),
         max = Math.max(parseInt(order[1]), parseInt(order[2]));
 
@@ -56,7 +58,7 @@ export class Order extends Command {
   }
 
   orderList(text) {
-    console.log(`Ordering List: ${text}`);
+    log(`Ordering List: ${text}`);
     let choices = this.getChoices(text, ',');
 
     if (choices) {
