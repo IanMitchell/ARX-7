@@ -1,9 +1,13 @@
+import debug from 'debug';
+
+let log = debug('Command');
+
 export class Command {
   constructor(c) {
     this.client = c;
 
     this.blacklist = [
-      'XD',
+      ' XD ',
       'attention attention',
       'scion',
       'touhou',
@@ -23,7 +27,7 @@ export class Command {
 
   send(to, text) {
     if (this.checkBlacklist(text)) {
-      this.client.say(to, "Nope.");
+      this.client.say(to, 'Nope.');
     } else {
       this.client.say(to, text);
     }
@@ -34,7 +38,7 @@ export class Command {
 
     this.blacklist.forEach(k => {
       if (message.toLowerCase().includes(k.toLowerCase())) {
-        console.log('Choose Blacklist triggered');
+        log(`Blacklist triggered on "${k}"`);
         triggered = true;
       }
     });

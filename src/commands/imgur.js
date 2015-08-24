@@ -1,6 +1,9 @@
+import debug from 'debug';
 import request from 'request';
-import config from './../config';
+import config from './../../config';
 import {Command} from './command.js';
+
+let log = debug('Imgur');
 
 export class Imgur extends Command {
   message(from, to, text, message) {
@@ -9,15 +12,23 @@ export class Imgur extends Command {
     let match = text.match(imgur_regex);
 
     if (match) {
-      this.info(match[3]).then(imgur => {
-        this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
-      }, (error) => this.send(to, 'Sorry, coud not find imgur info.'));
+      return new Promise((resolve, reject) => {
+        log(`Retrieving information for ${match[3]}`);
+        this.info(match[3]).then(imgur => {
+          this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
+          resolve();
+        }, error => {
+          this.send(to, 'Sorry, coud not find imgur info.');
+          log(error);
+          reject();
+        });
+      });
     }
+
+    return new Promise((resolve, reject) => reject());
   }
 
   info(id) {
-    console.log(`Retrieving Imgur information for ${id}`);
-
     let options = {
       url: `https://api.imgur.com/3/image/${id}`,
       headers: {
@@ -37,7 +48,7 @@ export class Imgur extends Command {
           resolve(imgur);
         }
         else {
-          console.log(`ERROR: Imgur Info - ${error}`);
+          log(`ERROR: Imgur Info - ${error}`);
           reject();
         }
       });
