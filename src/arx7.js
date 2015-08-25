@@ -26,7 +26,7 @@ let commands = [
   new Order(client),
   new Twitter(client),
   new Youtube(client)
-]
+];
 
 // On Server Connect
 client.addListener('registered', (message) => {

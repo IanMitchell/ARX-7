@@ -20,7 +20,7 @@ describe('ARX-7', () => {
     });
   });
 
-  describe('Handles Messages', () => {
+  describe('Messages Handling', () => {
     it('should respond to PM', () => {
       assert(false, 'Not implemented');
     });

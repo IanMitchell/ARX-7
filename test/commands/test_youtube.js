@@ -6,7 +6,7 @@ let client = new Client();
 let youtube = new Youtube(client);
 
 describe('Youtube', () => {
-  describe('Search General Usage', () => {
+  describe('Video Search', () => {
     it('should respond in correct channel', () => {
       youtube.message('Mocha', '#test', '.yt End Credits', null);
       assert.equal('#test', client.lastTarget);
@@ -42,7 +42,7 @@ describe('Youtube', () => {
     });
   });
 
-  describe('Lookup General Usage', () => {
+  describe('Video Lookup', () => {
     it('should respond in correct channel', () => {
       assert(false, 'Not implemented');
     });
