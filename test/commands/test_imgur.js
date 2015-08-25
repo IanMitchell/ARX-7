@@ -1,6 +1,6 @@
 import assert from "assert";
 import {Client} from "../helpers.js";
-import {Imgur} from "./../../src/commands/imgur";
+import {Imgur} from "../../src/commands/imgur";
 
 let client = new Client();
 let imgur = new Imgur(client);
@@ -25,13 +25,9 @@ describe('Imgur', () => {
       client.resetLog();
     });
 
-    it('should display correct title', () => {
-      assert(false, 'Not implemented');
-      assert(false, '`No title` Not implemented');
-    });
+    // TODO: Test title, no title
+    it('should display correct title');
 
-    it('should include view count', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should include view count');
   });
 });

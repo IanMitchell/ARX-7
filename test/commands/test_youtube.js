@@ -1,13 +1,13 @@
 import assert from "assert";
 import {Client} from "../helpers.js";
-import {Youtube} from "./../../src/commands/youtube";
+import {Youtube} from "../../src/commands/youtube";
 
 let client = new Client();
 let youtube = new Youtube(client);
 
 describe('Youtube', () => {
   describe('Video Search', () => {
-    it('should respond in correct channel', () => {
+    it('should respond in correct channel', (done) => {
       youtube.message('Mocha', '#test', '.yt End Credits', null);
       assert.equal('#test', client.lastTarget);
       client.resetLog();
@@ -43,24 +43,14 @@ describe('Youtube', () => {
   });
 
   describe('Video Lookup', () => {
-    it('should respond in correct channel', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should respond in correct channel');
 
-    it('should activate anywhere in phrase', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should activate anywhere in phrase');
 
-    it('should respond to shortened links', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should respond to shortened links');
 
-    it('should include view count', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should include view count');
 
-    it('should include [Youtube]', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should include [Youtube]');
   });
 });

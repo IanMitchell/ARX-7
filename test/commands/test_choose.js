@@ -1,6 +1,6 @@
 import assert from "assert";
 import {Client} from "../helpers.js";
-import {Choose} from "./../../src/commands/choose";
+import {Choose} from "../../src/commands/choose";
 
 let client = new Client();
 let choose = new Choose(client);
@@ -75,34 +75,20 @@ describe('Choose', () => {
   });
 
   describe('Range', () => {
-    it('should choose from within range', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should choose from within range');
 
-    it('should handle reverse ranges', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should handle reverse ranges');
 
-    it('should handle negative ranges', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should handle negative ranges');
 
-    it('should include lower and upper bounds', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should include lower and upper bounds');
   });
 
   describe('Decimal Range', () => {
-    it('should choose from within range', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should choose from within range');
 
-    it('should handle integer and float mixes', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should handle integer and float mixes');
 
-    it('should handle different mantissas', () => {
-      assert(false, 'Not implemented');
-    });
+    it('should handle different mantissas');
   });
 });

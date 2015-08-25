@@ -1,6 +1,6 @@
 import assert from "assert";
 import {Client} from "../helpers.js";
-import {Twitter} from "./../../src/commands/twitter";
+import {Twitter} from "../../src/commands/twitter";
 
 let client = new Client();
 let twitter = new Twitter(client);
@@ -25,9 +25,7 @@ describe('Twitter', () => {
       client.resetLog();
     });
 
-    it('should expand links', () => {
-      assert(false, 'Not implemented');
-      // TODO: Test multiple links (use Jukey Tweet)
-    });
+    // TODO: Test multiple links (use Jukey Tweet)
+    it('should expand links');
   });
 });

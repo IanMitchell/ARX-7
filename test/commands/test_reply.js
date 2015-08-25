@@ -1,6 +1,6 @@
 import assert from "assert";
 import {Client} from "../helpers.js";
-import {Reply} from "./../../src/commands/reply";
+import {Reply} from "../../src/commands/reply";
 
 let client = new Client();
 let reply = new Reply(client);
