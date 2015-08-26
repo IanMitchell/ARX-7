@@ -1,12 +1,21 @@
 export class Client {
-  constructor() {
+  constructor(callback) {
     this.lastTarget = null;
     this.lastMessage = null;
+    this.callback = null;
+  }
+
+  setCallback(callback) {
+    this.callback = callback;
   }
 
   say(target, message) {
     this.lastTarget = target;
     this.lastMessage = message;
+
+    if (this.callback) {
+      this.callback();
+    }
   }
 
   resetLog() {

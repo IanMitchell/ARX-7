@@ -1,4 +1,5 @@
 import assert from "assert";
+import should_promised from "should-promised";
 import {Client} from "../helpers.js";
 import {Youtube} from "../../src/commands/youtube";
 
@@ -8,38 +9,27 @@ let youtube = new Youtube(client);
 describe('Youtube', () => {
   describe('Video Search', () => {
     it('should respond in correct channel', (done) => {
-      youtube.message('Mocha', '#test', '.yt End Credits', null);
-      assert.equal('#test', client.lastTarget);
-      client.resetLog();
+      client.setCallback(() => {
+        console.log(client.lastTarget);
+        assert.equal('#test', client.lastTarget);
+        if (client.lastTarget === '#test') {
+          done();
+        } else {
+          throw new error();
+        }
+          client.resetLog();
+
+      });
+      return youtube.message('Mocha', '#test2', '.yt End Credits', null);
     });
 
-    it('should respond to triggers', () => {
-      youtube.message('Mocha', '#test', '.yt End Credits', null);
-      assert.notEqual(null, client.lastMessage);
-      client.resetLog();
+    it('should respond to triggers');
 
-      youtube.message('Mocha', '#test', '.youtube End Credits', null);
-      assert.notEqual(null, client.lastMessage);
-      client.resetLog();
-    });
+    it('should activate in beginning of phrase');
 
-    it('should activate in beginning of phrase', () => {
-      youtube.message('Mocha', '#test', '.yt End Credits', null);
-      assert.notEqual(null, client.lastMessage);
-      client.resetLog();
-    });
+    it('should not activate in middle of phrase');
 
-    it('should not activate in middle of phrase', () => {
-      youtube.message('Mocha', '#test', 'test .yt End Credits', null);
-      assert.equal(null, client.lastMessage);
-      client.resetLog();
-    });
-
-    it('should include [YouTube]', () => {
-      youtube.message('Mocha', '#test', '.yt End Credits', null);
-      assert(client.lastMessage.startsWith('[YouTube] '));
-      client.resetLog();
-    });
+    it('should include [YouTube]');
   });
 
   describe('Video Lookup', () => {
