@@ -7,24 +7,24 @@ let log = debug('Twitter');
 
 export class Twitter extends Command {
   message(from, to, text, message) {
-    return new Promise((resolve, reject) => {
-      // Respond to Twitter Links
-      let tweet_regex = /.*(twitter\.com\/)([\w]+)(\/status\/)(\d*).*/;
-      let match = text.match(tweet_regex);
+    // Respond to Twitter Links
+    let tweet_regex = /.*(twitter\.com\/)([\w]+)(\/status\/)(\d*).*/;
+    let match = text.match(tweet_regex);
 
-      if (match) {
+    if (match) {
+      return new Promise((resolve, reject) => {
         this.info(match[2], match[4]).then(tweet => {
           this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
           resolve();
-        }, (error) => {
+        }, error => {
           this.send(to, 'Sorry, could not find tweet info.');
           log(error);
           reject();
         });
-      }
+      });
+    }
 
-      resolve();
-    });
+    return new Promise((resolve, reject) => reject());
   }
 
   info(username, tweet_id) {
@@ -39,11 +39,11 @@ export class Twitter extends Command {
 
     return new Promise((resolve, reject) => {
       twitter.getTweet({id: tweet_id},
-        (error) => {
+        error => {
           log(`ERROR: Twitter Info - ${error}`);
           reject();
         },
-        (success) => {
+        success => {
           let data = JSON.parse(success);
 
           resolve({

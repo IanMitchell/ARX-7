@@ -5,7 +5,7 @@ import {Twitter} from "../../src/commands/twitter";
 let client = new Client();
 let twitter = new Twitter(client);
 
-let link = '';
+let link = 'https://twitter.com/IanMitchel1/status/636939838512500736';
 
 describe('Twitter', () => {
   describe('Triggers', () => {

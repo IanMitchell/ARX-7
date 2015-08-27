@@ -7,36 +7,38 @@ let log = debug('YouTube');
 
 export class Youtube extends Command {
   message(from, to, text, message) {
-    return new Promise((resolve, reject) => {
-      // Respond to Youtube Requests
-      let search = text.match(/^\.(yt\s|youtube\s)(.*)$/, '$2');
-      if (search) {
+    // Respond to Youtube Requests
+    let search = text.match(/^\.(yt\s|youtube\s)(.*)$/, '$2');
+    if (search) {
+      return new Promise((resolve, reject) => {
         this.search(search[2]).then(video => {
           this.send(to, `[YouTube] ${video.title} | ${video.url}`);
           resolve();
-        }, (error) => {
+        }, error => {
           this.send(to, 'Sorry, could not find a video.');
           log(error);
           reject();
         });
-      }
+      });
+    }
 
-      // Respond to Youtube Links
-      let info_regex = /.*(youtube\.com\/watch\S*v=|youtu\.be\/)([\w-]+).*/;
-      let match = text.match(info_regex);
-      if (match) {
+    // Respond to Youtube Links
+    let info_regex = /.*(youtube\.com\/watch\S*v=|youtu\.be\/)([\w-]+).*/;
+    let match = text.match(info_regex);
+    if (match) {
+      return new Promise((resolve, reject) => {
         this.info(match[2]).then(video => {
           this.send(to, `[YouTube] ${video.title} | Views: ${video.views}`);
           resolve();
-        }, (error) => {
+        }, error => {
           this.send(to, 'Sorry, coud not find video info.');
           log(error);
           reject();
         });
-      }
+      });
+    }
 
-      resolve();
-    });
+    return new Promise((resolve, reject) => resolve());
   }
 
   addCommas(intNum) {

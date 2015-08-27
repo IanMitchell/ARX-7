@@ -7,24 +7,24 @@ let log = debug('Imgur');
 
 export class Imgur extends Command {
   message(from, to, text, message) {
-    return new Promise((resolve, reject) => {
-      // Respond to Imgur Links
-      let imgur_regex = /.*(imgur\.com\/(gallery\/)?)([\w]+)/;
-      let match = text.match(imgur_regex);
+    // Respond to Imgur Links
+    let imgur_regex = /.*(imgur\.com\/(gallery\/)?)([\w]+)/;
+    let match = text.match(imgur_regex);
 
-      if (match) {
+    if (match) {
+      return new Promise((resolve, reject) => {
         this.info(match[3]).then(imgur => {
           this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
           resolve();
-        }, (error) => {
+        }, error => {
           this.send(to, 'Sorry, coud not find imgur info.');
           log(error);
           reject();
         });
-      }
+      });
+    }
 
-      resolve();
-    });
+    return new Promise((resolve, reject) => reject());
   }
 
   info(id) {
