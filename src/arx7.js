@@ -55,9 +55,11 @@ client.addListener('message', (from, to, text, message) => {
       }
     });
 
-    // Check for plugin presence
-    if (config.channels[channels[i]].indexOf(plugin) > -1) {
-      c.message(from, to, text, message);
+    if (i > -1) {
+      // Check for plugin presence
+      if (config.channels[channels[i]].indexOf(plugin) > -1) {
+        c.message(from, to, text, message);
+      }  
     }
   });
 });
