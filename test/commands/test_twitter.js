@@ -10,7 +10,7 @@ let link = 'https://twitter.com/IanMitchel1/status/636939838512500736';
 describe('Twitter', () => {
   describe('Triggers', () => {
     it('should activate anywhere in phrase', () => {
-      return twitter.message('Mocha', '#test', `Tweet ${link}!`).then(() => {
+      twitter.message('Mocha', '#test', `Tweet ${link}!`).then(() => {
         assert(client.lastMessage);
       });
     });
@@ -18,23 +18,24 @@ describe('Twitter', () => {
 
   describe('General Usage', () => {
     it('should respond in correct channel', () => {
-      return twitter.message('Mocha', '#test', link).then(() => {
+      twitter.message('Mocha', '#test', link).then(() => {
         assert.equal('#test', client.lastTarget);
       });
     });
 
     it('should include [Twitter]', () => {
-      return twitter.message('Mocha', '#test', link).then(() => {
-        assert(client.lastMessage.startsWith('[Twitter] '));
+      twitter.message('Mocha', '#test', link).then(() => {
+        assert(client.lastMessage.startsWith('[Twitter]: '));
       });
     });
   });
 
   describe('Tweet Lookup', () => {
     it('should include username and Twitter handle', () => {
-      return twitter.message('Mocha', '#test', link).then(() => {
+      twitter.message('Mocha', '#test', link).then(() => {
         let tweet = client.lastMessage.toLowerCase();
-        assert(tweet.contains('ian mitchell {@ianmitchell1)'));
+        let expected = ' | By Ian Mitchell (@IanMitchel1)'.toLowerCase();
+        assert(tweet.includes(expected));
       });
     });
 

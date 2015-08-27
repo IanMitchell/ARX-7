@@ -7,7 +7,7 @@ export class Command {
     this.client = c;
 
     this.blacklist = [
-      'XD',
+      ' XD ',
       'attention attention',
       'scion',
       'touhou',
@@ -38,7 +38,7 @@ export class Command {
 
     this.blacklist.forEach(k => {
       if (message.toLowerCase().includes(k.toLowerCase())) {
-        log('Choose Blacklist triggered');
+        log(`Choose Blacklist triggered: ${k}`);
         triggered = true;
       }
     });
