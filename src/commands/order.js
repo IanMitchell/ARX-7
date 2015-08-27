@@ -6,22 +6,28 @@ const ORDER_LIMIT = 20;
 
 export class Order extends Command {
   message(from, to, text, message) {
-    let order_regex = /^[.!]o(?:rder)? (.+)$/;
-    let order = text.match(order_regex);
+    return new Promise((resolve, reject) => {
+      let order_regex = /^[.!]o(?:rder)? (.+)$/;
+      let order = text.match(order_regex);
 
-    if (order) {
-      let range_regex = /(-?\d+)-(-?\d+)$/;
-      let range = text.match(range_regex);
+      if (order) {
+        let range_regex = /(-?\d+)-(-?\d+)$/;
+        let range = text.match(range_regex);
 
-      if (range) {
-        let result = this.orderRange(range);
-        this.send(to, `${from}: ${result}`);
+        if (range) {
+          let result = this.orderRange(range);
+          this.send(to, `${from}: ${result}`);
+          resolve();
+        }
+        else {
+          let result = this.orderList(order[1]);
+          this.send(to, `${from}: ${result}`);
+          resolve();
+        }
       }
-      else {
-        let result = this.orderList(order[1]);
-        this.send(to, `${from}: ${result}`);
-      }
-    }
+
+      resolve();
+    });
   }
 
   orderRange(order) {

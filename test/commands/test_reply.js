@@ -6,52 +6,63 @@ let client = new Client();
 let reply = new Reply(client);
 
 describe('Reply', () => {
-  describe("> ping", () => {
+  afterEach(() => {
+    client.resetLog();
+  });
+
+  describe('> ping', () => {
     it('should respond', () => {
-      reply.message('Mocha', '#test', 'ping', null);
-      assert.equal('pong', client.lastMessage);
+      return reply.message('Mocha', '#test', 'ping').then(() => {
+        assert.equal('pong', client.lastMessage);
+      });
     });
 
-    it ('should respond in correct channel', () => {
-      reply.message('Mocha', '#test', 'ping', null);
-      assert.equal('#test', client.lastTarget);
+    it('should respond in correct channel', () => {
+      return reply.message('Mocha', '#test', 'ping').then(() => {
+        assert.equal('#test', client.lastTarget);
+      });
     });
   });
 
-  describe("> bot respond", () => {
+  describe('> bot respond', () => {
     it('should respond', () => {
-      reply.message('Mocha', '#test', 'bot respond', null);
-      assert.equal("I'm a pretty stupid bot.", client.lastMessage);
+      return reply.message('Mocha', '#test', 'bot respond').then(() => {
+        assert.equal("I'm a pretty stupid bot.", client.lastMessage);
+      });
     });
 
-    it ('should respond in correct channel', () => {
-      reply.message('Mocha', '#test', 'bot respond', null);
-      assert.equal('#test', client.lastTarget);
+    it('should respond in correct channel', () => {
+      return reply.message('Mocha', '#test', 'bot respond').then(() => {
+        assert.equal('#test', client.lastTarget);
+      });
     });
   });
 
-  describe("> bot be nice", () => {
+  describe('> bot be nice', () => {
     it('should respond', () => {
-      reply.message('Mocha', '#test', 'bot be nice', null)
-      assert.equal("sorry :(", client.lastMessage);
+      return reply.message('Mocha', '#test', 'bot be nice').then(() => {
+        assert.equal('sorry :(', client.lastMessage);
+      });
     });
 
-    it ('should respond in correct channel', () => {
-      reply.message('Mocha', '#test', 'bot be nice', null);
-      assert.equal('#test', client.lastTarget);
+    it('should respond in correct channel', () => {
+      return reply.message('Mocha', '#test', 'bot be nice').then(() => {
+        assert.equal('#test', client.lastTarget);
+      });
     });
   });
 
-  describe("> gj bot", () => {
+  describe('> gj bot', () => {
     it('should respond', () => {
-      reply.message('Mocha', '#test', 'gj bot', null);
-      assert.equal('thx', client.lastMessage);
+      return reply.message('Mocha', '#test', 'gj bot').then(() => {
+        assert.equal('thx', client.lastMessage);
+      });
     });
 
-
-    it ('should respond in correct channel', () => {
-      reply.message('Mocha', '#test', 'gj bot', null);
-      assert.equal('#test', client.lastTarget);
+    it('should respond in correct channel', () => {
+      return reply.message('Mocha', '#test', 'gj bot').then(() => {
+        assert.equal('#test', client.lastTarget);
+      });
     });
   });
 });

@@ -7,15 +7,24 @@ let log = debug('Twitter');
 
 export class Twitter extends Command {
   message(from, to, text, message) {
-    // Respond to Twitter Links
-    let tweet_regex = /.*(twitter\.com\/)([\w]+)(\/status\/)(\d*).*/;
-    let match = text.match(tweet_regex);
+    return new Promise((resolve, reject) => {
+      // Respond to Twitter Links
+      let tweet_regex = /.*(twitter\.com\/)([\w]+)(\/status\/)(\d*).*/;
+      let match = text.match(tweet_regex);
 
-    if (match) {
-      this.info(match[2], match[4]).then(tweet => {
-        this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
-      }, (error) => this.send(to, 'Sorry, coud not find tweet info.'));
-    }
+      if (match) {
+        this.info(match[2], match[4]).then(tweet => {
+          this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
+          resolve();
+        }, (error) => {
+          this.send(to, 'Sorry, could not find tweet info.');
+          log(error);
+          reject();
+        });
+      }
+
+      resolve();
+    });
   }
 
   info(username, tweet_id) {

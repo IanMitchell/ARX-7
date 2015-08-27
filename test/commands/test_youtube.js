@@ -7,29 +7,33 @@ let client = new Client();
 let youtube = new Youtube(client);
 
 describe('Youtube', () => {
-  describe('Video Search', () => {
-    it('should respond in correct channel', (done) => {
-      client.setCallback(() => {
-        console.log(client.lastTarget);
-        assert.equal('#test', client.lastTarget);
-        if (client.lastTarget === '#test') {
-          done();
-        } else {
-          throw new error();
-        }
-          client.resetLog();
+  afterEach(() => {
+    client.resetLog();
+  });
 
-      });
-      return youtube.message('Mocha', '#test2', '.yt End Credits', null);
-    });
-
+  describe('Triggers', () => {
     it('should respond to triggers');
 
     it('should activate in beginning of phrase');
 
     it('should not activate in middle of phrase');
+  });
+
+  describe('General Usage', () => {
+    it('should respond in correct channel', () => {
+      return youtube.message('Mocha', '#test2', '.yt End Credits').then(() => {
+        assert.equal('#test', client.lastTarget);
+        client.resetLog();
+      });
+    });
 
     it('should include [YouTube]');
+  });
+
+  describe('Video Search', () => {
+
+
+
   });
 
   describe('Video Lookup', () => {

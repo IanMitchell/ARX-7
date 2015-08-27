@@ -5,13 +5,18 @@ let log = debug('Choose');
 
 export class Choose extends Command {
   message(from, to, text, message) {
-    let regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/
-    let choose = text.match(regex);
+    return new Promise((resolve, reject) => {
+      let regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/
+      let choose = text.match(regex);
 
-    if (choose) {
-      let result = this.choose(choose[1]);
-      this.send(to, `${from}: ${result}`);
-    }
+      if (choose) {
+        let result = this.choose(choose[1]);
+        this.send(to, `${from}: ${result}`);
+        resolve();
+      }
+
+      resolve();
+    });
   }
 
   choose(input) {
