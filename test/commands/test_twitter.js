@@ -8,9 +8,13 @@ let twitter = new Twitter(client);
 let link = 'https://twitter.com/IanMitchel1/status/636939838512500736';
 
 describe('Twitter', () => {
+  afterEach(() => {
+    client.resetLog();
+  });
+
   describe('Triggers', () => {
     it('should activate anywhere in phrase', () => {
-      twitter.message('Mocha', '#test', `Tweet ${link}!`).then(() => {
+      return twitter.message('Mocha', '#test', `Tweet ${link}!`).then(() => {
         assert(client.lastMessage);
       });
     });
@@ -18,13 +22,13 @@ describe('Twitter', () => {
 
   describe('General Usage', () => {
     it('should respond in correct channel', () => {
-      twitter.message('Mocha', '#test', link).then(() => {
+      return twitter.message('Mocha', '#test', link).then(() => {
         assert.equal('#test', client.lastTarget);
       });
     });
 
     it('should include [Twitter]', () => {
-      twitter.message('Mocha', '#test', link).then(() => {
+      return twitter.message('Mocha', '#test', link).then(() => {
         assert(client.lastMessage.startsWith('[Twitter]: '));
       });
     });
@@ -32,7 +36,7 @@ describe('Twitter', () => {
 
   describe('Tweet Lookup', () => {
     it('should include username and Twitter handle', () => {
-      twitter.message('Mocha', '#test', link).then(() => {
+      return twitter.message('Mocha', '#test', link).then(() => {
         let tweet = client.lastMessage.toLowerCase();
         let expected = ' | By Ian Mitchell (@IanMitchel1)'.toLowerCase();
         assert(tweet.includes(expected));
@@ -40,9 +44,18 @@ describe('Twitter', () => {
     });
 
     // TODO: Test multiple links (use Jukey Tweet)
-    it('should expand links');
+    it('should expand links', () => {
+      return twitter.message('Mocha', '#test', link).then(() => {
+        assert(client.lastMessage.includes('http://bing.com'));
+      });
+    });
 
     // TODO: Translate &gt; to >
-    it('should handle special characters');
+    it('should handle special characters', () => {
+      return twitter.message('Mocha', '#test', link).then(() => {
+        let tweet = client.lastMessage.toLowerCase();
+        assert((tweet.includes('<') && tweet.includes('>')));
+      });
+    });
   });
 });

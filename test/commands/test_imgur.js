@@ -18,19 +18,19 @@ describe('Imgur', () => {
 
   describe('Triggers', () => {
     it('should activate anywhere in phrase with Gallery URL 1', () => {
-      imgur.message('Mocha', '#test0', `ARX-7 ${link}!`).then(() => {
+      return imgur.message('Mocha', '#test0', `ARX-7 ${link}!`).then(() => {
         assert(client.lastMessage);
       });
     });
 
     it('should activate anywhere in phrase with Standard URL', () => {
-      imgur.message('Mocha', '#test', `ARX-7 ${standard}!`).then(() => {
+      return imgur.message('Mocha', '#test', `ARX-7 ${standard}!`).then(() => {
         assert(client.lastMessage);
       });
     });
 
     it('should activate anywhere in phrase with Direct URL', () => {
-      imgur.message('Mocha', '#test4', `ARX-7 ${direct}!`).then(() => {
+      return imgur.message('Mocha', '#test4', `ARX-7 ${direct}!`).then(() => {
         assert(client.lastMessage);
       });
     });
@@ -38,13 +38,13 @@ describe('Imgur', () => {
 
   describe('General Usage', () => {
     it('should respond in correct channel', () => {
-      imgur.message('Mocha', '#test', link).then(() => {
+      return imgur.message('Mocha', '#test', link).then(() => {
         assert.equal('#test', client.lastTarget);
       });
     });
 
     it('should include [Imgur]', () => {
-      imgur.message('Mocha', '#test', link).then(() => {
+      return imgur.message('Mocha', '#test', link).then(() => {
         assert(client.lastMessage.startsWith('[Imgur] '));
       });
     });
@@ -54,7 +54,7 @@ describe('Imgur', () => {
     // TODO: Test no title
 
     it('should display correct title', () => {
-      imgur.message('Mocha', '#test', link).then(() => {
+      return imgur.message('Mocha', '#test', link).then(() => {
         assert(client.lastMessage.includes(title));
       });
     });

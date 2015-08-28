@@ -24,7 +24,7 @@ export class Twitter extends Command {
       });
     }
 
-    return new Promise((resolve, reject) => reject());
+    return new Promise((resolve, reject) => resolve());
   }
 
   info(username, tweet_id) {
