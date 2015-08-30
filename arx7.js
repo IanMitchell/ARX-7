@@ -7,6 +7,7 @@ import {Imgur} from './commands/imgur.js';
 import {Order} from './commands/order.js';
 import {Twitter} from './commands/twitter.js';
 import {Youtube} from './commands/youtube.js';
+import {Time} from './commands/time.js';
 
 let channels = Object.keys(config.channels);
 
@@ -23,7 +24,8 @@ let commands = [
   new Imgur(client),
   new Order(client),
   new Twitter(client),
-  new Youtube(client)
+  new Youtube(client),
+  new Time(client)
 ]
 
 // On Server Connect

@@ -11,7 +11,8 @@
     "babel": "~5.8.0",
     "irc": "~0.3.0",
     "request": "~2.60.0",
-    "twitter-node-client": "~0.0.6"
+    "twitter-node-client": "~0.0.6",
+    "timezone": "~0.0.41"
   },
   "devDependencies": {
     "eslint": "~1.1.0"
