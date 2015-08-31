@@ -34,7 +34,7 @@ export class Youtube extends Command {
           this.send(to, `[YouTube] ${video.title} | Views: ${video.views}`);
           resolve();
         }, error => {
-          this.send(to, 'Sorry, coud not find YouTube info.');
+          this.send(to, 'Sorry, could not find YouTube info.');
           reject(error);
         });
       });
