@@ -13,6 +13,7 @@ export class Imgur extends Command {
 
     if (match) {
       return new Promise((resolve, reject) => {
+        log(`Retrieving information for ${match[3]}`);
         this.info(match[3]).then(imgur => {
           this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
           resolve();
@@ -28,8 +29,6 @@ export class Imgur extends Command {
   }
 
   info(id) {
-    log(`Retrieving Imgur information for ${id}`);
-
     let options = {
       url: `https://api.imgur.com/3/image/${id}`,
       headers: {

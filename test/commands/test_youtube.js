@@ -25,7 +25,7 @@ describe('YouTube', () => {
       });
     });
 
-    it("shouldn't respond to .youtub trigger", () => {
+    it('should not respond to .youtub trigger', () => {
       return youtube.message('Mocha', '#test', '.youtub FMP!').then(() => {
         assert.equal(null, client.lastMessage);
       });

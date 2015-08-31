@@ -15,11 +15,13 @@ export class Order extends Command {
         let range = text.match(range_regex);
 
         if (range) {
+          log(`${from} on: ${range}`);
           let result = this.orderRange(range);
           this.send(to, `${from}: ${result}`);
           resolve();
         }
         else {
+          log(`${from} on: ${order[1]}`);
           let result = this.orderList(order[1]);
           this.send(to, `${from}: ${result}`);
           resolve();
@@ -31,7 +33,6 @@ export class Order extends Command {
   }
 
   orderRange(order) {
-    log(`Ordering Range: ${order}`);
     let min = Math.min(parseInt(order[1]), parseInt(order[2])),
         max = Math.max(parseInt(order[1]), parseInt(order[2]));
 
@@ -64,7 +65,6 @@ export class Order extends Command {
   }
 
   orderList(text) {
-    log(`Ordering List: ${text}`);
     let choices = this.getChoices(text, ',');
 
     if (choices) {

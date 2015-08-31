@@ -6,13 +6,13 @@ let log = debug('Choose');
 export class Choose extends Command {
   message(from, to, text, message) {
     return new Promise((resolve, reject) => {
-      let regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/
+      let regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/;
       let choose = text.match(regex);
 
       if (choose) {
+        log(`${from} on: ${choose[1]}`);
         let result = this.choose(choose[1]);
         this.send(to, `${from}: ${result}`);
-        resolve();
       }
 
       resolve();
@@ -20,8 +20,6 @@ export class Choose extends Command {
   }
 
   choose(input) {
-    log(`Choose command on: ${input}`);
-
     let range_regex = /^(-?\d+(\.\d+)?)-(-?\d+(\.\d+)?)$/;
     let range = input.match(range_regex);
 
@@ -81,6 +79,6 @@ export class Choose extends Command {
       return 0;
     }
 
-    return number.toString().split(".")[1].length || 0;
+    return number.toString().split('.')[1].length || 0;
   }
 }

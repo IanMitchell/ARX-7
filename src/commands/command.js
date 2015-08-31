@@ -27,7 +27,7 @@ export class Command {
 
   send(to, text) {
     if (this.checkBlacklist(text)) {
-      this.client.say(to, "Nope.");
+      this.client.say(to, 'Nope.');
     } else {
       this.client.say(to, text);
     }
@@ -38,7 +38,7 @@ export class Command {
 
     this.blacklist.forEach(k => {
       if (message.toLowerCase().includes(k.toLowerCase())) {
-        log(`Choose Blacklist triggered: ${k}`);
+        log(`Blacklist triggered on "${k}"`);
         triggered = true;
       }
     });

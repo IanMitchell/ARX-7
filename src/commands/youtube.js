@@ -11,6 +11,7 @@ export class Youtube extends Command {
     let search = text.match(/^\.(yt\s|youtube\s)(.*)$/, '$2');
     if (search) {
       return new Promise((resolve, reject) => {
+        log(`${from} on: ${search[2]}`);
         this.search(search[2]).then(video => {
           this.send(to, `[YouTube] ${video.title} | ${video.url}`);
           resolve();
@@ -27,6 +28,7 @@ export class Youtube extends Command {
     let match = text.match(info_regex);
     if (match) {
       return new Promise((resolve, reject) => {
+        log(`${from} on: ${match[2]}`);
         this.info(match[2]).then(video => {
           this.send(to, `[YouTube] ${video.title} | Views: ${video.views}`);
           resolve();
@@ -51,8 +53,6 @@ export class Youtube extends Command {
               `&fields=items(id,snippet(channelId,title),statistics)` +
               `&part=snippet,statistics`
 
-    log(`Retrieving YouTube information for ${id}`);
-
     return new Promise((resolve, reject) => {
       request(uri, (error, response, body) => {
         if (!error && response.statusCode == 200) {
@@ -75,8 +75,6 @@ export class Youtube extends Command {
   search(title) {
     let uri = `https://www.googleapis.com/youtube/v3/search?part=snippet` +
               `&q=${encodeURIComponent(title.trim())}&key=${config.keys.youtube}`;
-
-    log(`Searching YouTube for ${title}`);
 
     return new Promise((resolve, reject) => {
       request(uri, (error, response, body) => {

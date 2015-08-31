@@ -13,6 +13,7 @@ export class Twitter extends Command {
 
     if (match) {
       return new Promise((resolve, reject) => {
+        log(`${from} on: ${match[2]}/${match[4]}`);
         this.info(match[2], match[4]).then(tweet => {
           this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
           resolve();
@@ -28,8 +29,6 @@ export class Twitter extends Command {
   }
 
   info(username, tweet_id) {
-    log(`Retrieving Twitter information for ${username}/${tweet_id}`);
-
     let twitter = new TwitterClient.Twitter({
       "consumerKey": config.keys.twitter_consumer,
       "consumerSecret": config.keys.twitter_consumer_secret,

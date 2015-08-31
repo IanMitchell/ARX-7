@@ -41,12 +41,12 @@ describe('Choose', () => {
       });
     });
 
-    it("shouldn't respond to .choo trigger", () => {
+    it('should not respond to .choo trigger', () => {
       return choose.message('Mocha', '#test', '.choo one, two').then(() => {
         assert.equal(null, client.lastMessage);
       });
     });
-        
+
     it('should activate in beginning of phrase', () => {
       return choose.message('Mocha', '#test', '.c this, that').then(() => {
         assert.notEqual(null, client.lastMessage);
@@ -55,6 +55,18 @@ describe('Choose', () => {
 
     it('should not activate in middle of phrase', () => {
       return choose.message('Mocha', '#test', 'test .c this, that').then(() => {
+        assert.equal(null, client.lastMessage);
+      });
+    });
+
+    it('should not activate with an empty list', () => {
+      return choose.message('Mocha', '#test', '.c').then(() => {
+        assert.equal(null, client.lastMessage);
+      });
+    });
+
+    it('should not activate with a list of commas', () => {
+      return choose.message('Mocha', '#test', '.c ,, , ,,').then(() => {
         assert.equal(null, client.lastMessage);
       });
     });
