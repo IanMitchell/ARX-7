@@ -1,6 +1,9 @@
+import debug from 'debug';
 import * as TwitterClient from 'twitter-node-client';
-import config from './../config';
+import config from './../../config';
 import {Command} from './command.js';
+
+let log = debug('Twitter');
 
 export class Twitter extends Command {
   message(from, to, text, message) {
@@ -9,15 +12,23 @@ export class Twitter extends Command {
     let match = text.match(tweet_regex);
 
     if (match) {
-      this.info(match[2], match[4]).then(tweet => {
-        this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
-      }, (error) => this.send(to, 'Sorry, coud not find tweet info.'));
+      return new Promise((resolve, reject) => {
+        log(`${from} on: ${match[2]}/${match[4]}`);
+        this.info(match[2], match[4]).then(tweet => {
+          this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
+          resolve();
+        }, error => {
+          this.send(to, 'Sorry, could not find tweet info.');
+          log(error);
+          reject();
+        });
+      });
     }
+
+    return new Promise((resolve, reject) => resolve());
   }
 
   info(username, tweet_id) {
-    console.log(`Retrieving Twitter information for ${username}/${tweet_id}`);
-
     let twitter = new TwitterClient.Twitter({
       "consumerKey": config.keys.twitter_consumer,
       "consumerSecret": config.keys.twitter_consumer_secret,
@@ -27,11 +38,11 @@ export class Twitter extends Command {
 
     return new Promise((resolve, reject) => {
       twitter.getTweet({id: tweet_id},
-        (error) => {
-          console.log(`ERROR: Twitter Info - ${error}`);
+        error => {
+          log(`ERROR: Twitter Info - ${error}`);
           reject();
         },
-        (success) => {
+        success => {
           let data = JSON.parse(success);
 
           resolve({

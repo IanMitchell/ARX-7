@@ -6,3 +6,6 @@ config.json
 
 # Log files
 npm-debug.log
+
+# Build fles
+build/
