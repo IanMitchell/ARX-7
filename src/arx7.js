@@ -59,7 +59,11 @@ client.addListener('message', (from, to, text, message) => {
       // Check for plugin presence
       if (config.channels[channels[i]].indexOf(plugin) > -1) {
         c.message(from, to, text, message);
+<<<<<<< HEAD:src/arx7.js
       }
+=======
+      }
+>>>>>>> origin/testing:src/arx7.js
     }
   });
 });
