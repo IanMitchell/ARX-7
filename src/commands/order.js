@@ -1,29 +1,38 @@
+import debug from 'debug';
 import {Command} from './command.js';
 
+let log = debug('Order');
 const ORDER_LIMIT = 20;
 
 export class Order extends Command {
   message(from, to, text, message) {
-    let order_regex = /^[.!]o(?:rder)? (.+)$/;
-    let order = text.match(order_regex);
+    return new Promise((resolve, reject) => {
+      let order_regex = /^[.!]o(?:rder)? (.+)$/;
+      let order = text.match(order_regex);
 
-    if (order) {
-      let range_regex = /(-?\d+)-(-?\d+)$/;
-      let range = text.match(range_regex);
+      if (order) {
+        let range_regex = /(-?\d+)-(-?\d+)$/;
+        let range = text.match(range_regex);
 
-      if (range) {
-        let result = this.orderRange(range);
-        this.send(to, `${from}: ${result}`);
+        if (range) {
+          log(`${from} on: ${range}`);
+          let result = this.orderRange(range);
+          this.send(to, `${from}: ${result}`);
+          resolve();
+        }
+        else {
+          log(`${from} on: ${order[1]}`);
+          let result = this.orderList(order[1]);
+          this.send(to, `${from}: ${result}`);
+          resolve();
+        }
       }
-      else {
-        let result = this.orderList(order[1]);
-        this.send(to, `${from}: ${result}`);
-      }
-    }
+
+      resolve();
+    });
   }
 
   orderRange(order) {
-    console.log(`Ordering Range: ${order}`);
     let min = Math.min(parseInt(order[1]), parseInt(order[2])),
         max = Math.max(parseInt(order[1]), parseInt(order[2]));
 
@@ -56,7 +65,6 @@ export class Order extends Command {
   }
 
   orderList(text) {
-    console.log(`Ordering List: ${text}`);
     let choices = this.getChoices(text, ',');
 
     if (choices) {
