@@ -6,6 +6,7 @@ let client = new Client();
 let youtube = new Youtube(client);
 
 let link = 'https://www.youtube.com/watch?v=JmwVZ-p9XOk';
+let malformed = 'youtube.com/watch?v=8WZr6f…';
 
 describe('YouTube', () => {
   afterEach(() => {
@@ -47,6 +48,13 @@ describe('YouTube', () => {
       return youtube.message('Mocha', '#test', `Cool ${link} vid`).then(() => {
         assert(client.lastMessage);
       });
+    });
+
+    it('should log and handle malformed links', () => {
+      return assert.throws(
+        youtube.message('Mocha', '#test', `${malformed}`).then(() => {
+          assert.equal('Sorry, could not find YouTube info.', client.lastMessage);
+        }), Error);
     });
   });
 

@@ -14,13 +14,13 @@ export class Twitter extends Command {
     if (match) {
       return new Promise((resolve, reject) => {
         log(`${from} on: ${match[2]}/${match[4]}`);
+
         this.info(match[2], match[4]).then(tweet => {
           this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
           resolve();
         }, error => {
-          this.send(to, 'Sorry, could not find tweet info.');
-          log(error);
-          reject();
+          this.send(to, 'Sorry, could not find Twitter info.');
+          reject(error);
         });
       });
     }
@@ -39,17 +39,23 @@ export class Twitter extends Command {
     return new Promise((resolve, reject) => {
       twitter.getTweet({id: tweet_id},
         error => {
-          log(`ERROR: Twitter Info - ${error}`);
-          reject();
+          log(`Twitter Request Error: ${error}`);
+          reject(Error(`Twitter Request Error: ${error}`));
         },
         success => {
-          let data = JSON.parse(success);
+          try {
+            let data = JSON.parse(success);
 
-          resolve({
-            // Remove linebreaks
-            text: data.text.replace(/\r?\n|\r/g, ' '),
-            username: data.user.name
-          });
+            resolve({
+              // Remove linebreaks
+              text: data.text.replace(/\r?\n|\r/g, ' '),
+              username: data.user.name
+            });
+          }
+          catch (e) {
+            log(`Twitter Response Error: ${e}`);
+            reject(Error(`Twitter Response Error: ${e}`));
+          }
         }
       );
     });

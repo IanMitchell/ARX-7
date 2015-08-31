@@ -14,18 +14,18 @@ export class Imgur extends Command {
     if (match) {
       return new Promise((resolve, reject) => {
         log(`Retrieving information for ${match[3]}`);
+
         this.info(match[3]).then(imgur => {
           this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
           resolve();
         }, error => {
-          this.send(to, 'Sorry, coud not find imgur info.');
-          log(error);
-          reject();
+          this.send(to, 'Sorry, could not find Imgur info.');
+          reject(error);
         });
       });
     }
 
-    return new Promise((resolve, reject) => reject());
+    return new Promise((resolve, reject) => resolve());
   }
 
   info(id) {
@@ -34,22 +34,28 @@ export class Imgur extends Command {
       headers: {
         'Authorization': `Client-ID ${config.keys.imgur_client}`
       }
-    }
+    };
 
     return new Promise((resolve, reject) => {
       request(options, (error, response, body) => {
         if (!error && response.statusCode == 200) {
-          let data = JSON.parse(body);
-          let imgur = {
-            title: data['data']['title'] || 'Untitled',
-            views: this.addCommas(data['data']['views']),
-          }
+          try {
+            let data = JSON.parse(body);
+            let imgur = {
+              title: data['data']['title'] || 'Untitled',
+              views: this.addCommas(data['data']['views'])
+            };
 
-          resolve(imgur);
+            resolve(imgur);
+          }
+          catch(e) {
+            log(`Imgur Response Error: ${e}`);
+            reject(Error(`Imgur Response Error: ${e}`));
+          }
         }
         else {
-          log(`ERROR: Imgur Info - ${error}`);
-          reject();
+          log(`Imgur Request Error: ${error}`);
+          reject(Error(`Imgur Request Error: ${error}`));
         }
       });
     });

@@ -18,6 +18,13 @@ describe('Twitter', () => {
         assert(client.lastMessage);
       });
     });
+
+    it('should log and handle malformed links', () => {
+      return assert.throws(
+        twitter.message('Mocha', '#test', `${link}AEIOU`).then(() => {
+          assert.equal('Sorry, could not find Twitter info.', client.lastMessage);
+        }), Error);
+    });
   });
 
   describe('General Usage', () => {

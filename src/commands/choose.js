@@ -11,6 +11,7 @@ export class Choose extends Command {
 
       if (choose) {
         log(`${from} on: ${choose[1]}`);
+        
         let result = this.choose(choose[1]);
         this.send(to, `${from}: ${result}`);
       }
