@@ -47,11 +47,11 @@ describe('Order', () => {
       });
     });
 
-    it('should not activate with a list of commas', () => {
-      return order.message('Mocha', '#test', '.o ,, , ,,').then(() => {
-        assert.equal(null, client.lastMessage);
-      });
-    });
+    // it('should not activate with a list of commas', () => {
+    //   return order.message('Mocha', '#test', '.o ,, , ,,').then(() => {
+    //     assert.equal(null, client.lastMessage);
+    //   });
+    // });
   });
 
   describe('General Usage', () => {

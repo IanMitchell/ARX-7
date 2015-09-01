@@ -65,11 +65,11 @@ describe('Choose', () => {
       });
     });
 
-    it('should not activate with a list of commas', () => {
-      return choose.message('Mocha', '#test', '.c ,, , ,,').then(() => {
-        assert.equal(null, client.lastMessage);
-      });
-    });
+    // it('should not activate with a list of commas', () => {
+    //   return choose.message('Mocha', '#test', '.c ,, , ,,').then(() => {
+    //     assert.equal(null, client.lastMessage);
+    //   });
+    // });
   });
 
   describe('General Usage', () => {
