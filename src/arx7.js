@@ -69,14 +69,15 @@ client.addListener('join', (channel, nick, message) => {
   }
 });
 
-// Catch errors, attempt to rejoin banned channels
 client.addListener('error', message => {
+  // Attempt to rejoin banned channels
   if (message.command == 'err_bannedfromchan') {
     log(`Banned from ${message.args[1]}. Rejoining in in 3 minutes`);
 
     // `()=>` ensures there is a delay; otherwise it continuously fires
     setTimeout(() => client.join(message.args[1]), 1000 * 60 * 3);
   }
+  // Attempt to rejoin +k channels correctly
   else if (message.command == 'err_badchannelkey') {
     // Prevent infinite rejoin attempts
     if (droppedChannels.includes(message.args[1])) {
@@ -95,6 +96,7 @@ client.addListener('error', message => {
       log(`${message.args[1]} is +k. No key found. Skipping channel`);
     }
   }
+  // Log other errors
   else {
     log(`ERROR: ${message.command}`);
   }
