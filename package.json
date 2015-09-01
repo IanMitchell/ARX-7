@@ -7,16 +7,18 @@
   "main": "app.js",
   "scripts": {
     "start": "DEBUG=* node app.js",
+    "build": "babel src --out-dir build",
+    "arx7": "DEBUG=* node build/arx7.js",
     "test": "DEBUG=-* mocha --recursive --compilers js:babel/register"
   },
   "dependencies": {
-    "babel": "~5.8.0",
     "debug": "~2.2.0",
     "irc": "~0.3.0",
     "request": "~2.60.0",
     "twitter-node-client": "~0.0.6"
   },
   "devDependencies": {
+    "babel": "~5.8.0",
     "eslint": "~1.1.0",
     "mocha": "~2.2.5"
   }
