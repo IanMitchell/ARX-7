@@ -11,6 +11,7 @@ import {Youtube} from './commands/youtube.js';
 
 let log = debug('ARX-7');
 let channels = config.channels.map(e => e.name);
+let droppedChannels = [];
 
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
@@ -75,6 +76,24 @@ client.addListener('error', message => {
 
     // `()=>` ensures there is a delay; otherwise it continuously fires
     setTimeout(() => client.join(message.args[1]), 1000 * 60 * 3);
+  }
+  else if (message.command == 'err_badchannelkey') {
+    // Prevent infinite rejoin attempts
+    if (droppedChannels.includes(message.args[1])) {
+      log(`Incorrect password for ${message.args[1]}.`);
+      return;
+    }
+
+    let key = config.channels[channels.indexOf(message.args[1])].key;
+
+    if (key != null) {
+      log(`${message.args[1]} is +k. Rejoining with password.`);
+      client.join(`${message.args[1]} ${key}`);
+      droppedChannels.push(message.args[1]);
+    }
+    else {
+      log(`${message.args[1]} is +k. No key found. Skipping channel`);
+    }
   }
   else {
     log(`ERROR: ${message.command}`);
