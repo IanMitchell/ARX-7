@@ -3,14 +3,14 @@ import irc from 'irc';
 import config from '../config';
 
 import {Choose} from './commands/choose.js';
-import {Reply} from './commands/reply.js';
 import {Imgur} from './commands/imgur.js';
 import {Order} from './commands/order.js';
+import {Reply} from './commands/reply.js';
 import {Twitter} from './commands/twitter.js';
 import {Youtube} from './commands/youtube.js';
 
 let log = debug('ARX-7');
-let channels = Object.keys(config.channels);
+let channels = config.channels.map(e => e.name);
 
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
@@ -21,9 +21,9 @@ let client = new irc.Client(config.server, config.name, {
 // Command List Setup
 let commands = [
   new Choose(client),
-  new Reply(client),
   new Imgur(client),
   new Order(client),
+  new Reply(client),
   new Twitter(client),
   new Youtube(client)
 ];
@@ -43,25 +43,22 @@ client.addListener('ctcp-version', (from, to, message) => {
 
 // Listen for channel / personal Messages
 client.addListener('message', (from, to, text, message) => {
-  commands.forEach(c => {
-    let i = -1;
-    let plugin = c.constructor.name.toLowerCase();
+  // Channels in Config
+  if (channels.includes(to)) {
+    commands.forEach(c => {
+      let plugin = c.constructor.name.toLowerCase();
 
-    // Search config for non-lowercase values
-    channels.some((element, index) => {
-      if (element.toLowerCase() === to) {
-        i = index;
-        return true;
-      }
-    });
-
-    if (i > -1) {
-      // Check for plugin presence
-      if (config.channels[channels[i]].indexOf(plugin) > -1) {
+      if (config.channels[channels.indexOf(to)].plugins.includes(plugin)) {
         c.message(from, to, text, message);
       }
-    }
-  });
+    });
+  }
+
+  // Queries
+  if (to === config.name) {
+    log(`Query from ${from}: ${text}`);
+    client.say(from, "I'm a bot! Contact Desch, Jukey, or Aoi-chan for help");
+  }
 });
 
 // Praise the Creator

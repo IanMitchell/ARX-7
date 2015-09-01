@@ -25,51 +25,26 @@ A dumb IRC bot that wishes it had a Lambda Drive.
 
 ## Setup
 
+### Production Environment
+
 ```
 $ npm install
-$ npm app.js
+$ npm run build
+$ npm run arx7
+```
+
+### Dev Environment
+
+```
+$ npm install
+$ npm start
 ```
 
 Docker instructions further down.
 
-You'll need to create a config file that looks like the following:
+## Configuration
 
-`config.json` file:
-
-```
-{
-  "name": "ARX-7",
-  "password": "password",
-  "server": "irc.rizon.net",
-  "channels": {
-    "#channel": [
-      "choose",
-      "debug",
-      "order",
-      "twitter",
-      "youtube"
-    ],
-    "#channel2": [
-      "choose",
-      "debug",
-      "imgur",
-      "order",
-      "twitter",
-      "youtube"
-    ]
-  },
-  "keys": {
-    "youtube": "key",
-    "twitter_consumer": "key",
-    "twitter_consumer_secret": "key",
-    "twitter_access_token": "key",
-    "twitter_access_token_secret": "key",
-    "imgur_client": "key",
-    "imgur_secret": "key"
-  }
-}
-
-```
+You'll need to create a config file. Use the `.config.json` sample file, configuring as you wish. When you're finished, rename it to `config.json`.
 
 ### Using Docker
 
