@@ -21,6 +21,7 @@ let channels = config.channels.map(e => {
 
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
+  userName: config.userName || "chidori",
   channels: channels
 });
 
