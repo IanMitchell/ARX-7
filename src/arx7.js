@@ -10,7 +10,7 @@ import {Twitter} from './commands/twitter.js';
 import {Youtube} from './commands/youtube.js';
 
 let log = debug('ARX-7');
-let channels = config.channels.map(e => e.name);
+let channels = config.channels.map(e => e.name.toLowerCase());
 let droppedChannels = [];
 
 // Initialize the Bot
