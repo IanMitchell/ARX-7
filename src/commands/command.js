@@ -6,20 +6,18 @@ export class Command {
   constructor(c) {
     this.client = c;
 
+    this.wholeWordBlacklist = [
+      "xd"
+    ];
+
     this.blacklist = [
-      ' XD ',
-      'attention attention',
-      'scion',
-      'touhou',
-      'erep',
-      'esim',
-      'republik',
-      'cereal ceral',
-      '!sw',
-      '!loli',
-      'tinyurl',
-      '4294967295',
-      '4294967294'
+      ".ly",
+      "!loli",
+      "!sw",
+      "!fish",
+      ".lewd",
+      "cooldudeirc",
+      "valbot"
     ];
   }
 
@@ -27,22 +25,29 @@ export class Command {
 
   send(to, text) {
     if (this.checkBlacklist(text)) {
-      this.client.say(to, 'Nope.');
+      this.client.say(to, 'Blacklist triggered.');
     } else {
       this.client.say(to, text);
     }
   }
 
   checkBlacklist(message) {
-    let triggered = false;
-
-    this.blacklist.forEach(k => {
-      if (message.toLowerCase().includes(k.toLowerCase())) {
-        log(`Blacklist triggered on "${k}"`);
-        triggered = true;
+    for (let badword of this.blacklist) {
+      if (message.toLowerCase().includes(badword)) {
+        log(`Blacklist triggered on "${badword}"`);
+        return true;
       }
-    });
+    }
 
-    return triggered;
+    for (let badword of this.wholeWordBlacklist) {
+      for (let word of message.split(/\s+/)) {
+        if (word.toLowerCase() === badword) {
+          log(`Blacklist triggered on "${badword}"`);
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }
