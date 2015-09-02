@@ -11,8 +11,13 @@ import {Twitter} from './commands/twitter.js';
 import {Youtube} from './commands/youtube.js';
 
 let log = debug('ARX-7');
-let channels = config.channels.map(e => e.name.toLowerCase());
 let droppedChannels = [];
+let channels = config.channels.map(e => {
+  if (!e.name.startsWith('#')) {
+    e.name = `#${e.name}`;
+  }
+  return e.name.toLowerCase();
+});
 
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
