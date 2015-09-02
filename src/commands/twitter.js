@@ -1,8 +1,8 @@
 import debug from 'debug';
+import he from 'he';
 import * as TwitterClient from 'twitter-node-client';
 import config from './../../config';
 import {Command} from './command.js';
-import he from 'he';
 
 let log = debug('Twitter');
 
