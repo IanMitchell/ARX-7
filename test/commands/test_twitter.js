@@ -50,11 +50,11 @@ describe('Twitter', () => {
       });
     });
 
-    // it('should handle special characters', () => {
-    //   return twitter.message('Mocha', '#test', link).then(() => {
-    //     let tweet = client.lastMessage.toLowerCase();
-    //     assert((tweet.includes('<') && tweet.includes('>')));
-    //   });
-    // });
+    it('should handle special characters', () => {
+      return twitter.message('Mocha', '#test', link).then(() => {
+        let tweet = client.lastMessage.toLowerCase();
+        assert((tweet.includes('<') && tweet.includes('>')));
+      });
+    });
   });
 });

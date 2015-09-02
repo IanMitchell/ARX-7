@@ -1,4 +1,5 @@
 import debug from 'debug';
+import he from 'he';
 import * as TwitterClient from 'twitter-node-client';
 import config from './../../config';
 import {Command} from './command.js';
@@ -48,7 +49,7 @@ export class Twitter extends Command {
 
             resolve({
               // Remove linebreaks
-              text: data.text.replace(/\r?\n|\r/g, ' '),
+              text: he.decode(data.text.replace(/\r?\n|\r/g, ' ')),
               username: data.user.name
             });
           }
