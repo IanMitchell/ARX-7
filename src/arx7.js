@@ -15,8 +15,7 @@ let droppedChannels = [];
 
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
-  channels: channels,
-  autoRejoin: true
+  channels: channels
 });
 
 // Command List Setup
@@ -56,7 +55,7 @@ client.addListener('message', (from, to, text, message) => {
   }
 
   // Queries
-  if (to === config.name) {
+  if (to === client.nick) {
     log(`Query from ${from}: ${text}`);
     client.say(from, "I'm a bot! Contact Desch, Jukey, or Aoi-chan for help");
   }
@@ -66,6 +65,17 @@ client.addListener('message', (from, to, text, message) => {
 client.addListener('join', (channel, nick, message) => {
   if (nick === 'Desch' && channel == '#arx-7') {
     client.say(channel, 'Hello Master.');
+  }
+});
+
+// Custom Auto-Rejoin
+client.addListener('kick', (channel, nick, by, reason, message) => {
+  if (nick === client.nick) {
+    log(`Kicked from ${channel} by ${by}: ${reason}`);
+    setTimeout(() => {
+      log(`Rejoining ${channel}`);
+      client.join(channel);
+    }, 1000 * 3);
   }
 });
 
