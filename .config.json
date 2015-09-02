@@ -1,0 +1,28 @@
+{
+  "name": "ARX-7",
+  "password": "password",
+  "server": "irc.rizon.net",
+  "channels": [
+    {
+      "name": "#arx-7",
+      "key": null,
+      "plugins": [
+        "choose",
+        "reply",
+        "imgur",
+        "order",
+        "twitter",
+        "youtube"
+      ]
+    }
+  ],
+  "keys": {
+    "youtube": "youtube_key",
+    "twitter_consumer": "consumer_key",
+    "twitter_consumer_secret": "consumer_secret",
+    "twitter_access_token": "access_token",
+    "twitter_access_token_secret": "secret_token",
+    "imgur_client": "client_key",
+    "imgur_secret": "secret_key"
+  }
+}
