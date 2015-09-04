@@ -64,8 +64,60 @@ client.addListener('message', (from, to, text, message) => {
 
   // Queries
   if (to === client.nick) {
-    log(`Query from ${from}: ${text}`);
-    client.say(from, "I'm a bot! Contact Desch, Jukey, or Aoi-chan for help");
+    // Check for Admin Queries
+    if (config.admins.includes(from)) {
+      log(`Admin Query from ${from}: ${text}`);
+      let usage = `[add|remove] [plugin] [channel] [password]`;
+
+      if (text.startsWith('add ') || text.startsWith('remove ')) {
+        let args = text.split(' ');
+
+        if (args.length != 4) {
+          log(`Invalid command count`);
+          client.say(from, `Not enough commands. ${usage}`);
+        }
+
+        if (args[3] !== config.adminPassword) {
+          log(`Invalid Admin Password`);
+          client.say(from, `Invalid password. ${usage}`);
+          return;
+        }
+
+        if (config.channels[channels.indexOf(args[2])]) {
+          let exists = commands.some(c => {
+            return c.constructor.name.toLowerCase() === args[1];
+          });
+
+          if (exists) {
+            if (args[0] === 'add') {
+              log(`ENABLE command for ${args[1]} in ${args[2]}`);
+              config.channels[channels.indexOf(args[2])].plugins.push(args[1]);
+              client.say(from, `Enabled ${args[1]} from ${args[2]}`);
+            }
+            else if (args[0] === 'remove') {
+              log(`DISABLE command for ${args[1]} in ${args[2]}`);
+              let idx = config.channels[channels.indexOf(args[2])].plugins.indexOf(args[1]);
+              config.channels[channels.indexOf(args[2])].plugins.splice(idx, 1);
+              client.say(from, `Disabled ${args[1]} from ${args[2]}`);
+            }
+          }
+          else {
+            client.say(from, `Invalid plugin. ${usage}`);
+          }
+        }
+        else {
+          client.say(from, `Invalid channel. ${usage}`);
+        }
+      }
+      else {
+        client.say(from, `Command not recognized, boss. ${usage}`);
+      }
+    }
+    // Respond to generic queries
+    else {
+      log(`Query from ${from}: ${text}`);
+      client.say(from, "I'm a bot! Contact Desch, Jukey, or Aoi-chan for help");
+    }
   }
 });
 
