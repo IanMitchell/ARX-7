@@ -7,10 +7,12 @@
 import {Command} from './command.js';
 import timezone from 'timezone/loaded';
 
+export const TIME_FORMAT = `%a %b %d %Y %H:%M:%S GMT%z (%Z)`;
+
 export class Time extends Command {
   message(from, to, text, message) {
-    let timezoneMatch = text.match(/^[.!]time (.*)/);
     return new Promise((resolve, reject) => {
+      let timezoneMatch = text.match(/^[.!]time (.*)/);
       if(timezoneMatch) {
         let timezoneQuery = this.abbreviationMap(timezoneMatch[1]);
         this.getTime(timezoneQuery).then((result) => {
@@ -23,8 +25,8 @@ export class Time extends Command {
 
   getTime(timezoneQuery) {
     return new Promise((resolve, reject) => {
-      resolve(timezone(new Date(), "%c", timezoneQuery));
-    })
+      resolve(timezone(new Date(), TIME_FORMAT, timezoneQuery));
+    });
   }
 
   // Timezone abbreviations are ambiguous but I'm smarter than timezones
