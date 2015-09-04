@@ -15,6 +15,14 @@
         "twitter",
         "youtube"
       ]
+    },
+    {
+      "name": "#channel",
+      "key": "key",
+      "plugins": [
+        "choose",
+        "order"
+      ]
     }
   ],
   "keys": {
