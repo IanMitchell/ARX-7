@@ -1,6 +1,7 @@
 import debug from 'debug';
 import irc from 'irc';
 import config from '../config';
+import pkg from '../package';
 
 import {Choose} from './commands/choose.js';
 import {Imgur} from './commands/imgur.js';
@@ -12,17 +13,11 @@ import {Youtube} from './commands/youtube.js';
 
 let log = debug('ARX-7');
 let droppedChannels = [];
-let channels = config.channels.map(e => {
-  if (!e.name.startsWith('#')) {
-    e.name = `#${e.name}`;
-  }
-  return e.name.toLowerCase();
-});
+let channels = [];
 
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
-  userName: config.userName || "chidori",
-  channels: channels
+  userName: config.userName || "chidori"
 });
 
 // Command List Setup
@@ -41,12 +36,29 @@ client.addListener('registered', (message) => {
   log('Connected to Server');
   client.say('NickServ', `identify ${config.password}`);
   log('Identified');
+
+  // Join channels
+  config.channels.forEach(c => {
+    if (!c.name.startsWith('#')) {
+      c.name = `#${c.name}`;
+    }
+
+    let len = channels.push(c.name.toLowerCase());
+    log(`Joining ${channels[len - 1]}`);
+
+    if (c.key) {
+      client.join(`${channels[len - 1]} ${c.key}`);
+    }
+    else {
+      client.join(channels[len - 1]);
+    }
+  });
 });
 
 // Respond to Version requests
 client.addListener('ctcp-version', (from, to, message) => {
   log(`CTCP request from ${from}`);
-  client.ctcp(from, 'notice', `VERSION Bot running on node-irc.`);
+  client.ctcp(from, 'notice', `VERSION ARX-7 v${pkg.version} (Bot)`);
 });
 
 // Listen for channel / personal Messages
