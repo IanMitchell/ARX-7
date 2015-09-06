@@ -76,8 +76,68 @@ client.addListener('message', (from, to, text, message) => {
 
   // Queries
   if (to === client.nick) {
-    log(`Query from ${from}: ${text}`);
-    client.say(from, "I'm a bot! Contact Desch, Jukey, or Aoi-chan for help");
+    // Check for Admin Queries
+    if (config.admins.includes(from)) {
+      log(`Admin Query from ${from}: ${text}`);
+      let usage = `[add|remove] [plugin] [channel] [password]`;
+
+      if (text.startsWith('add ') || text.startsWith('remove ')) {
+        let args = text.split(/\s+/);
+
+        if (args.length != 4) {
+          client.say(from, `Not enough commands. ${usage}`);
+          return;
+        }
+
+        if (args[3] !== config.adminPassword) {
+          log(`Invalid Admin Password`);
+          client.say(from, `Invalid password. ${usage}`);
+          return;
+        }
+
+        if (config.channels[channels.indexOf(args[2].toLowerCase())]) {
+          let exists = commands.some(c => {
+            return c.constructor.name.toLowerCase() === args[1].toLowerCase();
+          });
+
+          if (exists) {
+            if (args[0].toLowerCase() === 'add') {
+              log(`ENABLE command for ${args[1]} in ${args[2]}`);
+              let idx = config.channels[channels.indexOf(args[2].toLowerCase())].plugins.indexOf(args[1].toLowerCase());
+
+              if (idx > -1) {
+                client.say(from, `Plugin ${args[1]} already enabled.`);
+              }
+              else {
+                config.channels[channels.indexOf(args[2].toLowerCase())].plugins.push(args[1].toLowerCase());
+                log(`Enabled ${args[1]} from ${args[2]}`);
+                client.say(from, `Enabled ${args[1]} for ${args[2]}`);
+              }
+            }
+            else if (args[0].toLowerCase() === 'remove') {
+              let idx = config.channels[channels.indexOf(args[2].toLowerCase())].plugins.indexOf(args[1].toLowerCase());
+              config.channels[channels.indexOf(args[2].toLowerCase())].plugins.splice(idx, 1);
+              log(`DISABLE command for ${args[1]} in ${args[2]}`);
+              client.say(from, `Disabled ${args[1]} from ${args[2]}`);
+            }
+          }
+          else {
+            client.say(from, `Invalid plugin. ${usage}`);
+          }
+        }
+        else {
+          client.say(from, `Invalid channel. ${usage}`);
+        }
+      }
+      else {
+        client.say(from, `Command not recognized, boss. ${usage}`);
+      }
+    }
+    // Respond to generic queries
+    else {
+      log(`Query from ${from}: ${text}`);
+      client.say(from, "I'm a bot! Contact Desch, Jukey, or Aoi-chan for help");
+    }
   }
 });
 

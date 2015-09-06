@@ -3,6 +3,8 @@
   "password": "password",
   "server": "irc.rizon.net",
   "userName": "chidori",
+  "admins": ["User1", "User2"],
+  "adminPassword": "admin",
   "channels": [
     {
       "name": "#arx-7",
