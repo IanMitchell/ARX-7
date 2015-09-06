@@ -3,6 +3,7 @@ export class Client {
     this.lastTarget = null;
     this.lastMessage = null;
     this.lastType = null;
+    this.channelLog = [];
   }
 
   say(target, message) {
@@ -22,7 +23,15 @@ export class Client {
   }
 
   join(channel) {
-    // TODO: Catch channel log
+    this.channelLog.push(channel);
+  }
+
+  getLastChannel() {
+    return this.channelLog[this.channelLog.length - 1];
+  }
+
+  resetChannels() {
+    this.channelLog = [];
   }
 }
 

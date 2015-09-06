@@ -1,5 +1,5 @@
 import assert from "assert";
-import config from "../config";
+import config from "./test_config";
 import {Client} from "./helpers.js";
 import {ARX7} from "../src/arx7";
 
@@ -9,20 +9,33 @@ let arx7 = new ARX7(client, config);
 describe('ARX-7', () => {
   afterEach(() => {
     client.resetLog();
+    client.resetChannels();
   });
 
   describe('On Connect', () => {
     it('should identify on connect', () => {
       arx7.connect();
       assert.equal(client.lastTarget, 'NickServ');
-      assert.equal(client.lastMessage, `identify ${config.password}`);
+      assert.equal(client.lastMessage, `identify password`);
     });
 
-    it('should join channels after identify');
+    it('should join channels after identify', () => {
+      assert.equal(client.lastMessage, null);
+      assert.equal(client.channelLog.length, 0);
+      arx7.connect();
+      assert(client.lastMessage);
+      assert(client.channelLog.length > 0);
+    });
 
-    it('should handle uppercase channel names');
+    it('should handle uppercase channel names', () => {
+      arx7.connect();
+      assert.equal(client.channelLog[0], "#arx-7");
+    });
 
-    it('should join +k channels');
+    it('should join +k channels', () => {
+      arx7.connect();
+      assert.equal(client.channelLog[1], "#arbalest sagara");
+    });
   });
 
   describe('Responds to CTCP Version', () => {
