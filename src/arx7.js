@@ -70,11 +70,11 @@ client.addListener('message', (from, to, text, message) => {
       let usage = `[add|remove] [plugin] [channel] [password]`;
 
       if (text.startsWith('add ') || text.startsWith('remove ')) {
-        let args = text.split(' ');
+        let args = text.split(/\s+/);
 
         if (args.length != 4) {
-          log(`Invalid command count`);
           client.say(from, `Not enough commands. ${usage}`);
+          return;
         }
 
         if (args[3] !== config.adminPassword) {
@@ -83,21 +83,29 @@ client.addListener('message', (from, to, text, message) => {
           return;
         }
 
-        if (config.channels[channels.indexOf(args[2])]) {
+        if (config.channels[channels.indexOf(args[2].toLowerCase())]) {
           let exists = commands.some(c => {
-            return c.constructor.name.toLowerCase() === args[1];
+            return c.constructor.name.toLowerCase() === args[1].toLowerCase();
           });
 
           if (exists) {
-            if (args[0] === 'add') {
+            if (args[0].toLowerCase() === 'add') {
               log(`ENABLE command for ${args[1]} in ${args[2]}`);
-              config.channels[channels.indexOf(args[2])].plugins.push(args[1]);
-              client.say(from, `Enabled ${args[1]} from ${args[2]}`);
+              let idx = config.channels[channels.indexOf(args[2].toLowerCase())].plugins.indexOf(args[1].toLowerCase());
+
+              if (idx > -1) {
+                client.say(from, `Plugin ${args[1]} already enabled.`);
+              }
+              else {
+                config.channels[channels.indexOf(args[2].toLowerCase())].plugins.push(args[1].toLowerCase());
+                log(`Enabled ${args[1]} from ${args[2]}`);
+                client.say(from, `Enabled ${args[1]} for ${args[2]}`);
+              }
             }
-            else if (args[0] === 'remove') {
+            else if (args[0].toLowerCase() === 'remove') {
+              let idx = config.channels[channels.indexOf(args[2].toLowerCase())].plugins.indexOf(args[1].toLowerCase());
+              config.channels[channels.indexOf(args[2].toLowerCase())].plugins.splice(idx, 1);
               log(`DISABLE command for ${args[1]} in ${args[2]}`);
-              let idx = config.channels[channels.indexOf(args[2])].plugins.indexOf(args[1]);
-              config.channels[channels.indexOf(args[2])].plugins.splice(idx, 1);
               client.say(from, `Disabled ${args[1]} from ${args[2]}`);
             }
           }
