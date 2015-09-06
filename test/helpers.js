@@ -20,6 +20,10 @@ export class Client {
     this.lastMessage = null;
     this.lastType = null;
   }
+
+  join(channel) {
+    // TODO: Catch channel log
+  }
 }
 
 export class Command {
