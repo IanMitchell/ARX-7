@@ -1,2 +1,2 @@
 require('babel/register');
-require('./src/arx7.js');
+require('./src/bot.js');

@@ -2,7 +2,7 @@ export class Client {
   constructor() {
     this.lastTarget = null;
     this.lastMessage = null;
-    this.callback = null;
+    this.lastType = null;
   }
 
   say(target, message) {
@@ -10,9 +10,15 @@ export class Client {
     this.lastMessage = message;
   }
 
+  ctcp(to, type, message) {
+    this.lastType = type;
+    this.say(to, message);
+  }
+
   resetLog() {
     this.lastTarget = null;
     this.lastMessage = null;
+    this.lastType = null;
   }
 }
 
