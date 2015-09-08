@@ -162,10 +162,16 @@ export class ARX7 {
     if (args[0].toLowerCase() === 'remove') {
       let plugin = args[1].toLowerCase();
       let idx = this.config.channels[channel_index].plugins.indexOf(plugin);
-      this.config.channels[channel_index].plugins.splice(idx, 1);
 
-      log(`DISABLE command for ${args[1]} in ${args[2]}`);
-      this.client.say(from, `Disabled ${args[1]} for ${args[2]}`);
+      if (idx > -1) {
+        this.config.channels[channel_index].plugins.splice(idx, 1);
+
+        log(`DISABLE command for ${args[1]} in ${args[2]}`);
+        this.client.say(from, `Disabled ${args[1]} for ${args[2]}`);
+      }
+      else {
+        this.client.say(from, `Plugin ${args[1]} already disabled.`);
+      }
     }
   }
 

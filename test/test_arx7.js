@@ -88,17 +88,41 @@ describe('ARX-7', () => {
       assert(!client.lastMessage.includes('Invalid password'));
     });
 
-    it('should not respond for an inappropriate channel');
+    it('should not respond for an inappropriate channel', () => {
+      arx7.message('Desch', 'ARX-7', 'add youtube #wrong admin');
+      assert(client.lastMessage.includes('Invalid channel'));
+    });
 
-    it('should not respond for an inappropriate plugin');
+    it('should not respond for an inappropriate plugin', () => {
+      arx7.message('Desch', 'ARX-7', 'add irc #arx-7 admin');
+      assert(client.lastMessage.includes('Invalid plugin'));
+    });
 
-    it('should not double a plugin');
+    it('should not double a plugin', () => {
+      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 admin');
+      assert(client.lastMessage.includes('already enabled'));
+    });
 
-    it('should not remove a non-existent plugin');
+    it('should not remove a non-existent plugin', () => {
+      arx7.message('Desch', 'ARX-7', 'remove youtube #arbalest admin');
+      assert(client.lastMessage.includes('already disabled'));
+    });
 
-    it('should add a disabled plugin');
+    it('should add a disabled plugin', () => {
+      assert(!arx7.config.channels[1].plugins.includes('youtube'));
+      arx7.message('Desch', 'ARX-7', 'add youtube #arbalest admin');
+      assert(client.lastMessage.includes('Enabled youtube for #arbalest'));
+      assert(arx7.config.channels[1].plugins.includes('youtube'));
+      arx7.config.channels[1].plugins.pop();
+    });
 
-    it('should remove an enabled plugin');
+    it('should remove an enabled plugin', () => {
+      assert(arx7.config.channels[1].plugins.includes('reply'));
+      arx7.message('Desch', 'ARX-7', 'remove reply #arbalest admin');
+      assert(client.lastMessage.includes('Disabled reply for #arbalest'));
+      assert(!arx7.config.channels[1].plugins.includes('reply'));
+      arx7.config.channels[1].plugins.push('reply');
+    });
   });
 
   describe('Responds to Kicks and Bans', () => {
