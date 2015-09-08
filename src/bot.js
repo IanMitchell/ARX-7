@@ -36,8 +36,10 @@ client.addListener('error', message => {
   arx7.error(message);
 });
 
-// Praise the Creator
 client.addListener('join', (channel, nick, message) => {
+  arx7.join(channel, nick, message);
+
+  // Praise the Creator
   if (nick === 'Desch' && channel == '#arx-7') {
     log(`Praising the creator \o/`);
     client.say(channel, 'Hello Master.');

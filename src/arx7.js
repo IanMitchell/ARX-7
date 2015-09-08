@@ -11,6 +11,9 @@ import {Youtube} from './commands/youtube.js';
 
 let log = debug('ARX-7');
 
+const KICK_REJOIN_DELAY = 1000 * 3;
+const BAN_RETRY_DELAY = 1000 * 60 * 3;
+
 export class ARX7 {
   constructor(client, config) {
     this.commands = [
@@ -41,7 +44,7 @@ export class ARX7 {
     log('Identified');
 
     // Join channels
-    for(let i = 0; i < this.channels.length; i++) {
+    for (let i = 0; i < this.channels.length; i++) {
       log(`Joining ${this.channels[i]}`);
 
       if (this.config.channels[i].key) {
@@ -56,6 +59,15 @@ export class ARX7 {
   version(from, to, message) {
     log(`CTCP request from ${from}`);
     this.client.ctcp(from, 'notice', `VERSION ARX-7 v${pkg.version} (Bot)`);
+  }
+
+  join(channel, nick, message) {
+    if (nick === this.client.nick) {
+      if (this.droppedChannels.includes(channel)) {
+        let idx = this.droppedChannels.indexOf(channel);
+        this.droppedChannels.splice(idx, 1);
+      }
+    }
   }
 
   message(from, to, text, message) {
@@ -89,7 +101,8 @@ export class ARX7 {
     let args = text.split(/\s+/);
 
     // We only support add/remove commands
-    if (!(text.startsWith('add ') || text.startsWith('remove '))) {
+    if (!(text.toLowerCase().startsWith('add ') ||
+          text.toLowerCase().startsWith('remove '))) {
       log(`Unrecognized command`);
       this.client.say(from, `Command not recognized, boss. ${usage}`);
       return;
@@ -98,7 +111,7 @@ export class ARX7 {
     // Verify command format
     if (args.length != 4) {
       log(`Unrecognized command`);
-      this.client.say(from, `Not enough commands. ${usage}`);
+      this.client.say(from, `Incorrect number of commands. ${usage}`);
       return;
     }
 
@@ -150,6 +163,7 @@ export class ARX7 {
       let plugin = args[1].toLowerCase();
       let idx = this.config.channels[channel_index].plugins.indexOf(plugin);
       this.config.channels[channel_index].plugins.splice(idx, 1);
+
       log(`DISABLE command for ${args[1]} in ${args[2]}`);
       this.client.say(from, `Disabled ${args[1]} for ${args[2]}`);
     }
@@ -161,7 +175,7 @@ export class ARX7 {
       setTimeout(() => {
         log(`Rejoining ${channel}`);
         this.client.join(channel);
-      }, 1000 * 3);
+      }, KICK_REJOIN_DELAY);
     }
   }
 
@@ -170,7 +184,7 @@ export class ARX7 {
       log(`Banned from ${message.args[1]}. Rejoining in in 3 minutes`);
 
       // `()=>` ensures there is a delay; otherwise it continuously fires
-      setTimeout(() => this.client.join(message.args[1]), 1000 * 60 * 3);
+      setTimeout(() => this.client.join(message.args[1]), BAN_RETRY_DELAY);
     }
     // Attempt to rejoin +k channels correctly
     else if (message.command == 'err_badchannelkey') {
@@ -180,7 +194,8 @@ export class ARX7 {
         return;
       }
 
-      let key = this.config.channels[this.channels.indexOf(message.args[1])].key;
+      let idx = this.channels.indexOf(message.args[1]);
+      let key = this.config.channels[idx].key;
 
       if (key != null) {
         log(`${message.args[1]} is +k. Rejoining with password.`);
