@@ -53,15 +53,40 @@ describe('ARX-7', () => {
   });
 
   describe('Responds to Queries', () => {
-    it('should respond to Query');
+    it('should respond to Query', () => {
+      arx7.message('Mocha', 'ARX-7', 'Hi');
+      assert(client.lastMessage);
+      assert(client.lastMessage.includes("Desch, Jukey, Aoi-chan"));
+    });
 
-    it('should respond to Admin Query');
+    it('should respond to Admin Query', () => {
+      arx7.message('Desch', 'ARX-7', 'Hi');
+      assert(client.lastMessage.includes('Command not recognized'));
+    });
 
-    it('should only respond to [add|remove]');
+    it('should only respond to [add|remove]', () => {
+      arx7.message('Desch', 'ARX-7', 'Hi');
+      assert(client.lastMessage.includes('Command not recognized'));
+    });
 
-    it('should only respond to the correct number of commands');
+    it('should only respond to the correct number of commands', () => {
+      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 password oops');
+      assert(client.lastMessage.includes('Incorrect number of commands'));
 
-    it('should only respond to the correct password');
+      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7');
+      assert(client.lastMessage.includes('Incorrect number of commands'));
+
+      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 admin');
+      assert(!client.lastMessage.includes('Incorrect number of commands'));
+    });
+
+    it('should only respond to the correct password', () => {
+      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 wrong');
+      assert(client.lastMessage.includes('Invalid password'));
+
+      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 admin');
+      assert(!client.lastMessage.includes('Invalid password'));
+    });
 
     it('should not respond for an inappropriate channel');
 
@@ -84,5 +109,8 @@ describe('ARX-7', () => {
     it('should be able to rejoin a +k channel');
 
     it('should not keep trying to rejoin a +k channel');
+
+    // This verifies dropChannels works correctly
+    it('should join +k channels when kicked twice');
   });
 });

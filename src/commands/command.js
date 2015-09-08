@@ -21,12 +21,14 @@ export class Command {
     ];
   }
 
+  // Pseudo interface
   message(to, from, text, message) { }
 
   send(to, text) {
     if (this.checkBlacklist(text)) {
       this.client.say(to, 'Blacklist triggered.');
-    } else {
+    }
+    else {
       this.client.say(to, text);
     }
   }

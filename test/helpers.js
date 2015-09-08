@@ -1,9 +1,13 @@
+import config from './test_config';
+
 export class Client {
   constructor() {
     this.lastTarget = null;
     this.lastMessage = null;
     this.lastType = null;
     this.channelLog = [];
+    
+    this.nick = config.name;
   }
 
   say(target, message) {
