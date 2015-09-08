@@ -7,7 +7,8 @@ let log = debug('Bot');
 
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
-  userName: config.userName || "chidori"
+  userName: config.userName || "chidori",
+  stripColors: true
 });
 
 let arx7 = new ARX7(client, config);
