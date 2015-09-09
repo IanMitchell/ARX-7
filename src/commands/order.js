@@ -68,7 +68,7 @@ export class Order extends Command {
     let choices = this.getChoices(text, ',');
 
     if (choices) {
-      if (choices.length == 1) {
+      if (choices.length <= 1) {
         choices = this.getChoices(text, ' ');
       }
 

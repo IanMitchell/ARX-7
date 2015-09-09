@@ -47,11 +47,23 @@ describe('Order', () => {
       });
     });
 
-    // it('should not activate with a list of commas', () => {
-    //   return order.message('Mocha', '#test', '.o ,, , ,,').then(() => {
-    //     assert.equal(null, client.lastMessage);
-    //   });
-    // });
+    it('should activate with a list of commas', () => {
+      let outputs = [
+        'Mocha: ,,, ,,, ,',
+        'Mocha: ,, ,,, ,,',
+        'Mocha: ,,, ,, ,,'
+      ];
+      
+      return order.message('Mocha', '#test', '.o ,, , ,,').then(() => {
+        assert(outputs.includes(client.lastMessage));
+      });
+    });
+
+    it('should activate with a single comma', () => {
+      return order.message('Mocha', '#test', '.o ,').then(() => {
+        assert.equal('Mocha: ,', client.lastMessage);
+      });
+    });
   });
 
   describe('General Usage', () => {
