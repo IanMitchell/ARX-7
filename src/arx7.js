@@ -28,7 +28,7 @@ export class ARX7 {
 
     this.client = client;
     this.config = config;
-    this.droppedChannels = [];
+    this.droppedChannels = new Set();
 
     this.channels = config.channels.map(c => {
       if (!c.name.startsWith('#')) {
@@ -63,9 +63,8 @@ export class ARX7 {
 
   join(channel, nick, message) {
     if (nick === this.client.nick) {
-      if (this.droppedChannels.includes(channel)) {
-        let idx = this.droppedChannels.indexOf(channel);
-        this.droppedChannels.splice(idx, 1);
+      if (this.droppedChannels.has(channel)) {
+        this.droppedChannels.delete(channel);
       }
     }
   }
@@ -195,7 +194,7 @@ export class ARX7 {
     // Attempt to rejoin +k channels correctly
     else if (message.command == 'err_badchannelkey') {
       // Prevent infinite rejoin attempts
-      if (this.droppedChannels.includes(message.args[1])) {
+      if (this.droppedChannels.has(message.args[1])) {
         log(`Incorrect password for ${message.args[1]}.`);
         return;
       }
@@ -206,7 +205,7 @@ export class ARX7 {
       if (key != null) {
         log(`${message.args[1]} is +k. Rejoining with password.`);
         this.client.join(`${message.args[1]} ${key}`);
-        this.droppedChannels.push(message.args[1]);
+        this.droppedChannels.add(message.args[1]);
       }
       else {
         log(`${message.args[1]} is +k. No key found. Skipping channel`);
