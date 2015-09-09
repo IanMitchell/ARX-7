@@ -63,9 +63,7 @@ export class ARX7 {
 
   join(channel, nick, message) {
     if (nick === this.client.nick) {
-      if (this.droppedChannels.has(channel)) {
-        this.droppedChannels.delete(channel);
-      }
+      this.droppedChannels.delete(channel);
     }
   }
 
