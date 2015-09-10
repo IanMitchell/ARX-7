@@ -10,6 +10,7 @@ describe('ARX-7', () => {
   afterEach(() => {
     client.resetLog();
     client.resetChannels();
+    arx7.droppedChannels.clear();
   });
 
   describe('On Connect', () => {
@@ -126,15 +127,41 @@ describe('ARX-7', () => {
   });
 
   describe('Responds to Kicks and Bans', () => {
-    it('should attempt to rejoin after kicks in 3 seconds');
+    // TODO: Fix setTimeout
+    // it('should attempt to rejoin after kicks in 3 seconds', () => {
+    //   arx7.kick('#test', 'ARX-7', 'Mocha', 'Testing');
+    //   assert.equal(null, client.getLastChannel());
+    //   setTimeout(() => {
+    //     assert.equal('#test', client.getLastChannel());
+    //   }, 1000 * 3);
+    // });
 
     it('should attempt to rejoin after bans in 3 minutes');
 
-    it('should be able to rejoin a +k channel');
+    it('should be able to rejoin a +k channel', () => {
+      arx7.error({args: [null, '#arbalest'], command: 'err_badchannelkey'});
+      assert.equal('#arbalest sagara', client.getLastChannel());
+      assert(arx7.droppedChannels.has('#arbalest'));
+    });
 
-    it('should not keep trying to rejoin a +k channel');
+    it('should not keep trying to rejoin a +k channel', () => {
+      arx7.error({args: [null, '#arbalest'], command: 'err_badchannelkey'});
+      arx7.error({args: [null, '#arbalest'], command: 'err_badchannelkey'});
 
-    // This verifies dropChannels works correctly
-    it('should join +k channels when kicked twice');
+      assert(arx7.droppedChannels.has('#arbalest'));
+      assert.equal(1, client.channelLog.length);
+    });
+
+    it('should join +k channels when kicked twice', () => {
+      arx7.error({args: [null, '#arbalest'], command: 'err_badchannelkey'});
+      arx7.join('#arbalest', 'ARX-7');
+      assert(!arx7.droppedChannels.has('#arbalest'));
+
+      arx7.error({args: [null, '#arbalest'], command: 'err_badchannelkey'});
+      assert.equal(2, client.channelLog.length);
+
+      arx7.join('#arbalest', 'ARX-7');
+      assert(!arx7.droppedChannels.has('#arbalest'));
+    });
   });
 });

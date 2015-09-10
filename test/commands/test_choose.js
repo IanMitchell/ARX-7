@@ -66,8 +66,13 @@ describe('Choose', () => {
     });
 
     it('should activate with a list of commas', () => {
+      let outputs = [
+        'Mocha: ,,',
+        'Mocha: ,'
+      ];
+
       return choose.message('Mocha', '#test', '.c ,, , ,,').then(() => {
-        assert.equal('Mocha: ,,', client.lastMessage);
+        assert(outputs.includes(client.lastMessage));
       });
     });
 
