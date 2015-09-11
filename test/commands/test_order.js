@@ -53,7 +53,7 @@ describe('Order', () => {
         'Mocha: ,, ,,, ,,',
         'Mocha: ,,, ,, ,,'
       ];
-      
+
       return order.message('Mocha', '#test', '.o ,, , ,,').then(() => {
         assert(outputs.includes(client.lastMessage));
       });
@@ -95,7 +95,20 @@ describe('Order', () => {
   describe('List', () => {
     it('should choose from within list');
 
-    it('should only include a max of 20 items');
+    it('should only include a max of 20 items', () => {
+      return order.message('Mocha', '#test', '.o 1-25').then(() => {
+        assert.equal(21, client.lastMessage.split(', ').length);
+        assert(client.lastMessage.includes('and some more...'));
+      });
+    });
+
+    it('should cap range at 1024', () => {
+      return order.message('Mocha', '#test', '.o 1-2048').then(() => {
+        let msg = client.lastMessage.replace('Mocha: ', '');
+        msg = msg.replace(', and some more...', '');
+        msg.split(', ').forEach(c => assert(1024 >= c));
+      });
+    });
 
     it('should randomize results');
   });
