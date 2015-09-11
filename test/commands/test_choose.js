@@ -65,11 +65,22 @@ describe('Choose', () => {
       });
     });
 
-    // it('should not activate with a list of commas', () => {
-    //   return choose.message('Mocha', '#test', '.c ,, , ,,').then(() => {
-    //     assert.equal(null, client.lastMessage);
-    //   });
-    // });
+    it('should activate with a list of commas', () => {
+      let outputs = [
+        'Mocha: ,,',
+        'Mocha: ,'
+      ];
+
+      return choose.message('Mocha', '#test', '.c ,, , ,,').then(() => {
+        assert(outputs.includes(client.lastMessage));
+      });
+    });
+
+    it('should activate with a single commas', () => {
+      return choose.message('Mocha', '#test', '.c , ').then(() => {
+        assert.equal('Mocha: ,', client.lastMessage);
+      });
+    });
   });
 
   describe('General Usage', () => {

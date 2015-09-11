@@ -11,7 +11,7 @@ export class Choose extends Command {
 
       if (choose) {
         log(`${from} on: ${choose[1]}`);
-        
+
         let result = this.choose(choose[1]);
         this.send(to, `${from}: ${result}`);
       }
@@ -50,8 +50,12 @@ export class Choose extends Command {
 
       if (choices) {
         // Check for space delimiter
-        if (choices.length == 1) {
+        if (choices.length <= 1) {
           choices = this.getChoices(input, ' ');
+
+          if (choices.length == 0) {
+            return 'No choices to choose from';
+          }
         }
 
         return choices[Math.floor(Math.random() * choices.length)];

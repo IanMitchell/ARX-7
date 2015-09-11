@@ -1,0 +1,29 @@
+{
+  "name": "ARX-7",
+  "password": "password",
+  "server": "irc.rizon.net",
+  "userName": "chidori",
+  "admins": ["Desch", "Jukey", "Aoi-chan"],
+  "adminPassword": "admin",
+  "channels": [
+    {
+      "name": "ARX-7",
+      "key": null,
+      "plugins": [
+        "choose",
+        "reply",
+        "imgur",
+        "order",
+        "twitter",
+        "youtube"
+      ]
+    },
+    {
+      "name": "arbalest",
+      "key": "sagara",
+      "plugins": [
+        "reply"
+      ]
+    }
+  ]
+}

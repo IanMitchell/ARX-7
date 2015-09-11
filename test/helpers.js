@@ -1,8 +1,13 @@
+import config from './test_config';
+
 export class Client {
   constructor() {
     this.lastTarget = null;
     this.lastMessage = null;
-    this.callback = null;
+    this.lastType = null;
+    this.channelLog = [];
+    
+    this.nick = config.name;
   }
 
   say(target, message) {
@@ -10,9 +15,27 @@ export class Client {
     this.lastMessage = message;
   }
 
+  ctcp(to, type, message) {
+    this.lastType = type;
+    this.say(to, message);
+  }
+
   resetLog() {
     this.lastTarget = null;
     this.lastMessage = null;
+    this.lastType = null;
+  }
+
+  join(channel) {
+    this.channelLog.push(channel);
+  }
+
+  getLastChannel() {
+    return this.channelLog[this.channelLog.length - 1];
+  }
+
+  resetChannels() {
+    this.channelLog = [];
   }
 }
 

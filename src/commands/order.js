@@ -2,7 +2,9 @@ import debug from 'debug';
 import {Command} from './command.js';
 
 let log = debug('Order');
-const ORDER_LIMIT = 20;
+
+export const ORDER_RANGE_LIMIT = 1024;
+export const ORDER_RESULTS_LIMIT = 20;
 
 export class Order extends Command {
   message(from, to, text, message) {
@@ -36,39 +38,41 @@ export class Order extends Command {
     let min = Math.min(parseInt(order[1]), parseInt(order[2])),
         max = Math.max(parseInt(order[1]), parseInt(order[2]));
 
-    order[1] = Math.min(max, min + 9);
     let choices = this.getRange(min, max);
     return choices.join(', ');
   }
 
   getRange(lowerBound, upperBound) {
-    let results = [];
-    let capped = false;
+    let results = [],
+        capped = false;
 
-    for (let i = lowerBound; i < upperBound + 1; i++) {
-      results.push(i.toString());
-
-      if (i - ORDER_LIMIT > lowerBound) {
-        capped = true;
-        break;
-      }
+    if (upperBound - lowerBound > ORDER_RANGE_LIMIT) {
+      upperBound = lowerBound + ORDER_RANGE_LIMIT;
     }
+
+    for (let i = lowerBound; i <= upperBound; i++) {
+      if (i - lowerBound > ORDER_RESULTS_LIMIT) {
+        capped = true;
+      }
+
+      results.push(i.toString());
+    }
+
+    results = this.shuffleArray(results);
 
     if (capped) {
-      results = this.shuffleArray(results);
-      results.push('And some more...');
-      return results;
+      results = results.splice(0, ORDER_RESULTS_LIMIT);
+      results.push('and some more...');
     }
-    else {
-      return this.shuffleArray(results);
-    }
+
+    return results;
   }
 
   orderList(text) {
     let choices = this.getChoices(text, ',');
 
     if (choices) {
-      if (choices.length == 1) {
+      if (choices.length <= 1) {
         choices = this.getChoices(text, ' ');
       }
 
