@@ -6,8 +6,9 @@ import {ARX7} from './arx7.js';
 let log = debug('Bot');
 
 // Initialize the Bot
-let client = new irc.Client(config.server, config.name, {
+let client = new irc.Client(config.server.split(':')[0], config.name, {
   userName: config.userName || "chidori",
+  port: config.server.split(':')[1] || 6667,
   stripColors: true
 });
 
