@@ -3,6 +3,7 @@ import {Command} from './command.js';
 
 let log = debug('Order');
 
+export const ORDER_MAX_VALUE = 99999999999;
 export const ORDER_RANGE_LIMIT = 1024;
 export const ORDER_RESULTS_LIMIT = 20;
 
@@ -37,6 +38,10 @@ export class Order extends Command {
   orderRange(order) {
     let min = Math.min(parseInt(order[1]), parseInt(order[2])),
         max = Math.max(parseInt(order[1]), parseInt(order[2]));
+
+    if (min >= ORDER_MAX_VALUE || max >= ORDER_MAX_VALUE) {
+      return 'Value is too high.';
+    }
 
     let choices = this.getRange(min, max);
     return choices.join(', ');

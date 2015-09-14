@@ -89,12 +89,6 @@ describe('Order', () => {
 
     it('should include lower and upper bounds');
 
-    it('should only include a max of 20 items');
-  });
-
-  describe('List', () => {
-    it('should choose from within list');
-
     it('should only include a max of 20 items', () => {
       return order.message('Mocha', '#test', '.o 1-25').then(() => {
         assert.equal(21, client.lastMessage.split(', ').length);
@@ -109,6 +103,18 @@ describe('Order', () => {
         msg.split(', ').forEach(c => assert(1024 >= c));
       });
     });
+
+    // The torchlight test
+    it('should handle large numbers', () => {
+      let val = 9007199254740992;
+      return order.message('Mocha', '#test', `.o ${val}-${val + 2}`).then(() => {
+        assert.equal(client.lastMessage, 'Mocha: Value is too high.');
+      });
+    });
+  });
+
+  describe('List', () => {
+    it('should choose from within list');
 
     it('should randomize results');
   });
