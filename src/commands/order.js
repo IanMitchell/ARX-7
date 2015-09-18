@@ -90,19 +90,13 @@ export class Order extends Command {
   }
 
   shuffleArray(array) {
-    let currentIndex = array.length,
-        temporaryValue = 0,
-        randomIndex = 0;
+    let temp = 0;
 
-    while (0 !== currentIndex) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
+    for (let i = array.length - 1; i > 0; i--) {
+      let n = Math.floor(Math.random() * (array.length - i)) + i;
+      temp = array[i];
+      array[i] = array[n];
+      array[n] = temp;
     }
 
     return array;
