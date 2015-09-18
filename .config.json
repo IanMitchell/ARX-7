@@ -1,8 +1,11 @@
 {
   "name": "ARX-7",
   "password": "password",
-  "server": "irc.rizon.net",
   "userName": "chidori",
+  "server": "irc.rizon.net",
+  "port": 6667,
+  "ssl": false,
+  "allowInvalidSSL": false,
   "channels": [
     {
       "name": "#arx-7",
