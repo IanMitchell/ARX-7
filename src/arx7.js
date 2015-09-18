@@ -80,7 +80,7 @@ export class ARX7 {
     }
 
     // Handle Queries
-    if (to === this.client.nick) {
+    else if (to === this.client.nick) {
       if (this.config.admins.includes(from)) {
         this.handleAdminQuery(from, to, text, message);
       }
