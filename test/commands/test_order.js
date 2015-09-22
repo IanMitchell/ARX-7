@@ -5,6 +5,13 @@ import {Order} from "../../src/commands/order";
 let client = new Client();
 let order = new Order(client);
 
+function uniq(arr) {
+  let seen = {};
+  return arr.filter((item) => {
+    return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+  });
+}
+
 describe('Order', () => {
   afterEach(() => {
     client.resetLog();
@@ -116,6 +123,36 @@ describe('Order', () => {
   describe('List', () => {
     it('should choose from within list');
 
-    it('should randomize results');
+    it('should randomize results', () => {
+      let expected = [
+        'Mocha: a, b, c',
+        'Mocha: a, c, b',
+        'Mocha: b, a, c',
+        'Mocha: b, c, a',
+        'Mocha: c, a, b',
+        'Mocha: c, b, a'
+      ];
+
+      let results = [];
+      let runs = 10;
+
+      return new Promise((resolve, reject) => {
+        for (let i = 0; i < runs; i++) {
+          order.message('Mocha', '#test', '.o a b c');
+          assert(expected.includes(client.lastMessage));
+          results.push(client.lastMessage);
+
+          // Still can fail, but has a [(0.167^20) * 100]% chance of it
+          if (i == 9 && uniq(results).length == 1) {
+            runs *= 2;
+          }
+          if (i + 1 == runs) {
+            resolve();
+          }
+        }
+      }).then(() => {
+        assert((uniq(results).length > 1), 'failed here');
+      });
+    });
   });
 });

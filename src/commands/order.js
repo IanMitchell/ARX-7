@@ -92,7 +92,7 @@ export class Order extends Command {
   shuffleArray(array) {
     let temp = 0;
 
-    for (let i = array.length - 1; i > 0; i--) {
+    for (let i = array.length - 1; i >= 0; i--) {
       let n = Math.floor(Math.random() * (array.length - i)) + i;
       temp = array[i];
       array[i] = array[n];
