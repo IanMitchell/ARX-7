@@ -62,6 +62,14 @@ export class ARX7 {
   }
 
   join(channel, nick, message) {
+    // Correct incorrect config names
+    if (this.channels.includes(channel.toLowerCase()) &&
+        !this.channels.includes(channel)) {
+      let idx = this.channels.indexOf(channel.toLowerCase());
+      this.channels[idx] = channel;
+    }
+
+    // Joined channel, reset blacklist
     if (nick === this.client.nick) {
       this.droppedChannels.delete(channel);
     }

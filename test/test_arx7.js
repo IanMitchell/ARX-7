@@ -71,8 +71,9 @@ describe('ARX-7', () => {
     });
 
     // Aoi-chan Test
-    it('should send message to plugins for last channel', () => {
-      arx7.message('Mocha', '#some-channel', '.c 1 2 3');
+    it('should send message to plugins for non-lowercase channel', () => {
+      arx7.join('#Some-Channel', 'ARX-7');
+      arx7.message('Mocha', '#Some-Channel', '.c 1 2 3');
       assert(arx7.commands[0].log.includes('.c 1 2 3'));
     });
 
