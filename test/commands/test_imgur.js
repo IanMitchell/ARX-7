@@ -17,7 +17,7 @@ describe('Imgur', () => {
   });
 
   describe('Triggers', () => {
-    it('should activate anywhere in phrase with Gallery URL 1', () => {
+    it('should activate anywhere in phrase with Gallery URL', () => {
       return imgur.message('Mocha', '#test0', `ARX-7 ${link}!`).then(() => {
         assert(client.lastMessage);
       });

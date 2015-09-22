@@ -121,7 +121,20 @@ describe('Order', () => {
   });
 
   describe('List', () => {
-    it('should choose from within list');
+    it('should choose from within list', () => {
+      let expected = [
+        'Mocha: a, b c, d',
+        'Mocha: a, d, b c',
+        'Mocha: b c, a, d',
+        'Mocha: b c, d, a',
+        'Mocha: d, a, b c',
+        'Mocha: d, b c, a'
+      ];
+
+      return order.message('Mocha', '#test', '.o a, b c, d').then(() => {
+        assert(expected.includes(client.lastMessage));
+      });
+    });
 
     it('should randomize results', () => {
       let expected = [
