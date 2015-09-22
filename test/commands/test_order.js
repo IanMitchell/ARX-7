@@ -88,13 +88,55 @@ describe('Order', () => {
   });
 
   describe('Range', () => {
-    it('should choose from within range');
+    it('should choose from within range', () => {
+      let lowerBound = 0,
+          upperBound = 10,
+          range = `${lowerBound}-${upperBound}`;
 
-    it('should handle reverse ranges');
 
-    it('should handle negative ranges');
+      return order.message('Mocha', '#test', `.o ${range}`).then(() => {
+        let values = client.lastMessage.replace('Mocha: ', '').split(', ');
+        values.forEach(c => {
+          assert(c >= lowerBound);
+          assert(c <= upperBound);
+        });
+      });
+    });
 
-    it('should include lower and upper bounds');
+    it('should handle reverse ranges', () => {
+      let expected = [
+        'Mocha: 5, 6',
+        'Mocha: 6, 5'
+      ];
+
+      return order.message('Mocha', '#test', '.o 6-5').then(() => {
+        assert(expected.includes(client.lastMessage));
+      });
+    });
+
+    it('should handle negative ranges', () => {
+      let expected  = [
+        'Mocha: -5, -6',
+        'Mocha: -6, -5'
+      ];
+
+      return order.message('Mocha', '#test', '.o -5--6').then(() => {
+        assert(expected.includes(client.lastMessage));
+      });
+    });
+
+    it('should include lower and upper bounds', () => {
+      let lowerBound = 0,
+          upperBound = 5,
+          range = `${lowerBound}-${upperBound}`;
+
+
+      return order.message('Mocha', '#test', `.o ${range}`).then(() => {
+        let values = client.lastMessage.replace('Mocha: ', '').split(', ');
+        assert(values.includes(lowerBound.toString()));
+        assert(values.includes(upperBound.toString()));
+      });
+    });
 
     it('should only include a max of 20 items', () => {
       return order.message('Mocha', '#test', '.o 1-25').then(() => {
