@@ -206,7 +206,7 @@ describe('Order', () => {
           }
         }
       }).then(() => {
-        assert((uniq(results).length > 1), 'failed here');
+        assert(uniq(results).length > 1);
       });
     });
   });

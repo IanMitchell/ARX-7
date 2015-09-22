@@ -114,13 +114,79 @@ describe('Choose', () => {
   });
 
   describe('Range', () => {
-    it('should choose from within range');
+    it('should choose from within range', () => {
+      let lowerBound = 0,
+          upperBound = 10,
+          range = `${upperBound}-${lowerBound}`;
 
-    it('should handle reverse ranges');
+      for (let i = 0; i < 20; i++) {
+        choose.message('Mocha', '#test', `.c ${range}`);
+        let value = client.lastMessage.replace('Mocha: ', '');
+        assert(value >= lowerBound);
+        assert(value <= upperBound);
+      }
+    });
 
-    it('should handle negative ranges');
+    it('should handle reverse ranges', () => {
+      let lowerBound = 0,
+          upperBound = 5,
+          range = `${upperBound}-${lowerBound}`;
 
-    it('should include lower and upper bounds');
+
+      return choose.message('Mocha', '#test', `.c ${range}`).then(() => {
+        let value = client.lastMessage.replace('Mocha: ', '');
+        assert(value <= upperBound);
+        assert(value >= lowerBound);
+      });
+    });
+
+    it('should handle negative ranges', () => {
+      let lowerBound = -10,
+          upperBound = -5,
+          range = `${lowerBound}-${upperBound}`;
+
+
+      return choose.message('Mocha', '#test', `.c ${range}`).then(() => {
+        let value = client.lastMessage.replace('Mocha: ', '');
+        assert(value <= upperBound);
+        assert(value >= lowerBound);
+      });
+    });
+
+    it('should include lower and upper bounds', () => {
+      let lowerBound = 0,
+          upperBound = 2,
+          range = `${upperBound}-${lowerBound}`,
+          runs = 10,
+          lowerBoundChosen = false,
+          upperBoundChosen = false;
+
+      return new Promise((resolve, reject) => {
+        for (let i = 0; i < runs; i++) {
+          choose.message('Mocha', '#test', `.c ${range}`);
+          let value = client.lastMessage.replace('Mocha: ', '');
+
+
+          if (value === lowerBound.toString()) {
+            lowerBoundChosen = true;
+          }
+          if (value === upperBound.toString()) {
+            upperBoundChosen = true;
+          }
+
+          // Still can fail, but has a [(0.333^20) * 100]% chance of it
+          if (i == 9 && (!lowerBoundChosen || !upperBoundChosen)) {
+            runs *= 2;
+          }
+          if (i + 1 == runs) {
+            resolve();
+          }
+        }
+      }).then(() => {
+        assert(lowerBoundChosen);
+        assert(upperBoundChosen);
+      });
+    });
   });
 
   describe('Decimal Range', () => {
