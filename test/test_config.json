@@ -2,12 +2,21 @@
   "name": "ARX-7",
   "password": "password",
   "server": "irc.rizon.net",
+  "port": 6667,
+  "ssl": false,
   "userName": "chidori",
   "admins": ["Desch", "Jukey", "Aoi-chan"],
   "adminPassword": "admin",
   "channels": [
     {
-      "name": "ARX-7",
+      "name": "#arbalest",
+      "key": "sagara",
+      "plugins": [
+        "choose"
+      ]
+    },
+    {
+      "name": "#bbb",
       "key": null,
       "plugins": [
         "choose",
@@ -19,10 +28,27 @@
       ]
     },
     {
-      "name": "arbalest",
-      "key": "sagara",
+      "name": "ARX-7",
+      "key": null,
       "plugins": [
-        "reply"
+        "choose",
+        "reply",
+        "imgur",
+        "order",
+        "time",
+        "twitter",
+        "youtube"
+      ]
+    },
+    {
+      "name": "#some-channel",
+      "key": null,
+      "plugins": [
+        "choose",
+        "reply",
+        "order",
+        "twitter",
+        "youtube"
       ]
     }
   ]

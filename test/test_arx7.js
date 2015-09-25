@@ -1,16 +1,33 @@
 import assert from "assert";
 import config from "./test_config";
-import {Client} from "./helpers.js";
+import {Client,
+        Choose,
+        Imgur,
+        Order,
+        Reply,
+        Time,
+        Twitter,
+        Youtube} from "./helpers.js";
 import {ARX7} from "../src/arx7";
 
 let client = new Client();
 let arx7 = new ARX7(client, config);
+arx7.commands = [
+  new Choose(client),
+  new Imgur(client),
+  new Order(client),
+  new Reply(client),
+  new Time(client),
+  new Twitter(client),
+  new Youtube(client)
+];
 
 describe('ARX-7', () => {
   afterEach(() => {
     client.resetLog();
     client.resetChannels();
     arx7.droppedChannels.clear();
+    arx7.commands.forEach(c => c.clearHistory());
   });
 
   describe('On Connect', () => {
@@ -30,12 +47,12 @@ describe('ARX-7', () => {
 
     it('should handle uppercase channel names', () => {
       arx7.connect();
-      assert.equal(client.channelLog[0], "#arx-7");
+      assert(client.channelLog.includes("#arx-7"));
     });
 
     it('should join +k channels', () => {
       arx7.connect();
-      assert.equal(client.channelLog[1], "#arbalest sagara");
+      assert(client.channelLog.includes("#arbalest sagara"));
     });
   });
 
@@ -48,9 +65,27 @@ describe('ARX-7', () => {
   });
 
   describe('Responds to Messages', () => {
-    it('should send message to plugins');
+    it('should send message to plugins', () => {
+      arx7.message('Mocha', '#arx-7', '.c 1 2 3');
+      arx7.commands.forEach(c => assert.equal(c.log.length, 1));
+    });
 
-    it('should channel-restrict plugins');
+    // Aoi-chan Test
+    it('should send message to plugins for non-lowercase channel', () => {
+      arx7.join('#Some-Channel', 'ARX-7');
+      arx7.message('Mocha', '#Some-Channel', '.c 1 2 3');
+      assert(arx7.commands[0].log.includes('.c 1 2 3'));
+    });
+
+    it('should channel-restrict plugins', () => {
+      arx7.message('Mocha', '#arbalest', '.c 1 2 3');
+      assert(arx7.commands[0].log.includes('.c 1 2 3'));
+
+
+      for (let i = 1; i < arx7.commands.length; i++) {
+        assert.equal(arx7.commands[i].log.length, 0);
+      }
+    });
   });
 
   describe('Responds to Queries', () => {
@@ -110,19 +145,19 @@ describe('ARX-7', () => {
     });
 
     it('should add a disabled plugin', () => {
-      assert(!arx7.config.channels[1].plugins.includes('youtube'));
+      assert(!arx7.config.channels[0].plugins.includes('youtube'));
       arx7.message('Desch', 'ARX-7', 'add youtube #arbalest admin');
       assert(client.lastMessage.includes('Enabled youtube for #arbalest'));
-      assert(arx7.config.channels[1].plugins.includes('youtube'));
-      arx7.config.channels[1].plugins.pop();
+      assert(arx7.config.channels[0].plugins.includes('youtube'));
+      arx7.config.channels[0].plugins.pop();
     });
 
     it('should remove an enabled plugin', () => {
-      assert(arx7.config.channels[1].plugins.includes('reply'));
-      arx7.message('Desch', 'ARX-7', 'remove reply #arbalest admin');
-      assert(client.lastMessage.includes('Disabled reply for #arbalest'));
-      assert(!arx7.config.channels[1].plugins.includes('reply'));
-      arx7.config.channels[1].plugins.push('reply');
+      assert(arx7.config.channels[0].plugins.includes('choose'));
+      arx7.message('Desch', 'ARX-7', 'remove choose #arbalest admin');
+      assert(client.lastMessage.includes('Disabled choose for #arbalest'));
+      assert(!arx7.config.channels[0].plugins.includes('choose'));
+      arx7.config.channels[0].plugins.push('choose');
     });
   });
 

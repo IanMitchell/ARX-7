@@ -5,6 +5,13 @@ import {Order} from "../../src/commands/order";
 let client = new Client();
 let order = new Order(client);
 
+function uniq(arr) {
+  let seen = {};
+  return arr.filter((item) => {
+    return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+  });
+}
+
 describe('Order', () => {
   afterEach(() => {
     client.resetLog();
@@ -81,13 +88,55 @@ describe('Order', () => {
   });
 
   describe('Range', () => {
-    it('should choose from within range');
+    it('should choose from within range', () => {
+      let lowerBound = 0,
+          upperBound = 10,
+          range = `${lowerBound}-${upperBound}`;
 
-    it('should handle reverse ranges');
 
-    it('should handle negative ranges');
+      return order.message('Mocha', '#test', `.o ${range}`).then(() => {
+        let values = client.lastMessage.replace('Mocha: ', '').split(', ');
+        values.forEach(c => {
+          assert(c >= lowerBound);
+          assert(c <= upperBound);
+        });
+      });
+    });
 
-    it('should include lower and upper bounds');
+    it('should handle reverse ranges', () => {
+      let expected = [
+        'Mocha: 5, 6',
+        'Mocha: 6, 5'
+      ];
+
+      return order.message('Mocha', '#test', '.o 6-5').then(() => {
+        assert(expected.includes(client.lastMessage));
+      });
+    });
+
+    it('should handle negative ranges', () => {
+      let expected  = [
+        'Mocha: -5, -6',
+        'Mocha: -6, -5'
+      ];
+
+      return order.message('Mocha', '#test', '.o -5--6').then(() => {
+        assert(expected.includes(client.lastMessage));
+      });
+    });
+
+    it('should include lower and upper bounds', () => {
+      let lowerBound = 0,
+          upperBound = 5,
+          range = `${lowerBound}-${upperBound}`;
+
+
+      return order.message('Mocha', '#test', `.o ${range}`).then(() => {
+        let values = client.lastMessage.replace('Mocha: ', '').split(', ');
+        assert(values.includes(lowerBound.toString()));
+        assert(values.includes(upperBound.toString()));
+      });
+    });
 
     it('should only include a max of 20 items', () => {
       return order.message('Mocha', '#test', '.o 1-25').then(() => {
@@ -114,8 +163,51 @@ describe('Order', () => {
   });
 
   describe('List', () => {
-    it('should choose from within list');
+    it('should choose from within list', () => {
+      let expected = [
+        'Mocha: a, b c, d',
+        'Mocha: a, d, b c',
+        'Mocha: b c, a, d',
+        'Mocha: b c, d, a',
+        'Mocha: d, a, b c',
+        'Mocha: d, b c, a'
+      ];
 
-    it('should randomize results');
+      return order.message('Mocha', '#test', '.o a, b c, d').then(() => {
+        assert(expected.includes(client.lastMessage));
+      });
+    });
+
+    it('should randomize results', () => {
+      let expected = [
+        'Mocha: a, b, c',
+        'Mocha: a, c, b',
+        'Mocha: b, a, c',
+        'Mocha: b, c, a',
+        'Mocha: c, a, b',
+        'Mocha: c, b, a'
+      ];
+
+      let results = [];
+      let runs = 10;
+
+      return new Promise((resolve, reject) => {
+        for (let i = 0; i < runs; i++) {
+          order.message('Mocha', '#test', '.o a b c');
+          assert(expected.includes(client.lastMessage));
+          results.push(client.lastMessage);
+
+          // Still can fail, but has a [(0.167^20) * 100]% chance of it
+          if (i == 9 && uniq(results).length == 1) {
+            runs *= 2;
+          }
+          if (i + 1 == runs) {
+            resolve();
+          }
+        }
+      }).then(() => {
+        assert(uniq(results).length > 1);
+      });
+    });
   });
 });

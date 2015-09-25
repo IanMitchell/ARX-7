@@ -7,7 +7,10 @@ let log = debug('Bot');
 
 // Initialize the Bot
 let client = new irc.Client(config.server, config.name, {
-  userName: config.userName || "chidori",
+  userName: config.userName,
+  port: config.port,
+  secure: config.ssl,
+  selfSigned: config.allowInvalidSSL,
   stripColors: true
 });
 

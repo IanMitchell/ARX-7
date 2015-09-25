@@ -6,7 +6,7 @@ export class Client {
     this.lastMessage = null;
     this.lastType = null;
     this.channelLog = [];
-    
+
     this.nick = config.name;
   }
 
@@ -48,3 +48,27 @@ export class Command {
     this.client.say(to, text);
   }
 }
+
+class CommandMock extends Command {
+  constructor(client) {
+    super(client);
+    this.log = [];
+  }
+
+  message(from, to, text, message) {
+    super.message(from, to, text, message);
+    this.log.push(text);
+  }
+
+  clearHistory() {
+    this.log = [];
+  }
+}
+
+export class Choose extends CommandMock {}
+export class Imgur extends CommandMock {}
+export class Order extends CommandMock {}
+export class Reply extends CommandMock {}
+export class Time extends CommandMock {}
+export class Twitter extends CommandMock {}
+export class Youtube extends CommandMock {}

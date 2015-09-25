@@ -62,6 +62,14 @@ export class ARX7 {
   }
 
   join(channel, nick, message) {
+    // Correct incorrect config names
+    if (this.channels.includes(channel.toLowerCase()) &&
+        !this.channels.includes(channel)) {
+      let idx = this.channels.indexOf(channel.toLowerCase());
+      this.channels[idx] = channel;
+    }
+
+    // Joined channel, reset blacklist
     if (nick === this.client.nick) {
       this.droppedChannels.delete(channel);
     }
@@ -80,7 +88,7 @@ export class ARX7 {
     }
 
     // Handle Queries
-    if (to === this.client.nick) {
+    else if (to === this.client.nick) {
       if (this.config.admins.includes(from)) {
         this.handleAdminQuery(from, to, text, message);
       }
