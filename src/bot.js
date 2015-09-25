@@ -9,7 +9,8 @@ let log = debug('Bot');
 let client = new irc.Client(config.server, config.name, {
   userName: config.userName,
   port: config.port,
-  ssl: config.ssl,
+  secure: config.ssl,
+  selfSigned: config.allowInvalidSSL,
   stripColors: true
 });
 
