@@ -30,6 +30,12 @@ export class Reply extends Command {
         resolve();
       }
 
+      if (text.toLowerCase() === 'thx bot') {
+        log(`${from} thanks reply`);
+        this.send(to, 'np');
+        resolve();
+      }
+
       resolve();
     });
   }

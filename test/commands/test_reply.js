@@ -65,4 +65,18 @@ describe('Reply', () => {
       });
     });
   });
+
+  describe('> thx bot', () => {
+    it('should respond', () => {
+      return reply.message('Mocha', '#test', 'thx bot').then(() => {
+        assert.equal('np', client.lastMessage);
+      });
+    });
+
+    it('should respond in correct channel', () => {
+      return reply.message('Mocha', '#test', 'thx bot').then(() => {
+        assert.equal('#test', client.lastTarget);
+      });
+    });
+  });
 });
