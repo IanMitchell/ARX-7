@@ -17,11 +17,13 @@ A dumb IRC bot that wishes it had a Lambda Drive.
 4. **YouTube Link Recognition:** When a YouTube link is in a message, ARX-7 will automatically grab some information such as movie title and total views to display in a message.
 5. **Tweet Link Recognition:** When a Twitter link is in a message, ARX-7 will automatically grab some information such as tweet contents, username, and display name to display in a message.
 6. **Imgur Link Recognition:** When a Imgur link is in a message, ARX-7 will automatically grab some information such as title and total views to display in a message.
-7. **Debug Responses:** Although only one is needed, a few silly phrases are present for debug reasons:
+7. **Replies:** Although only one is needed, a few silly phrases are present for debug reasons:
   * `Ping`: ARX-7 will respond with `pong`
   * `bot respond`: ARX-7 will respond with `I'm a pretty stupid bot.`
   * `bot be nice`: ARX-7 will respond with `sorry :(`
   * `gj bot`: ARX-7 will respond with `thx`
+  * `thx bot`: ARX-7 will respond with `np`
+8. **Time** When the user types `.time <timezone>` as a message, ARX-7 will automatically respond with the current time in the specified zone.
 
 ## Setup
 
