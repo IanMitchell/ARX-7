@@ -11,29 +11,31 @@ let client = new irc.Client(config.server, config.name, {
   port: config.port,
   secure: config.ssl,
   selfSigned: config.allowInvalidSSL,
-  stripColors: true
+  stripColors: true,
+  floodProtection: true,
+  floodProtectionDelay: config.floodProtectionDelay
 });
 
 let arx7 = new ARX7(client, config);
 
 // On Server Connect
 client.addListener('registered', (message) => {
-  arx7.connect(message);
+  arx7.connect();
 });
 
 // Respond to Version requests
 client.addListener('ctcp-version', (from, to, message) => {
-  arx7.version(from, to, message);
+  arx7.version(from, to);
 });
 
 // Listen for channel / personal Messages
 client.addListener('message', (from, to, text, message) => {
-  arx7.message(from, to, text, message);
+  arx7.message(from, to, text);
 });
 
 // Custom Auto-Rejoin
 client.addListener('kick', (channel, nick, by, reason, message) => {
-  arx7.kick(channel, nick, by, reason, message);
+  arx7.kick(channel, nick, by, reason);
 });
 
 client.addListener('error', message => {
@@ -41,7 +43,7 @@ client.addListener('error', message => {
 });
 
 client.addListener('join', (channel, nick, message) => {
-  arx7.join(channel, nick, message);
+  arx7.join(channel, nick);
 
   // Praise the Creator
   if (nick === 'Desch' && channel == '#arx-7') {

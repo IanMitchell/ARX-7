@@ -38,7 +38,7 @@ export class ARX7 {
     });
   }
 
-  connect(message) {
+  connect() {
     log('Connected to Server');
     this.client.say('NickServ', `identify ${this.config.password}`);
     log('Identified');
@@ -56,12 +56,12 @@ export class ARX7 {
     }
   }
 
-  version(from, to, message) {
+  version(from, to) {
     log(`CTCP request from ${from}`);
     this.client.ctcp(from, 'notice', `VERSION ARX-7 v${pkg.version} (Bot)`);
   }
 
-  join(channel, nick, message) {
+  join(channel, nick) {
     // Correct incorrect config names
     if (this.channels.includes(channel.toLowerCase()) &&
         !this.channels.includes(channel)) {
@@ -75,14 +75,14 @@ export class ARX7 {
     }
   }
 
-  message(from, to, text, message) {
+  message(from, to, text) {
     if (this.channels.includes(to)) {
       this.commands.forEach(c => {
         let plugin = c.constructor.name.toLowerCase();
         let index = this.channels.indexOf(to);
 
         if (this.config.channels[index].plugins.includes(plugin)) {
-          c.message(from, to, text, message);
+          c.message(from, to, text);
         }
       });
     }
@@ -90,7 +90,7 @@ export class ARX7 {
     // Handle Queries
     else if (to === this.client.nick) {
       if (this.config.admins.includes(from)) {
-        this.handleAdminQuery(from, to, text, message);
+        this.handleAdminQuery(from, to, text);
       }
       else {
         log(`Query from ${from}: ${text}`);
@@ -100,7 +100,7 @@ export class ARX7 {
     }
   }
 
-  handleAdminQuery(from, to, text, message) {
+  handleAdminQuery(from, to, text) {
     log(`Admin Query from ${from}: ${text}`);
     let usage = `[add|remove] [plugin] [channel] [password]`;
     let args = text.split(/\s+/);
@@ -180,7 +180,7 @@ export class ARX7 {
     }
   }
 
-  kick(channel, nick, by, reason, message) {
+  kick(channel, nick, by, reason) {
     if (nick === this.client.nick) {
       log(`Kicked from ${channel} by ${by}: ${reason}`);
       setTimeout(() => {
