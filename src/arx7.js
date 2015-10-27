@@ -43,6 +43,11 @@ export class ARX7 {
     this.client.say('NickServ', `identify ${this.config.password}`);
     log('Identified');
 
+    if (this.config.mode) {
+      log(`Setting mode +${this.config.mode}`);
+      this.client.send('mode', this.client.nick, this.config.mode);
+    }
+
     // Join channels
     for (let i = 0; i < this.channels.length; i++) {
       log(`Joining ${this.channels[i]}`);

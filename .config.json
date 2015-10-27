@@ -3,6 +3,7 @@
   "password": "password",
   "userName": "chidori",
   "server": "irc.rizon.net",
+  "mode": "g",
   "floodProtectionDelay": 0,
   "port": 6667,
   "ssl": false,
