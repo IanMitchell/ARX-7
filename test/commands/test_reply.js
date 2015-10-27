@@ -79,4 +79,18 @@ describe('Reply', () => {
       });
     });
   });
+
+  describe('> bot pls', () => {
+    it('should respond', () => {
+      return reply.message('Mocha', '#test', 'bot pls').then(() => {
+        assert.equal('( ¬‿¬)', client.lastMessage);
+      });
+    });
+
+    it('should respond in correct channel', () => {
+      return reply.message('Mocha', '#test', 'bot pls').then(() => {
+        assert.equal('#test', client.lastTarget);
+      });
+    });
+  });
 });

@@ -30,12 +30,26 @@ export class ARX7 {
     this.config = config;
     this.droppedChannels = new Set();
 
-    this.channels = config.channels.map(c => {
+    // Expand the config file
+    this.config.channels = config.channels.map(c => {
       if (!c.name.startsWith('#')) {
         c.name = `#${c.name}`;
       }
-      return c.name.toLowerCase();
+
+      c.name = c.name.toLowerCase();
+
+      if (c.key === undefined) {
+        c.key = null;
+      }
+
+      if (c.plugins === undefined) {
+        c.plugins = this.commands.map(o => o.constructor.name.toLowerCase());
+      }
+
+      return c;
     });
+
+    this.channels = config.channels.map(c => c.name);
   }
 
   connect() {
@@ -93,7 +107,7 @@ export class ARX7 {
     }
 
     // Handle Queries
-    else if (to === this.client.nick) {
+    else if (to === this.client.nick && from !== this.client.nick) {
       if (this.config.admins.includes(from)) {
         this.handleAdminQuery(from, to, text);
       }
@@ -213,7 +227,7 @@ export class ARX7 {
       let idx = this.channels.indexOf(message.args[1]);
       let key = this.config.channels[idx].key;
 
-      if (key != null) {
+      if (key !== null) {
         log(`${message.args[1]} is +k. Rejoining with password.`);
         this.client.join(`${message.args[1]} ${key}`);
         this.droppedChannels.add(message.args[1]);
