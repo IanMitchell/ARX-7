@@ -17,7 +17,6 @@
     },
     {
       "name": "#bbb",
-      "key": null,
       "plugins": [
         "choose",
         "reply",
@@ -28,17 +27,7 @@
       ]
     },
     {
-      "name": "ARX-7",
-      "key": null,
-      "plugins": [
-        "choose",
-        "reply",
-        "imgur",
-        "order",
-        "time",
-        "twitter",
-        "youtube"
-      ]
+      "name": "ARX-7"
     },
     {
       "name": "#some-channel",

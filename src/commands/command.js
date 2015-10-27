@@ -3,9 +3,8 @@ import debug from 'debug';
 let log = debug('Command');
 
 export class Command {
-  constructor(c) {
-    this.client = c;
-
+  constructor(client) {
+    this.client = client;
     this.wholeWordBlacklist = [
       "xd"
     ];
@@ -22,7 +21,9 @@ export class Command {
   }
 
   // Pseudo interface
-  message(to, from, text, message) { }
+  message(to, from, text) {
+    return;
+  }
 
   send(to, text) {
     if (this.checkBlacklist(text)) {
