@@ -36,6 +36,12 @@ export class Reply extends Command {
         resolve();
       }
 
+      if (text.toLowerCase() === 'bot pls') {
+        log(`${from} please reply`);
+        this.send(to, '( ¬‿¬)');
+        resolve();
+      }
+
       resolve();
     });
   }
