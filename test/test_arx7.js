@@ -81,7 +81,6 @@ describe('ARX-7', () => {
       arx7.message('Mocha', '#arbalest', '.c 1 2 3');
       assert(arx7.commands[0].log.includes('.c 1 2 3'));
 
-
       for (let i = 1; i < arx7.commands.length; i++) {
         assert.equal(arx7.commands[i].log.length, 0);
       }
@@ -89,7 +88,7 @@ describe('ARX-7', () => {
   });
 
   describe('Responds to Queries', () => {
-    before(function() {
+    beforeEach(function() {
       arx7.isAuthorized = function(username) {
         return new Promise((resolve) => {
           resolve(true);
@@ -98,14 +97,14 @@ describe('ARX-7', () => {
     });
 
     it('should respond to Query', () => {
-      arx7.message('Mocha', 'ARX-7', 'Hi').then(() => {
+      return arx7.message('Mocha', 'ARX-7', 'Hi').then(() => {
         assert(client.lastMessage);
         assert(client.lastMessage.includes("Desch, Jukey, Aoi-chan"));
       });
     });
 
     it('should respond to Admin Query', () => {
-      arx7.message('Desch', 'ARX-7', 'Hi').then(() => {
+      return arx7.message('Desch', 'ARX-7', 'Hi').then(() => {
         assert(client.lastMessage.includes('Command not recognized'));
       });
     });
@@ -113,56 +112,68 @@ describe('ARX-7', () => {
     it('should respond to unidentified Admin Query', () => {
       arx7.isAuthorized = function(username) {
         return new Promise((resolve) => {
-          resolve(true);
+          resolve(false);
         });
       };
-      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7').then(() => {
+
+      return arx7.message('Desch', 'ARX-7', 'add youtube #arx-7').then(() => {
         assert(client.lastMessage.includes('You are not identified.'));
       });
     });
 
+    // it('should unregister notice listeners', () => {
+    //   return arx7.isAuthorized('Desch').then(() => {
+    //     return arx7.isAuthorized('Desch').then(() => {
+    //       // TODO: Assert only called once
+    //       console.log(arx7.client.listenerCount('notice'));
+    //       assert(client.lastMessage.includes('You are not identified.'));
+    //     });
+    //   });
+    // });
+
     it('should only respond to [add|remove]', () => {
-      arx7.message('Desch', 'ARX-7', 'Hi').then(() => {
+      return arx7.message('Desch', 'ARX-7', 'Hi replies #arx-7').then(() => {
         assert(client.lastMessage.includes('Command not recognized'));
       });
     });
 
     it('should only respond to the correct number of commands', () => {
-      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 oops').then(() => {
+      return arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 oops').then(() => {
         assert(client.lastMessage.includes('Incorrect number of commands'));
 
-        arx7.message('Desch', 'ARX-7', 'add youtube #arx-7');
-        assert(!client.lastMessage.includes('Incorrect number of commands'));
+        arx7.message('Desch', 'ARX-7', 'add youtube #arx-7').then(() => {
+          assert(!client.lastMessage.includes('Incorrect number of commands'));
+        });
       });
     });
 
     it('should not respond for an inappropriate channel', () => {
-      arx7.message('Desch', 'ARX-7', 'add youtube #wrong').then(() => {
+      return arx7.message('Desch', 'ARX-7', 'add youtube #wrong').then(() => {
         assert(client.lastMessage.includes('Invalid channel'));
       });
     });
 
     it('should not respond for an inappropriate plugin', () => {
-      arx7.message('Desch', 'ARX-7', 'add irc #arx-7').then(() => {
+      return arx7.message('Desch', 'ARX-7', 'add irc #arx-7').then(() => {
         assert(client.lastMessage.includes('Invalid plugin'));
       });
     });
 
     it('should not double a plugin', () => {
-      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7').then(() => {
+      return arx7.message('Desch', 'ARX-7', 'add youtube #arx-7').then(() => {
         assert(client.lastMessage.includes('already enabled'));
       });
     });
 
     it('should not remove a non-existent plugin', () => {
-      arx7.message('Desch', 'ARX-7', 'remove youtube #arbalest').then(() => {
+      return arx7.message('Desch', 'ARX-7', 'remove youtube #arbalest').then(() => {
         assert(client.lastMessage.includes('already disabled'));
       });
     });
 
     it('should add a disabled plugin', () => {
       assert(!arx7.config.channels[0].plugins.includes('youtube'));
-      arx7.message('Desch', 'ARX-7', 'add youtube #arbalest').then(() => {
+      return arx7.message('Desch', 'ARX-7', 'add youtube #arbalest').then(() => {
         assert(client.lastMessage.includes('Enabled youtube for #arbalest'));
         assert(arx7.config.channels[0].plugins.includes('youtube'));
         arx7.config.channels[0].plugins.pop();
@@ -171,10 +182,10 @@ describe('ARX-7', () => {
 
     it('should remove an enabled plugin', () => {
       assert(arx7.config.channels[0].plugins.includes('choose'));
-      arx7.message('Desch', 'ARX-7', 'remove choose #arbalest').then(() => {
+      return arx7.message('Desch', 'ARX-7', 'remove choose #arbalest').then(() => {
         assert(client.lastMessage.includes('Disabled choose for #arbalest'));
         assert(!arx7.config.channels[0].plugins.includes('choose'));
-        arx7.config.channels[0].plugins.push('choose');        
+        arx7.config.channels[0].plugins.push('choose');
       });
     });
   });

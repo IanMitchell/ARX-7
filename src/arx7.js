@@ -128,12 +128,15 @@ export class ARX7 {
 
   isAuthorized(username) {
     return new Promise((resolve, reject) => {
-      this.client.addListener('notice', (from, to, text) => {
+      let callbackWrapper = (from, to, text) => {
         log(`Notice: ${from} -> ${to}: ${text}`);
         if (text.startsWith(`STATUS ${username}`)) {
+          this.client.removeListener('notice', callbackWrapper);
           resolve(Number.parseInt(text[text.length -1]) > 1);
         }
-      });
+      };
+
+      this.client.addListener('notice', callbackWrapper);
       this.client.say('NickServ', `status ${username}`);
     });
   }
@@ -149,21 +152,21 @@ export class ARX7 {
             text.toLowerCase().startsWith('remove '))) {
         log(`Unrecognized command`);
         this.client.say(from, `Command not recognized, boss. ${usage}`);
-        resolve();
+        return resolve();
       }
 
       // Verify command format
       if (args.length != 3) {
         log(`Unrecognized command`);
         this.client.say(from, `Incorrect number of commands. ${usage}`);
-        resolve();
+        return reject();
       }
 
       this.isAuthorized(from).then((status) => {
         if (status === false) {
           log(`${from} is not identified.`);
           this.client.say(from, `You are not identified.`);
-          resolve();
+          return resolve();
         }
         else {
           let channel_index = this.channels.indexOf(args[2].toLowerCase());
@@ -172,7 +175,7 @@ export class ARX7 {
           if (!this.config.channels[channel_index]) {
             log(`Invalid channel`);
             this.client.say(from, `Invalid channel. ${usage}`);
-            resolve();
+            return resolve();
           }
 
           // Search and Verify Plugin Existence
@@ -183,7 +186,7 @@ export class ARX7 {
           if (!exists) {
             log(`Invalid plugin`);
             this.client.say(from, `Invalid plugin. ${usage}`);
-            resolves();
+            return resolve();
           }
 
           // Add Plugin
@@ -194,13 +197,13 @@ export class ARX7 {
 
             if (idx > -1) {
               this.client.say(from, `Plugin ${args[1]} already enabled.`);
-              resolve();
+              return resolve();
             }
             else {
               log(`Enabling ${args[1]} for ${args[2]}`);
               this.config.channels[channel_index].plugins.push(plugin);
               this.client.say(from, `Enabled ${args[1]} for ${args[2]}`);
-              resolve();
+              return resolve();
             }
           }
 
@@ -214,11 +217,11 @@ export class ARX7 {
 
               log(`DISABLE command for ${args[1]} in ${args[2]}`);
               this.client.say(from, `Disabled ${args[1]} for ${args[2]}`);
-              resolve();
+              return resolve();
             }
             else {
               this.client.say(from, `Plugin ${args[1]} already disabled.`);
-              resolve();
+              return resolve();
             }
           }
         }
