@@ -89,75 +89,93 @@ describe('ARX-7', () => {
   });
 
   describe('Responds to Queries', () => {
+    before(function() {
+      arx7.isAuthorized = function(username) {
+        return new Promise((resolve) => {
+          resolve(true);
+        });
+      };
+    });
+
     it('should respond to Query', () => {
-      arx7.message('Mocha', 'ARX-7', 'Hi');
-      assert(client.lastMessage);
-      assert(client.lastMessage.includes("Desch, Jukey, Aoi-chan"));
+      arx7.message('Mocha', 'ARX-7', 'Hi').then(() => {
+        assert(client.lastMessage);
+        assert(client.lastMessage.includes("Desch, Jukey, Aoi-chan"));
+      });
     });
 
     it('should respond to Admin Query', () => {
-      arx7.message('Desch', 'ARX-7', 'Hi');
-      assert(client.lastMessage.includes('Command not recognized'));
+      arx7.message('Desch', 'ARX-7', 'Hi').then(() => {
+        assert(client.lastMessage.includes('Command not recognized'));
+      });
+    });
+
+    it('should respond to unidentified Admin Query', () => {
+      arx7.isAuthorized = function(username) {
+        return new Promise((resolve) => {
+          resolve(true);
+        });
+      };
+      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7').then(() => {
+        assert(client.lastMessage.includes('You are not identified.'));
+      });
     });
 
     it('should only respond to [add|remove]', () => {
-      arx7.message('Desch', 'ARX-7', 'Hi');
-      assert(client.lastMessage.includes('Command not recognized'));
+      arx7.message('Desch', 'ARX-7', 'Hi').then(() => {
+        assert(client.lastMessage.includes('Command not recognized'));
+      });
     });
 
     it('should only respond to the correct number of commands', () => {
-      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 password oops');
-      assert(client.lastMessage.includes('Incorrect number of commands'));
+      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 oops').then(() => {
+        assert(client.lastMessage.includes('Incorrect number of commands'));
 
-      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7');
-      assert(client.lastMessage.includes('Incorrect number of commands'));
-
-      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 admin');
-      assert(!client.lastMessage.includes('Incorrect number of commands'));
-    });
-
-    it('should only respond to the correct password', () => {
-      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 wrong');
-      assert(client.lastMessage.includes('Invalid password'));
-
-      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 admin');
-      assert(!client.lastMessage.includes('Invalid password'));
+        arx7.message('Desch', 'ARX-7', 'add youtube #arx-7');
+        assert(!client.lastMessage.includes('Incorrect number of commands'));
+      });
     });
 
     it('should not respond for an inappropriate channel', () => {
-      arx7.message('Desch', 'ARX-7', 'add youtube #wrong admin');
-      assert(client.lastMessage.includes('Invalid channel'));
+      arx7.message('Desch', 'ARX-7', 'add youtube #wrong').then(() => {
+        assert(client.lastMessage.includes('Invalid channel'));
+      });
     });
 
     it('should not respond for an inappropriate plugin', () => {
-      arx7.message('Desch', 'ARX-7', 'add irc #arx-7 admin');
-      assert(client.lastMessage.includes('Invalid plugin'));
+      arx7.message('Desch', 'ARX-7', 'add irc #arx-7').then(() => {
+        assert(client.lastMessage.includes('Invalid plugin'));
+      });
     });
 
     it('should not double a plugin', () => {
-      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 admin');
-      assert(client.lastMessage.includes('already enabled'));
+      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7').then(() => {
+        assert(client.lastMessage.includes('already enabled'));
+      });
     });
 
     it('should not remove a non-existent plugin', () => {
-      arx7.message('Desch', 'ARX-7', 'remove youtube #arbalest admin');
-      assert(client.lastMessage.includes('already disabled'));
+      arx7.message('Desch', 'ARX-7', 'remove youtube #arbalest').then(() => {
+        assert(client.lastMessage.includes('already disabled'));
+      });
     });
 
     it('should add a disabled plugin', () => {
       assert(!arx7.config.channels[0].plugins.includes('youtube'));
-      arx7.message('Desch', 'ARX-7', 'add youtube #arbalest admin');
-      assert(client.lastMessage.includes('Enabled youtube for #arbalest'));
-      assert(arx7.config.channels[0].plugins.includes('youtube'));
-      arx7.config.channels[0].plugins.pop();
+      arx7.message('Desch', 'ARX-7', 'add youtube #arbalest').then(() => {
+        assert(client.lastMessage.includes('Enabled youtube for #arbalest'));
+        assert(arx7.config.channels[0].plugins.includes('youtube'));
+        arx7.config.channels[0].plugins.pop();
+      });
     });
 
     it('should remove an enabled plugin', () => {
       assert(arx7.config.channels[0].plugins.includes('choose'));
-      arx7.message('Desch', 'ARX-7', 'remove choose #arbalest admin');
-      assert(client.lastMessage.includes('Disabled choose for #arbalest'));
-      assert(!arx7.config.channels[0].plugins.includes('choose'));
-      arx7.config.channels[0].plugins.push('choose');
+      arx7.message('Desch', 'ARX-7', 'remove choose #arbalest').then(() => {
+        assert(client.lastMessage.includes('Disabled choose for #arbalest'));
+        assert(!arx7.config.channels[0].plugins.includes('choose'));
+        arx7.config.channels[0].plugins.push('choose');        
+      });
     });
   });
 
