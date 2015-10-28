@@ -87,6 +87,12 @@ describe('ARX-7', () => {
     });
   });
 
+  describe('Handles Authorization', () => {
+    it('should remove event listeners');
+    
+    it('should handle simultaneous commands');
+  });
+
   describe('Responds to Queries', () => {
     beforeEach(function() {
       arx7.isAuthorized = () => {
