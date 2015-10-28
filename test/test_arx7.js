@@ -89,7 +89,7 @@ describe('ARX-7', () => {
 
   describe('Responds to Queries', () => {
     beforeEach(function() {
-      arx7.isAuthorized = function(username) {
+      arx7.isAuthorized = () => {
         return new Promise((resolve) => {
           resolve(true);
         });
@@ -120,16 +120,6 @@ describe('ARX-7', () => {
         assert(client.lastMessage.includes('You are not identified.'));
       });
     });
-
-    // it('should unregister notice listeners', () => {
-    //   return arx7.isAuthorized('Desch').then(() => {
-    //     return arx7.isAuthorized('Desch').then(() => {
-    //       // TODO: Assert only called once
-    //       console.log(arx7.client.listenerCount('notice'));
-    //       assert(client.lastMessage.includes('You are not identified.'));
-    //     });
-    //   });
-    // });
 
     it('should only respond to [add|remove]', () => {
       return arx7.message('Desch', 'ARX-7', 'Hi replies #arx-7').then(() => {

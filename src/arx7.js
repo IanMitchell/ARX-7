@@ -128,15 +128,13 @@ export class ARX7 {
 
   isAuthorized(username) {
     return new Promise((resolve, reject) => {
-      let callbackWrapper = (from, to, text) => {
+      this.client.once('notice', (from, to, text) => {
         log(`Notice: ${from} -> ${to}: ${text}`);
         if (text.startsWith(`STATUS ${username}`)) {
-          this.client.removeListener('notice', callbackWrapper);
           resolve(Number.parseInt(text[text.length -1]) > 1);
         }
-      };
+      });
 
-      this.client.addListener('notice', callbackWrapper);
       this.client.say('NickServ', `status ${username}`);
     });
   }
