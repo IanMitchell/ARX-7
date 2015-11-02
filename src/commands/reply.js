@@ -1,48 +1,48 @@
 import debug from 'debug';
 import {Command} from './command.js';
 
-let log = debug('Reply');
+const log = debug('Reply');
 
 export class Reply extends Command {
-  message(from, to, text, message) {
-    return new Promise((resolve, reject) => {
+  message(from, to, text) {
+    return new Promise(resolve => {
       if (text.toLowerCase() === 'ping') {
         log(`${from} ping reply`);
         this.send(to, 'pong');
-        resolve();
+        return resolve();
       }
 
       if (text.toLowerCase() === 'bot respond') {
         log(`${from} respond reply`);
         this.send(to, "I'm a pretty stupid bot.");
-        resolve();
+        return resolve();
       }
 
       if (text.toLowerCase() === 'bot be nice') {
         log(`${from} apology reply`);
-        this.send(to, "sorry :(");
-        resolve();
+        this.send(to, 'sorry :(');
+        return resolve();
       }
 
       if (text.toLowerCase() === 'gj bot') {
         log(`${from} congrats reply`);
-        this.send(to, "thx");
-        resolve();
+        this.send(to, 'thx');
+        return resolve();
       }
 
       if (text.toLowerCase() === 'thx bot') {
         log(`${from} thanks reply`);
         this.send(to, 'np');
-        resolve();
+        return resolve();
       }
 
       if (text.toLowerCase() === 'bot pls') {
         log(`${from} please reply`);
         this.send(to, '( ¬‿¬)');
-        resolve();
+        return resolve();
       }
 
-      resolve();
+      return resolve();
     });
   }
 }

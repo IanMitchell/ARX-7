@@ -1,61 +1,61 @@
 import debug from 'debug';
 import {Command} from './command.js';
 
-let log = debug('Order');
+const log = debug('Order');
 
 export const ORDER_MAX_VALUE = 99999999999;
 export const ORDER_RANGE_LIMIT = 1024;
 export const ORDER_RESULTS_LIMIT = 20;
 
 export class Order extends Command {
-  message(from, to, text, message) {
-    return new Promise((resolve, reject) => {
-      let order_regex = /^[.!]o(?:rder)? (.+)$/;
-      let order = text.match(order_regex);
+  message(from, to, text) {
+    return new Promise(resolve => {
+      const orderRegex = /^[.!]o(?:rder)? (.+)$/;
+      const order = text.match(orderRegex);
 
       if (order) {
-        let range_regex = /(-?\d+)-(-?\d+)$/;
-        let range = text.match(range_regex);
+        const rangeRegex = /(-?\d+)-(-?\d+)$/;
+        const range = text.match(rangeRegex);
 
         if (range) {
           log(`${from} on: ${range}`);
-          let result = this.orderRange(range);
+          const result = this.orderRange(range);
           this.send(to, `${from}: ${result}`);
-          resolve();
+          return resolve();
         }
-        else {
-          log(`${from} on: ${order[1]}`);
-          let result = this.orderList(order[1]);
-          this.send(to, `${from}: ${result}`);
-          resolve();
-        }
+
+        log(`${from} on: ${order[1]}`);
+        const result = this.orderList(order[1]);
+        this.send(to, `${from}: ${result}`);
+        return resolve();
       }
 
-      resolve();
+      return resolve();
     });
   }
 
   orderRange(order) {
-    let min = Math.min(parseInt(order[1]), parseInt(order[2])),
-        max = Math.max(parseInt(order[1]), parseInt(order[2]));
+    const min = Math.min(parseInt(order[1], 10), parseInt(order[2], 10));
+    const max = Math.max(parseInt(order[1], 10), parseInt(order[2], 10));
 
     if (min >= ORDER_MAX_VALUE || max >= ORDER_MAX_VALUE) {
       return 'Value is too high.';
     }
 
-    let choices = this.getRange(min, max);
+    const choices = this.getRange(min, max);
     return choices.join(', ');
   }
 
   getRange(lowerBound, upperBound) {
-    let results = [],
-        capped = false;
+    let results = new Array();
+    let capped = false;
+    let correctedUpperBound = upperBound;
 
     if (upperBound - lowerBound > ORDER_RANGE_LIMIT) {
-      upperBound = lowerBound + ORDER_RANGE_LIMIT;
+      correctedUpperBound = lowerBound + ORDER_RANGE_LIMIT;
     }
 
-    for (let i = lowerBound; i <= upperBound; i++) {
+    for (let i = lowerBound; i <= correctedUpperBound; i++) {
       if (i - lowerBound > ORDER_RESULTS_LIMIT) {
         capped = true;
       }
@@ -84,31 +84,30 @@ export class Order extends Command {
       choices = this.shuffleArray(choices);
       return choices.join(', ');
     }
-    else {
-      return 'No choices to choose from';
-    }
+
+    return 'No choices to choose from';
   }
 
   shuffleArray(array) {
     let temp = 0;
 
     for (let i = array.length - 1; i >= 0; i--) {
-      let n = Math.floor(Math.random() * (array.length - i)) + i;
+      const idx = Math.floor(Math.random() * (array.length - i)) + i;
       temp = array[i];
-      array[i] = array[n];
-      array[n] = temp;
+      array[i] = array[idx];
+      array[idx] = temp;
     }
 
     return array;
   }
 
   getChoices(input, delimiter) {
-    let choices = [];
+    const choices = new Array();
 
-    input.split(delimiter).forEach(k => {
-      let v = k.trim();
-      if (v) {
-        choices.push(v);
+    input.split(delimiter).forEach(choice => {
+      const val = choice.trim();
+      if (val) {
+        choices.push(val);
       }
     });
 

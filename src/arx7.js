@@ -1,15 +1,15 @@
 import debug from 'debug';
 import pkg from '../package';
 
-import {Choose}  from './commands/choose.js';
-import {Imgur}   from './commands/imgur.js';
-import {Order}   from './commands/order.js';
-import {Reply}   from './commands/reply.js';
-import {Time}    from './commands/time.js';
+import {Choose} from './commands/choose.js';
+import {Imgur} from './commands/imgur.js';
+import {Order} from './commands/order.js';
+import {Reply} from './commands/reply.js';
+import {Time} from './commands/time.js';
 import {Twitter} from './commands/twitter.js';
 import {Youtube} from './commands/youtube.js';
 
-let log = debug('ARX-7');
+const log = debug('ARX-7');
 
 const KICK_REJOIN_DELAY = 1000 * 3;
 const BAN_RETRY_DELAY = 1000 * 60 * 3;
@@ -23,7 +23,7 @@ export class ARX7 {
       new Reply(client),
       new Time(client),
       new Twitter(client),
-      new Youtube(client)
+      new Youtube(client),
     ];
 
     this.client = client;
@@ -31,25 +31,27 @@ export class ARX7 {
     this.droppedChannels = new Set();
 
     // Expand the config file
-    this.config.channels = config.channels.map(c => {
-      if (!c.name.startsWith('#')) {
-        c.name = `#${c.name}`;
+    this.config.channels = config.channels.map(channel => {
+      if (!channel.name.startsWith('#')) {
+        channel.name = `#${channel.name}`;
       }
 
-      c.name = c.name.toLowerCase();
+      channel.name = channel.name.toLowerCase();
 
-      if (c.key === undefined) {
-        c.key = null;
+      if (channel.key === undefined) {
+        channel.key = null;
       }
 
-      if (c.plugins === undefined) {
-        c.plugins = this.commands.map(o => o.constructor.name.toLowerCase());
+      if (channel.plugins === undefined) {
+        channel.plugins = this.commands.map(command => {
+          return command.constructor.name.toLowerCase();
+        });
       }
 
-      return c;
+      return channel;
     });
 
-    this.channels = config.channels.map(c => c.name);
+    this.channels = config.channels.map(channel => channel.name);
   }
 
   connect() {
@@ -63,19 +65,18 @@ export class ARX7 {
     }
 
     // Join channels
-    for (let i = 0; i < this.channels.length; i++) {
-      log(`Joining ${this.channels[i]}`);
+    this.config.channels.forEach(channel => {
+      log(`Joining ${channel.name}`);
 
-      if (this.config.channels[i].key) {
-        this.client.join(`${this.channels[i]} ${this.config.channels[i].key}`);
+      if (channel.key) {
+        this.client.join(`${channel.name} ${channel.key}`);
+      } else {
+        this.client.join(channel.name);
       }
-      else {
-        this.client.join(this.channels[i]);
-      }
-    }
+    });
   }
 
-  version(from, to) {
+  version(from) {
     log(`CTCP request from ${from}`);
     this.client.ctcp(from, 'notice', `VERSION ARX-7 v${pkg.version} (Bot)`);
   }
@@ -84,7 +85,7 @@ export class ARX7 {
     // Correct incorrect config names
     if (this.channels.includes(channel.toLowerCase()) &&
         !this.channels.includes(channel)) {
-      let idx = this.channels.indexOf(channel.toLowerCase());
+      const idx = this.channels.indexOf(channel.toLowerCase());
       this.channels[idx] = channel;
     }
 
@@ -95,44 +96,43 @@ export class ARX7 {
   }
 
   message(from, to, text) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       if (this.channels.includes(to)) {
-        this.commands.forEach(c => {
-          let plugin = c.constructor.name.toLowerCase();
-          let index = this.channels.indexOf(to);
+        // Command Handling
+        this.commands.forEach(command => {
+          const plugin = command.constructor.name.toLowerCase();
+          const index = this.channels.indexOf(to);
 
           if (this.config.channels[index].plugins.includes(plugin)) {
-            c.message(from, to, text);
+            command.message(from, to, text);
           }
         });
-        resolve();
-      }
 
-      // Handle Queries
-      else if (to === this.client.nick && from !== this.client.nick) {
+        resolve();
+      } else if (to === this.client.nick && from !== this.client.nick) {
+        // Query Handling
         if (this.config.admins.includes(from)) {
           this.handleAdminQuery(from, to, text).then(resolve());
-        }
-        else {
+        } else {
           log(`Query from ${from}: ${text}`);
-          let admins = this.config.admins.join(', ');
+          const admins = this.config.admins.join(', ');
           this.client.say(from, `I'm a bot! Contact [${admins}] for help`);
           resolve();
         }
-      }
-      else {
+      } else {
         resolve();
       }
     });
   }
 
   isAuthorized(username) {
-    return new Promise((resolve, reject) => {
-      let callbackWrapper = (from, to, text) => {
-        log(`Notice: ${from} -> ${to}: ${text}`);
+    return new Promise(resolve => {
+      const callbackWrapper = (from, to, text) => {
+        log(`NOTICE ${from}: ${text}`);
+
         if (text.startsWith(`STATUS ${username}`)) {
           this.client.removeListener(callbackWrapper);
-          resolve(Number.parseInt(text[text.length -1]) > 1);
+          resolve(parseInt(text[text.length - 1], 10) > 1);
         }
       };
 
@@ -144,8 +144,8 @@ export class ARX7 {
   handleAdminQuery(from, to, text) {
     return new Promise((resolve, reject) => {
       log(`Admin Query from ${from}: ${text}`);
-      let usage = `[add|remove] [plugin] [channel]`;
-      let args = text.split(/\s+/);
+      const usage = `[add|remove] [plugin] [channel]`;
+      const args = text.split(/\s+/);
 
       // We only support add/remove commands
       if (!(text.toLowerCase().startsWith('add ') ||
@@ -156,74 +156,72 @@ export class ARX7 {
       }
 
       // Verify command format
-      if (args.length != 3) {
+      if (args.length !== 3) {
         log(`Unrecognized command`);
         this.client.say(from, `Incorrect number of commands. ${usage}`);
         return reject();
       }
 
-      this.isAuthorized(from).then((status) => {
+      // Verify Authorization
+      this.isAuthorized(from).then(status => {
         if (status === false) {
           log(`${from} is not identified.`);
           this.client.say(from, `You are not identified.`);
           return resolve();
         }
-        else {
-          let channel_index = this.channels.indexOf(args[2].toLowerCase());
 
-          // Verify Channel Existence
-          if (!this.config.channels[channel_index]) {
-            log(`Invalid channel`);
-            this.client.say(from, `Invalid channel. ${usage}`);
+        const channelIndex = this.channels.indexOf(args[2].toLowerCase());
+
+        // Verify Channel Existence
+        if (!this.config.channels[channelIndex]) {
+          log(`Invalid channel`);
+          this.client.say(from, `Invalid channel. ${usage}`);
+          return resolve();
+        }
+
+        // Search and Verify Plugin Existence
+        const exists = this.commands.some(command => {
+          return command.constructor.name.toLowerCase() === args[1].toLowerCase();
+        });
+
+        if (!exists) {
+          log(`Invalid plugin`);
+          this.client.say(from, `Invalid plugin. ${usage}`);
+          return resolve();
+        }
+
+        // Add Plugin
+        if (args[0].toLowerCase() === 'add') {
+          log(`ENABLE command for ${args[1]} in ${args[2]}`);
+          const plugin = args[1].toLowerCase();
+          const idx = this.config.channels[channelIndex].plugins.indexOf(plugin);
+
+          if (idx > -1) {
+            this.client.say(from, `Plugin ${args[1]} already enabled.`);
             return resolve();
           }
 
-          // Search and Verify Plugin Existence
-          let exists = this.commands.some(c => {
-            return c.constructor.name.toLowerCase() === args[1].toLowerCase();
-          });
+          log(`Enabling ${args[1]} for ${args[2]}`);
+          this.config.channels[channelIndex].plugins.push(plugin);
+          this.client.say(from, `Enabled ${args[1]} for ${args[2]}`);
+          return resolve();
+        }
 
-          if (!exists) {
-            log(`Invalid plugin`);
-            this.client.say(from, `Invalid plugin. ${usage}`);
+        // Remove Plugin
+        if (args[0].toLowerCase() === 'remove') {
+          const plugin = args[1].toLowerCase();
+          const idx = this.config.channels[channelIndex].plugins.indexOf(plugin);
+
+          if (idx > -1) {
+            this.config.channels[channelIndex].plugins.splice(idx, 1);
+
+            log(`DISABLE command for ${args[1]} in ${args[2]}`);
+            this.client.say(from, `Disabled ${args[1]} for ${args[2]}`);
             return resolve();
           }
 
-          // Add Plugin
-          if (args[0].toLowerCase() === 'add') {
-            log(`ENABLE command for ${args[1]} in ${args[2]}`);
-            let plugin = args[1].toLowerCase();
-            let idx = this.config.channels[channel_index].plugins.indexOf(plugin);
-
-            if (idx > -1) {
-              this.client.say(from, `Plugin ${args[1]} already enabled.`);
-              return resolve();
-            }
-            else {
-              log(`Enabling ${args[1]} for ${args[2]}`);
-              this.config.channels[channel_index].plugins.push(plugin);
-              this.client.say(from, `Enabled ${args[1]} for ${args[2]}`);
-              return resolve();
-            }
-          }
-
-          // Remove Plugin
-          if (args[0].toLowerCase() === 'remove') {
-            let plugin = args[1].toLowerCase();
-            let idx = this.config.channels[channel_index].plugins.indexOf(plugin);
-
-            if (idx > -1) {
-              this.config.channels[channel_index].plugins.splice(idx, 1);
-
-              log(`DISABLE command for ${args[1]} in ${args[2]}`);
-              this.client.say(from, `Disabled ${args[1]} for ${args[2]}`);
-              return resolve();
-            }
-            else {
-              this.client.say(from, `Plugin ${args[1]} already disabled.`);
-              return resolve();
-            }
-          }
+          this.client.say(from, `Plugin ${args[1]} already disabled.`);
+          return resolve();
         }
       });
     });
@@ -240,34 +238,31 @@ export class ARX7 {
   }
 
   error(message) {
-    if (message.command == 'err_bannedfromchan') {
+    if (message.command === 'err_bannedfromchan') {
       log(`Banned from ${message.args[1]}. Rejoining in in 3 minutes`);
 
       // `()=>` ensures there is a delay; otherwise it continuously fires
       setTimeout(() => this.client.join(message.args[1]), BAN_RETRY_DELAY);
-    }
-    // Attempt to rejoin +k channels correctly
-    else if (message.command == 'err_badchannelkey') {
+    } else if (message.command === 'err_badchannelkey') {
+      // Attempt to rejoin +k channels correctly
       // Prevent infinite rejoin attempts
       if (this.droppedChannels.has(message.args[1])) {
         log(`Incorrect password for ${message.args[1]}.`);
         return;
       }
 
-      let idx = this.channels.indexOf(message.args[1]);
-      let key = this.config.channels[idx].key;
+      const idx = this.channels.indexOf(message.args[1]);
+      const key = this.config.channels[idx].key;
 
       if (key !== null) {
         log(`${message.args[1]} is +k. Rejoining with password.`);
         this.client.join(`${message.args[1]} ${key}`);
         this.droppedChannels.add(message.args[1]);
-      }
-      else {
+      } else {
         log(`${message.args[1]} is +k. No key found. Skipping channel`);
       }
-    }
-    // Log other errors
-    else {
+    } else {
+      // Log other errors
       log(`ERROR: ${message.command}`);
     }
   }

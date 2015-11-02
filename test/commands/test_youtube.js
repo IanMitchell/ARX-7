@@ -1,12 +1,13 @@
-import assert from "assert";
-import {Client} from "../helpers.js";
-import {Youtube} from "../../src/commands/youtube";
+import {describe, afterEach, it} from 'mocha';
+import assert from 'assert';
+import {Client} from '../helpers.js';
+import {Youtube} from '../../src/commands/youtube';
 
-let client = new Client();
-let youtube = new Youtube(client);
+const client = new Client();
+const youtube = new Youtube(client);
 
-let link = 'https://www.youtube.com/watch?v=JmwVZ-p9XOk';
-let malformed = 'youtube.com/watch?v=8WZr6f…';
+const link = 'https://www.youtube.com/watch?v=JmwVZ-p9XOk';
+const malformed = 'youtube.com/watch?v=8WZr6f…';
 
 describe('YouTube', () => {
   afterEach(() => {

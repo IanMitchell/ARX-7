@@ -1,9 +1,10 @@
-import assert from "assert";
-import {Client} from "../helpers.js";
-import {Reply} from "../../src/commands/reply";
+import {describe, afterEach, it} from 'mocha';
+import assert from 'assert';
+import {Client} from '../helpers.js';
+import {Reply} from '../../src/commands/reply';
 
-let client = new Client();
-let reply = new Reply(client);
+const client = new Client();
+const reply = new Reply(client);
 
 describe('Reply', () => {
   afterEach(() => {

@@ -1,11 +1,12 @@
-import assert from "assert";
-import {Client} from "../helpers.js";
-import {Twitter} from "../../src/commands/twitter";
+import {describe, afterEach, it} from 'mocha';
+import assert from 'assert';
+import {Client} from '../helpers.js';
+import {Twitter} from '../../src/commands/twitter';
 
-let client = new Client();
-let twitter = new Twitter(client);
+const client = new Client();
+const twitter = new Twitter(client);
 
-let link = 'https://twitter.com/IanMitchel1/status/636939838512500736';
+const link = 'https://twitter.com/IanMitchel1/status/636939838512500736';
 
 describe('Twitter', () => {
   afterEach(() => {
@@ -45,15 +46,15 @@ describe('Twitter', () => {
   describe('Tweet Lookup', () => {
     it('should include username and Twitter handle', () => {
       return twitter.message('Mocha', '#test', link).then(() => {
-        let tweet = client.lastMessage.toLowerCase();
-        let expected = ' | By Ian Mitchell (@IanMitchel1)'.toLowerCase();
+        const tweet = client.lastMessage.toLowerCase();
+        const expected = ' | By Ian Mitchell (@IanMitchel1)'.toLowerCase();
         assert(tweet.includes(expected));
       });
     });
 
     it('should handle special characters', () => {
       return twitter.message('Mocha', '#test', link).then(() => {
-        let tweet = client.lastMessage.toLowerCase();
+        const tweet = client.lastMessage.toLowerCase();
         assert((tweet.includes('<') && tweet.includes('>')));
       });
     });

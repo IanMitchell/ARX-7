@@ -1,5 +1,6 @@
-import assert from "assert";
-import config from "./test_config";
+import {describe, afterEach, beforeEach, it} from 'mocha';
+import assert from 'assert';
+import config from './test_config';
 import {Client,
         Choose,
         Imgur,
@@ -7,11 +8,11 @@ import {Client,
         Reply,
         Time,
         Twitter,
-        Youtube} from "./helpers.js";
-import {ARX7} from "../src/arx7";
+        Youtube} from './helpers.js';
+import {ARX7} from '../src/arx7';
 
-let client = new Client();
-let arx7 = new ARX7(client, config);
+const client = new Client();
+const arx7 = new ARX7(client, config);
 arx7.commands = [
   new Choose(client),
   new Imgur(client),
@@ -19,7 +20,7 @@ arx7.commands = [
   new Reply(client),
   new Time(client),
   new Twitter(client),
-  new Youtube(client)
+  new Youtube(client),
 ];
 
 describe('ARX-7', () => {
@@ -27,7 +28,7 @@ describe('ARX-7', () => {
     client.resetLog();
     client.resetChannels();
     arx7.droppedChannels.clear();
-    arx7.commands.forEach(c => c.clearHistory());
+    arx7.commands.forEach(command => command.clearHistory());
   });
 
   describe('On Connect', () => {
@@ -47,27 +48,27 @@ describe('ARX-7', () => {
 
     it('should handle uppercase channel names', () => {
       arx7.connect();
-      assert(client.channelLog.includes("#arx-7"));
+      assert(client.channelLog.includes('#arx-7'));
     });
 
     it('should join +k channels', () => {
       arx7.connect();
-      assert(client.channelLog.includes("#arbalest sagara"));
+      assert(client.channelLog.includes('#arbalest sagara'));
     });
   });
 
   describe('Responds to CTCP Version', () => {
     it('should respond with VERSION', () => {
-      arx7.version("Mocha", "ARX-7");
-      assert(client.lastMessage.includes("VERSION"));
-      assert.equal(client.lastType, "notice");
+      arx7.version('Mocha', 'ARX-7');
+      assert(client.lastMessage.includes('VERSION'));
+      assert.equal(client.lastType, 'notice');
     });
   });
 
   describe('Responds to Messages', () => {
     it('should send message to plugins', () => {
       arx7.message('Mocha', '#arx-7', '.c 1 2 3');
-      arx7.commands.forEach(c => assert.equal(c.log.length, 1));
+      arx7.commands.forEach(command => assert.equal(command.log.length, 1));
     });
 
     // Aoi-chan Test
@@ -89,12 +90,12 @@ describe('ARX-7', () => {
 
   describe('Handles Authorization', () => {
     it('should remove event listeners');
-    
+
     it('should handle simultaneous commands');
   });
 
   describe('Responds to Queries', () => {
-    beforeEach(function() {
+    beforeEach(() => {
       arx7.isAuthorized = () => {
         return new Promise((resolve) => {
           resolve(true);
@@ -105,7 +106,7 @@ describe('ARX-7', () => {
     it('should respond to Query', () => {
       return arx7.message('Mocha', 'ARX-7', 'Hi').then(() => {
         assert(client.lastMessage);
-        assert(client.lastMessage.includes("Desch, Jukey, Aoi-chan"));
+        assert(client.lastMessage.includes('Desch, Jukey, Aoi-chan'));
       });
     });
 
@@ -116,10 +117,8 @@ describe('ARX-7', () => {
     });
 
     it('should respond to unidentified Admin Query', () => {
-      arx7.isAuthorized = function(username) {
-        return new Promise((resolve) => {
-          resolve(false);
-        });
+      arx7.isAuthorized = () => {
+        return new Promise(resolve => resolve(false));
       };
 
       return arx7.message('Desch', 'ARX-7', 'add youtube #arx-7').then(() => {

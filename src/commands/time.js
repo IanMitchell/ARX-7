@@ -10,28 +10,29 @@ import timezone from 'timezone/loaded';
 export const TIME_FORMAT = `%a %b %d %Y %H:%M:%S GMT%z (%Z)`;
 
 export class Time extends Command {
-  message(from, to, text, message) {
-    return new Promise((resolve, reject) => {
-      let timezoneMatch = text.match(/^[.!]time (.*)/);
-      if(timezoneMatch) {
-        let timezoneQuery = this.abbreviationMap(timezoneMatch[1]);
+  message(from, to, text) {
+    return new Promise(resolve => {
+      const timezoneMatch = text.match(/^[.!]time (.*)/);
+
+      if (timezoneMatch) {
+        const timezoneQuery = this.abbreviationMap(timezoneMatch[1]);
         this.getTime(timezoneQuery).then((result) => {
           this.send(to, `${from}: ${result}`);
         });
       }
-      resolve();
+      return resolve();
     });
   }
 
   getTime(timezoneQuery) {
-    return new Promise((resolve, reject) => {
-      resolve(timezone(new Date(), TIME_FORMAT, timezoneQuery));
+    return new Promise(resolve => {
+      return resolve(timezone(new Date(), TIME_FORMAT, timezoneQuery));
     });
   }
 
   // Timezone abbreviations are ambiguous but I'm smarter than timezones
   abbreviationMap(abbr) {
-    let abbrArray = [
+    const abbrArray = [
       ['JST', 'Asia/Tokyo'],
       ['JAPAN', 'Asia/Tokyo'],
       ['JP', 'Asia/Tokyo'],
@@ -40,9 +41,9 @@ export class Time extends Command {
       ['CST', 'America/Chicago'],
       ['CDT', 'America/Chicago'],
       ['PST', 'America/Los_Angeles'],
-      ['PDT', 'America/Los_Angeles']
+      ['PDT', 'America/Los_Angeles'],
     ];
-    let abbrMap = new Map(abbrArray);
+    const abbrMap = new Map(abbrArray);
     return abbrMap.get(abbr.toUpperCase()) || abbr;
   }
 }
