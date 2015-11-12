@@ -20,7 +20,7 @@
     "timezone": "0.0.47"
   },
   "devDependencies": {
-    "babel": "5.8.29",
+    "babel": "6.1.5",
     "eslint": "1.9.0",
     "mocha": "2.2.5"
   }
