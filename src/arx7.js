@@ -241,7 +241,8 @@ export class ARX7 {
     if (message.command === 'err_bannedfromchan') {
       log(`Banned from ${message.args[1]}. Rejoining in in 3 minutes`);
 
-      // `()=>` ensures there is a delay; otherwise it continuously fires
+      // Passing a function ensures there is a delay,
+      // otherwise it continuously fires
       setTimeout(() => this.client.join(message.args[1]), BAN_RETRY_DELAY);
     } else if (message.command === 'err_badchannelkey') {
       // Attempt to rejoin +k channels correctly
