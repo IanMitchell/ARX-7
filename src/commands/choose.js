@@ -1,18 +1,18 @@
 import debug from 'debug';
 import {Command} from './command.js';
 
-let log = debug('Choose');
+const log = debug('Choose');
 
 export class Choose extends Command {
-  message(from, to, text, message) {
-    return new Promise((resolve, reject) => {
-      let regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/;
-      let choose = text.match(regex);
+  message(from, to, text) {
+    return new Promise(resolve => {
+      const regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/;
+      const choose = text.match(regex);
 
       if (choose) {
         log(`${from} on: ${choose[1]}`);
 
-        let result = this.choose(choose[1]);
+        const result = this.choose(choose[1]);
         this.send(to, `${from}: ${result}`);
       }
 
@@ -21,58 +21,54 @@ export class Choose extends Command {
   }
 
   choose(input) {
-    let range_regex = /^(-?\d+(\.\d+)?)-(-?\d+(\.\d+)?)$/;
-    let range = input.match(range_regex);
+    const rangeRegex = /^(-?\d+(\.\d+)?)-(-?\d+(\.\d+)?)$/;
+    const range = input.match(rangeRegex);
 
     // Choose from a range (.c 1-100)
     if (range) {
-      let min = Math.min(parseFloat(range[1]), parseFloat(range[3]));
-      let max = Math.max(parseFloat(range[1]), parseFloat(range[3]));
+      const min = Math.min(parseFloat(range[1]), parseFloat(range[3]));
+      const max = Math.max(parseFloat(range[1]), parseFloat(range[3]));
 
       // Range of Floats
       if (range[2] || range[4]) {
-        let decimals = Math.min(Math.max(
+        const decimals = Math.min(Math.max(
                         this.countDecimals(range[1]),
                         this.countDecimals(range[3])
                       ), 19);
 
         return (min + Math.random() * (max - min)).toFixed(decimals);
       }
-      // Range of Integers
-      else {
-        // Add +1 so that the upperbound is included
-        return Math.floor(min + Math.random() * (max - min + 1));
-      }
+
+      // Range of Integers - Add +1 so that the upperbound is included
+      return Math.floor(min + Math.random() * (max - min + 1));
     }
+
     // Choose from list delimited by ',' or ' '
-    else {
-      let choices = this.getChoices(input, ',');
+    let choices = this.getChoices(input, ',');
 
-      if (choices) {
-        // Check for space delimiter
-        if (choices.length <= 1) {
-          choices = this.getChoices(input, ' ');
+    if (choices) {
+      // Check for space delimiter
+      if (choices.length <= 1) {
+        choices = this.getChoices(input, ' ');
 
-          if (choices.length == 0) {
-            return 'No choices to choose from';
-          }
+        if (choices.length === 0) {
+          return 'No choices to choose from';
         }
+      }
 
-        return choices[Math.floor(Math.random() * choices.length)];
-      }
-      else {
-        return 'No choices to choose from';
-      }
+      return choices[Math.floor(Math.random() * choices.length)];
     }
+
+    return 'No choices to choose from';
   }
 
   getChoices(input, delimiter) {
-    let choices = [];
+    const choices = new Array();
 
-    input.split(delimiter).forEach(k => {
-      let v = k.trim();
-      if (v) {
-        choices.push(v);
+    input.split(delimiter).forEach(choice => {
+      const val = choice.trim();
+      if (val) {
+        choices.push(val);
       }
     });
 
@@ -80,7 +76,7 @@ export class Choose extends Command {
   }
 
   countDecimals(number) {
-    if (Math.floor(number) == number && !number.toString().includes('.')) {
+    if (Math.floor(number) === number && !number.toString().includes('.')) {
       return 0;
     }
 

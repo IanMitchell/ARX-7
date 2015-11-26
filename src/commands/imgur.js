@@ -3,13 +3,13 @@ import request from 'request';
 import config from './../../config';
 import {Command} from './command.js';
 
-let log = debug('Imgur');
+const log = debug('Imgur');
 
 export class Imgur extends Command {
-  message(from, to, text, message) {
+  message(from, to, text) {
     // Respond to Imgur Links
-    let imgur_regex = /.*(imgur\.com\/(gallery\/)?)([\w]+)/;
-    let match = text.match(imgur_regex);
+    const imgurRegex = /.*(imgur\.com\/(gallery\/)?)([\w]+)/;
+    const match = text.match(imgurRegex);
 
     if (match) {
       return new Promise((resolve, reject) => {
@@ -17,45 +17,43 @@ export class Imgur extends Command {
 
         this.info(match[3]).then(imgur => {
           this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
-          resolve();
+          return resolve();
         }, error => {
           this.send(to, 'Sorry, could not find Imgur info.');
-          reject(error);
+          return reject(error);
         });
       });
     }
 
-    return new Promise((resolve, reject) => resolve());
+    return new Promise(resolve => resolve());
   }
 
   info(id) {
-    let options = {
+    const options = {
       url: `https://api.imgur.com/3/image/${id}`,
       headers: {
-        'Authorization': `Client-ID ${config.keys.imgur_client}`
-      }
+        'Authorization': `Client-ID ${config.keys.imgur_client}`,
+      },
     };
 
     return new Promise((resolve, reject) => {
       request(options, (error, response, body) => {
-        if (!error && response.statusCode == 200) {
+        if (!error && response.statusCode === 200) {
           try {
-            let data = JSON.parse(body);
-            let imgur = {
-              title: data['data']['title'] || 'Untitled',
-              views: this.addCommas(data['data']['views'])
+            const data = JSON.parse(body);
+            const imgur = {
+              title: data.data.title || 'Untitled',
+              views: this.addCommas(data.data.views),
             };
 
-            resolve(imgur);
+            return resolve(imgur);
+          } catch (exception) {
+            log(`Imgur Response Error: ${exception}`);
+            return reject(Error(`Imgur Response Error: ${exception}`));
           }
-          catch(e) {
-            log(`Imgur Response Error: ${e}`);
-            reject(Error(`Imgur Response Error: ${e}`));
-          }
-        }
-        else {
+        } else {
           log(`Imgur Request Error: ${error}`);
-          reject(Error(`Imgur Request Error: ${error}`));
+          return reject(Error(`Imgur Request Error: ${error}`));
         }
       });
     });

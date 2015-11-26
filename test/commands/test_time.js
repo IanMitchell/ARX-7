@@ -1,13 +1,14 @@
-import assert from "assert";
+import {describe, afterEach, it} from 'mocha';
+import assert from 'assert';
 import timezone from 'timezone/loaded';
-import {Client} from "../helpers.js";
-import {TIME_FORMAT, Time} from "../../src/commands/time";
+import {Client} from '../helpers.js';
+import {TIME_FORMAT, Time} from '../../src/commands/time';
 
 // +9h UTC offset
 const JST_OFFSET = 1000 * 60 * 60 * 9;
 
-let client = new Client();
-let time = new Time(client);
+const client = new Client();
+const time = new Time(client);
 
 function getJST() {
   return new Date(Date.now() + JST_OFFSET);
@@ -52,18 +53,20 @@ describe('Time', () => {
     });
 
     it('should display the correct time', () => {
-      let jst = getJST();
+      const jst = getJST();
+
       return time.message('Mocha', '#test', '.time JST').then(() => {
-        let time = timezone(jst, TIME_FORMAT).split(" GMT")[0];
-        assert(client.lastMessage.includes(time));
+        const currentTime = timezone(jst, TIME_FORMAT).split(' GMT')[0];
+        assert(client.lastMessage.includes(currentTime));
       });
     });
 
     it('should be case insensitive', () => {
-      let jst = getJST();
+      const jst = getJST();
+
       return time.message('Mocha', '#test', '.time jst').then(() => {
-        let time = timezone(jst, TIME_FORMAT).split(" GMT")[0];
-        assert(client.lastMessage.includes(time));
+        const currentTime = timezone(jst, TIME_FORMAT).split(' GMT')[0];
+        assert(client.lastMessage.includes(currentTime));
       });
     });
   });

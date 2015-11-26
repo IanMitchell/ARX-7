@@ -9,19 +9,9 @@
   "ssl": false,
   "allowInvalidSSL": false,
   "admins": ["Desch"],
-  "adminPassword": "admin",
   "channels": [
     {
-      "name": "#arx-7",
-      "key": null,
-      "plugins": [
-        "choose",
-        "reply",
-        "imgur",
-        "order",
-        "twitter",
-        "youtube"
-      ]
+      "name": "#arx-7"
     },
     {
       "name": "#channel",

@@ -1,15 +1,16 @@
-import assert from "assert";
-import {Client} from "../helpers.js";
-import {Imgur} from "../../src/commands/imgur";
+import {describe, afterEach, it} from 'mocha';
+import assert from 'assert';
+import {Client} from '../helpers.js';
+import {Imgur} from '../../src/commands/imgur';
 
-let client = new Client();
-let imgur = new Imgur(client);
+const client = new Client();
+const imgur = new Imgur(client);
 
-let link = 'http://imgur.com/gallery/E5bGFZE';
-let title = "I heard it was Mecha Monday, so here's ARX-7 Arbalest.";
+const link = 'http://imgur.com/gallery/E5bGFZE';
+const title = "I heard it was Mecha Monday, so here's ARX-7 Arbalest.";
 
-let standard = 'http://imgur.com/E5bGFZE';
-let direct = 'http://i.imgur.com/E5bGFZE.jpg';
+const standard = 'http://imgur.com/E5bGFZE';
+const direct = 'http://i.imgur.com/E5bGFZE.jpg';
 
 describe('Imgur', () => {
   afterEach(() => {

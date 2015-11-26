@@ -44,7 +44,7 @@ export class Command {
     this.client = client;
   }
 
-  message(from, to, text, message) {
+  message(from, to, text) {
     this.client.say(to, text);
   }
 }
@@ -55,8 +55,8 @@ class CommandMock extends Command {
     this.log = [];
   }
 
-  message(from, to, text, message) {
-    super.message(from, to, text, message);
+  message(from, to, text) {
+    super.message(from, to, text);
     this.log.push(text);
   }
 

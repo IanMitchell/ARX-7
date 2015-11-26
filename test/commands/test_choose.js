@@ -1,14 +1,13 @@
-import assert from "assert";
-import {Client} from "../helpers.js";
-import {Choose} from "../../src/commands/choose";
+import {describe, afterEach, it} from 'mocha';
+import assert from 'assert';
+import {Client} from '../helpers.js';
+import {Choose} from '../../src/commands/choose';
 
-let client = new Client();
-let choose = new Choose(client);
+const client = new Client();
+const choose = new Choose(client);
 
 describe('Choose', () => {
-  afterEach(() => {
-    client.resetLog();
-  });
+  afterEach(() => client.resetLog());
 
   describe('Triggers', () => {
     it('should respond to .c trigger', () => {
@@ -66,9 +65,9 @@ describe('Choose', () => {
     });
 
     it('should activate with a list of commas', () => {
-      let outputs = [
+      const outputs = [
         'Mocha: ,,',
-        'Mocha: ,'
+        'Mocha: ,',
       ];
 
       return choose.message('Mocha', '#test', '.c ,, , ,,').then(() => {
@@ -115,56 +114,56 @@ describe('Choose', () => {
 
   describe('Range', () => {
     it('should choose from within range', () => {
-      let lowerBound = 0,
-          upperBound = 10,
-          range = `${upperBound}-${lowerBound}`;
+      const lowerBound = 0;
+      const upperBound = 10;
+      const range = `${upperBound}-${lowerBound}`;
 
       for (let i = 0; i < 20; i++) {
         choose.message('Mocha', '#test', `.c ${range}`);
-        let value = client.lastMessage.replace('Mocha: ', '');
+        const value = client.lastMessage.replace('Mocha: ', '');
         assert(value >= lowerBound);
         assert(value <= upperBound);
       }
     });
 
     it('should handle reverse ranges', () => {
-      let lowerBound = 0,
-          upperBound = 5,
-          range = `${upperBound}-${lowerBound}`;
+      const lowerBound = 0;
+      const upperBound = 5;
+      const range = `${upperBound}-${lowerBound}`;
 
 
       return choose.message('Mocha', '#test', `.c ${range}`).then(() => {
-        let value = client.lastMessage.replace('Mocha: ', '');
+        const value = client.lastMessage.replace('Mocha: ', '');
         assert(value <= upperBound);
         assert(value >= lowerBound);
       });
     });
 
     it('should handle negative ranges', () => {
-      let lowerBound = -10,
-          upperBound = -5,
-          range = `${lowerBound}-${upperBound}`;
+      const lowerBound = -10;
+      const upperBound = -5;
+      const range = `${lowerBound}-${upperBound}`;
 
 
       return choose.message('Mocha', '#test', `.c ${range}`).then(() => {
-        let value = client.lastMessage.replace('Mocha: ', '');
+        const value = client.lastMessage.replace('Mocha: ', '');
         assert(value <= upperBound);
         assert(value >= lowerBound);
       });
     });
 
     it('should include lower and upper bounds', () => {
-      let lowerBound = 0,
-          upperBound = 2,
-          range = `${upperBound}-${lowerBound}`,
-          runs = 10,
-          lowerBoundChosen = false,
-          upperBoundChosen = false;
+      const lowerBound = 0;
+      const upperBound = 2;
+      const range = `${upperBound}-${lowerBound}`;
+      let runs = 10;
+      let lowerBoundChosen = false;
+      let upperBoundChosen = false;
 
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         for (let i = 0; i < runs; i++) {
           choose.message('Mocha', '#test', `.c ${range}`);
-          let value = client.lastMessage.replace('Mocha: ', '');
+          const value = client.lastMessage.replace('Mocha: ', '');
 
 
           if (value === lowerBound.toString()) {
@@ -175,10 +174,10 @@ describe('Choose', () => {
           }
 
           // Still can fail, but has a [(0.333^20) * 100]% chance of it
-          if (i == 9 && (!lowerBoundChosen || !upperBoundChosen)) {
+          if (i === 9 && (!lowerBoundChosen || !upperBoundChosen)) {
             runs *= 2;
           }
-          if (i + 1 == runs) {
+          if (i + 1 === runs) {
             resolve();
           }
         }

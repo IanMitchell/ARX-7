@@ -6,7 +6,6 @@
   "ssl": false,
   "userName": "chidori",
   "admins": ["Desch", "Jukey", "Aoi-chan"],
-  "adminPassword": "admin",
   "channels": [
     {
       "name": "#arbalest",

@@ -4,13 +4,13 @@ import * as TwitterClient from 'twitter-node-client';
 import config from './../../config';
 import {Command} from './command.js';
 
-let log = debug('Twitter');
+const log = debug('Twitter');
 
 export class Twitter extends Command {
-  message(from, to, text, message) {
+  message(from, to, text) {
     // Respond to Twitter Links
-    let tweet_regex = /.*(twitter\.com\/)([\w]+)(\/status\/)(\d*).*/;
-    let match = text.match(tweet_regex);
+    const tweetRegex = /.*(twitter\.com\/)([\w]+)(\/status\/)(\d*).*/;
+    const match = text.match(tweetRegex);
 
     if (match) {
       return new Promise((resolve, reject) => {
@@ -18,44 +18,43 @@ export class Twitter extends Command {
 
         this.info(match[2], match[4]).then(tweet => {
           this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
-          resolve();
+          return resolve();
         }, error => {
           this.send(to, 'Sorry, could not find Twitter info.');
-          reject(error);
+          return reject(error);
         });
       });
     }
 
-    return new Promise((resolve, reject) => resolve());
+    return new Promise(resolve => resolve());
   }
 
-  info(username, tweet_id) {
-    let twitter = new TwitterClient.Twitter({
-      "consumerKey": config.keys.twitter_consumer,
-      "consumerSecret": config.keys.twitter_consumer_secret,
-      "accessToken": config.keys.twitter_access_token,
-      "accessTokenSecret": config.keys.twitter_access_token_secret,
+  info(username, tweetId) {
+    const twitter = new TwitterClient.Twitter({
+      'consumerKey': config.keys.twitter_consumer,
+      'consumerSecret': config.keys.twitter_consumer_secret,
+      'accessToken': config.keys.twitter_access_token,
+      'accessTokenSecret': config.keys.twitter_access_token_secret,
     });
 
     return new Promise((resolve, reject) => {
-      twitter.getTweet({id: tweet_id},
+      twitter.getTweet({id: tweetId},
         error => {
           log(`Twitter Request Error: ${error}`);
-          reject(Error(`Twitter Request Error: ${error}`));
+          return reject(Error(`Twitter Request Error: ${error}`));
         },
         success => {
           try {
-            let data = JSON.parse(success);
+            const data = JSON.parse(success);
 
-            resolve({
+            return resolve({
               // Remove linebreaks
               text: he.decode(data.text.replace(/\r?\n|\r/g, ' ')),
-              username: data.user.name
+              username: data.user.name,
             });
-          }
-          catch (e) {
-            log(`Twitter Response Error: ${e}`);
-            reject(Error(`Twitter Response Error: ${e}`));
+          } catch (exception) {
+            log(`Twitter Response Error: ${exception}`);
+            return reject(Error(`Twitter Response Error: ${exception}`));
           }
         }
       );

@@ -1,12 +1,13 @@
-import assert from "assert";
-import {Client} from "../helpers.js";
-import {Order} from "../../src/commands/order";
+import {describe, afterEach, it} from 'mocha';
+import assert from 'assert';
+import {Client} from '../helpers.js';
+import {Order} from '../../src/commands/order';
 
-let client = new Client();
-let order = new Order(client);
+const client = new Client();
+const order = new Order(client);
 
 function uniq(arr) {
-  let seen = {};
+  const seen = {};
   return arr.filter((item) => {
     return seen.hasOwnProperty(item) ? false : (seen[item] = true);
   });
@@ -55,10 +56,10 @@ describe('Order', () => {
     });
 
     it('should activate with a list of commas', () => {
-      let outputs = [
+      const outputs = [
         'Mocha: ,,, ,,, ,',
         'Mocha: ,, ,,, ,,',
-        'Mocha: ,,, ,, ,,'
+        'Mocha: ,,, ,, ,,',
       ];
 
       return order.message('Mocha', '#test', '.o ,, , ,,').then(() => {
@@ -89,24 +90,24 @@ describe('Order', () => {
 
   describe('Range', () => {
     it('should choose from within range', () => {
-      let lowerBound = 0,
-          upperBound = 10,
-          range = `${lowerBound}-${upperBound}`;
+      const lowerBound = 0;
+      const upperBound = 10;
+      const range = `${lowerBound}-${upperBound}`;
 
 
       return order.message('Mocha', '#test', `.o ${range}`).then(() => {
-        let values = client.lastMessage.replace('Mocha: ', '').split(', ');
-        values.forEach(c => {
-          assert(c >= lowerBound);
-          assert(c <= upperBound);
+        const values = client.lastMessage.replace('Mocha: ', '').split(', ');
+        values.forEach(val => {
+          assert(val >= lowerBound);
+          assert(val <= upperBound);
         });
       });
     });
 
     it('should handle reverse ranges', () => {
-      let expected = [
+      const expected = [
         'Mocha: 5, 6',
-        'Mocha: 6, 5'
+        'Mocha: 6, 5',
       ];
 
       return order.message('Mocha', '#test', '.o 6-5').then(() => {
@@ -115,9 +116,9 @@ describe('Order', () => {
     });
 
     it('should handle negative ranges', () => {
-      let expected  = [
+      const expected = [
         'Mocha: -5, -6',
-        'Mocha: -6, -5'
+        'Mocha: -6, -5',
       ];
 
       return order.message('Mocha', '#test', '.o -5--6').then(() => {
@@ -126,13 +127,12 @@ describe('Order', () => {
     });
 
     it('should include lower and upper bounds', () => {
-      let lowerBound = 0,
-          upperBound = 5,
-          range = `${lowerBound}-${upperBound}`;
-
+      const lowerBound = 0;
+      const upperBound = 5;
+      const range = `${lowerBound}-${upperBound}`;
 
       return order.message('Mocha', '#test', `.o ${range}`).then(() => {
-        let values = client.lastMessage.replace('Mocha: ', '').split(', ');
+        const values = client.lastMessage.replace('Mocha: ', '').split(', ');
         assert(values.includes(lowerBound.toString()));
         assert(values.includes(upperBound.toString()));
       });
@@ -149,13 +149,13 @@ describe('Order', () => {
       return order.message('Mocha', '#test', '.o 1-2048').then(() => {
         let msg = client.lastMessage.replace('Mocha: ', '');
         msg = msg.replace(', and some more...', '');
-        msg.split(', ').forEach(c => assert(1024 >= c));
+        msg.split(', ').forEach(val => assert(val <= 1024));
       });
     });
 
     // The torchlight test
     it('should handle large numbers', () => {
-      let val = 9007199254740992;
+      const val = 9007199254740992;
       return order.message('Mocha', '#test', `.o ${val}-${val + 2}`).then(() => {
         assert.equal(client.lastMessage, 'Mocha: Value is too high.');
       });
@@ -164,13 +164,13 @@ describe('Order', () => {
 
   describe('List', () => {
     it('should choose from within list', () => {
-      let expected = [
+      const expected = [
         'Mocha: a, b c, d',
         'Mocha: a, d, b c',
         'Mocha: b c, a, d',
         'Mocha: b c, d, a',
         'Mocha: d, a, b c',
-        'Mocha: d, b c, a'
+        'Mocha: d, b c, a',
       ];
 
       return order.message('Mocha', '#test', '.o a, b c, d').then(() => {
@@ -179,29 +179,29 @@ describe('Order', () => {
     });
 
     it('should randomize results', () => {
-      let expected = [
+      const expected = [
         'Mocha: a, b, c',
         'Mocha: a, c, b',
         'Mocha: b, a, c',
         'Mocha: b, c, a',
         'Mocha: c, a, b',
-        'Mocha: c, b, a'
+        'Mocha: c, b, a',
       ];
 
-      let results = [];
+      const results = new Array();
       let runs = 10;
 
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         for (let i = 0; i < runs; i++) {
           order.message('Mocha', '#test', '.o a b c');
           assert(expected.includes(client.lastMessage));
           results.push(client.lastMessage);
 
           // Still can fail, but has a [(0.167^20) * 100]% chance of it
-          if (i == 9 && uniq(results).length == 1) {
+          if (i === 9 && uniq(results).length === 1) {
             runs *= 2;
           }
-          if (i + 1 == runs) {
+          if (i + 1 === runs) {
             resolve();
           }
         }
