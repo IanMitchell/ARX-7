@@ -6,7 +6,7 @@ const log = debug('Choose');
 export class Choose extends Command {
   message(from, to, text) {
     return new Promise(resolve => {
-      const regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/;
+      const regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/i;
       const choose = text.match(regex);
 
       if (choose) {
@@ -21,7 +21,7 @@ export class Choose extends Command {
   }
 
   choose(input) {
-    const rangeRegex = /^(-?\d+(\.\d+)?)-(-?\d+(\.\d+)?)$/;
+    const rangeRegex = /^(-?\d+(\.\d+)?)-(-?\d+(\.\d+)?)$/i;
     const range = input.match(rangeRegex);
 
     // Choose from a range (.c 1-100)

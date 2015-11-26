@@ -12,7 +12,7 @@ export const TIME_FORMAT = `%a %b %d %Y %H:%M:%S GMT%z (%Z)`;
 export class Time extends Command {
   message(from, to, text) {
     return new Promise(resolve => {
-      const timezoneMatch = text.match(/^[.!]time (.*)/);
+      const timezoneMatch = text.match(/^[.!]time (.*)/i);
 
       if (timezoneMatch) {
         const timezoneQuery = this.abbreviationMap(timezoneMatch[1]);

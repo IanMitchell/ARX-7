@@ -8,7 +8,7 @@ const log = debug('YouTube');
 export class Youtube extends Command {
   message(from, to, text) {
     // Respond to Youtube Requests
-    const search = text.match(/^\.(yt\s|youtube\s)(.*)$/, '$2');
+    const search = text.match(/^\.(yt\s|youtube\s)(.*)$/i, '$2');
 
     if (search) {
       return new Promise((resolve, reject) => {

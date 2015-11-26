@@ -51,6 +51,12 @@ describe('YouTube', () => {
       });
     });
 
+    it('should be case insensitive', () => {
+      return youtube.message('Mocha', '#test', '.YT A').then(() => {
+        assert(client.lastMessage);
+      });
+    });
+
     // TODO: Fix
     // it('should log and handle malformed links', () => {
     //   return assert.throws(

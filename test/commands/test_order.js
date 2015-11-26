@@ -72,6 +72,12 @@ describe('Order', () => {
         assert.equal('Mocha: ,', client.lastMessage);
       });
     });
+
+    it('should be case insensitive', () => {
+      return order.message('Mocha', '#test', '.ORDER A').then(() => {
+        assert.equal('Mocha: A', client.lastMessage);
+      });
+    });
   });
 
   describe('General Usage', () => {

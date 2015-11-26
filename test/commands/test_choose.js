@@ -80,6 +80,12 @@ describe('Choose', () => {
         assert.equal('Mocha: ,', client.lastMessage);
       });
     });
+
+    it('should be case insensitive', () => {
+      return choose.message('Mocha', '#test', '.CHOOSE A').then(() => {
+        assert.equal('Mocha: A', client.lastMessage);
+      });
+    });
   });
 
   describe('General Usage', () => {

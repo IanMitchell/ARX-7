@@ -37,6 +37,12 @@ describe('Time', () => {
         assert(client.lastMessage.endsWith(timezone(new Date(), TIME_FORMAT)));
       });
     });
+
+    it('should be case insensitive', () => {
+      return time.message('Mocha', '#test', '.TIME JST').then(() => {
+        assert.notEqual(client.lastMessage, null);
+      });
+    });
   });
 
   describe('General Usage', () => {

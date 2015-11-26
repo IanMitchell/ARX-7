@@ -10,11 +10,11 @@ export const ORDER_RESULTS_LIMIT = 20;
 export class Order extends Command {
   message(from, to, text) {
     return new Promise(resolve => {
-      const orderRegex = /^[.!]o(?:rder)? (.+)$/;
+      const orderRegex = /^[.!]o(?:rder)? (.+)$/i;
       const order = text.match(orderRegex);
 
       if (order) {
-        const rangeRegex = /(-?\d+)-(-?\d+)$/;
+        const rangeRegex = /(-?\d+)-(-?\d+)$/i;
         const range = text.match(rangeRegex);
 
         if (range) {
