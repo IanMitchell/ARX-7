@@ -19,7 +19,7 @@
     "he": "0.5.0",
     "irc": "0.4.0",
     "request": "2.67.0",
-    "timezone": "0.0.47",
+    "timezone": "0.0.48",
     "twitter-node-client": "0.0.6"
   },
   "devDependencies": {
