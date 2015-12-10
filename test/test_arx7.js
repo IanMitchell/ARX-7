@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import {describe, afterEach, beforeEach, it} from 'mocha';
 import assert from 'assert';
 import config from './test_config';

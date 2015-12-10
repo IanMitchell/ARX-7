@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import {describe, afterEach, it} from 'mocha';
 import assert from 'assert';
 import {Client} from '../helpers.js';

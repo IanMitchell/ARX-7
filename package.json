@@ -10,7 +10,7 @@
     "background": "DEBUG=* DEBUG_FD=3 node app.js 3> output.log &",
     "build": "babel src --out-dir build",
     "arx7": "DEBUG=* node build/arx7.js",
-    "test": "DEBUG=-* mocha --recursive --compilers js:babel/register"
+    "test": "DEBUG=-* mocha --recursive --compilers js:babel-core/register"
   },
   "dependencies": {
     "babel-core": "6.3.15",

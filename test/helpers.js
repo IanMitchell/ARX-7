@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import config from './test_config';
 
 export class Client {
