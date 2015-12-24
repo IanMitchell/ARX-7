@@ -1,16 +1,16 @@
-import 'babel-polyfill'
-import {describe, afterEach, beforeEach, it} from 'mocha';
+import 'babel-polyfill';
+import { describe, afterEach, beforeEach, it } from 'mocha';
 import assert from 'assert';
 import config from './test_config';
-import {Client,
-        Choose,
-        Imgur,
-        Order,
-        Reply,
-        Time,
-        Twitter,
-        Youtube} from './helpers.js';
-import {ARX7} from '../src/arx7';
+import { Client,
+         Choose,
+         Imgur,
+         Order,
+         Reply,
+         Time,
+         Twitter,
+         Youtube } from './helpers.js';
+import { ARX7 } from '../src/arx7';
 
 const client = new Client();
 const arx7 = new ARX7(client, config);
@@ -199,25 +199,25 @@ describe('ARX-7', () => {
     it('should attempt to rejoin after bans in 3 minutes');
 
     it('should be able to rejoin a +k channel', () => {
-      arx7.error({args: [null, '#arbalest'], command: 'err_badchannelkey'});
+      arx7.error({ args: [null, '#arbalest'], command: 'err_badchannelkey' });
       assert.equal('#arbalest sagara', client.getLastChannel());
       assert(arx7.droppedChannels.has('#arbalest'));
     });
 
     it('should not keep trying to rejoin a +k channel', () => {
-      arx7.error({args: [null, '#arbalest'], command: 'err_badchannelkey'});
-      arx7.error({args: [null, '#arbalest'], command: 'err_badchannelkey'});
+      arx7.error({ args: [null, '#arbalest'], command: 'err_badchannelkey' });
+      arx7.error({ args: [null, '#arbalest'], command: 'err_badchannelkey' });
 
       assert(arx7.droppedChannels.has('#arbalest'));
       assert.equal(1, client.channelLog.length);
     });
 
     it('should join +k channels when kicked twice', () => {
-      arx7.error({args: [null, '#arbalest'], command: 'err_badchannelkey'});
+      arx7.error({ args: [null, '#arbalest'], command: 'err_badchannelkey' });
       arx7.join('#arbalest', 'ARX-7');
       assert(!arx7.droppedChannels.has('#arbalest'));
 
-      arx7.error({args: [null, '#arbalest'], command: 'err_badchannelkey'});
+      arx7.error({ args: [null, '#arbalest'], command: 'err_badchannelkey' });
       assert.equal(2, client.channelLog.length);
 
       arx7.join('#arbalest', 'ARX-7');

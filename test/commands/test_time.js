@@ -1,9 +1,9 @@
-import 'babel-polyfill'
-import {describe, afterEach, it} from 'mocha';
+import 'babel-polyfill';
+import { describe, afterEach, it } from 'mocha';
 import assert from 'assert';
 import timezone from 'timezone/loaded';
-import {Client} from '../helpers.js';
-import {TIME_FORMAT, Time} from '../../src/commands/time';
+import { Client } from '../helpers.js';
+import { TIME_FORMAT, Time } from '../../src/commands/time';
 
 // +9h UTC offset
 const JST_OFFSET = 1000 * 60 * 60 * 9;

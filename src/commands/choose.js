@@ -1,5 +1,5 @@
 import debug from 'debug';
-import {Command} from './command.js';
+import { Command } from './command.js';
 
 const log = debug('Choose');
 

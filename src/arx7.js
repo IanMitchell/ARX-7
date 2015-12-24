@@ -1,13 +1,14 @@
 import debug from 'debug';
 import pkg from '../package';
 
-import {Choose} from './commands/choose.js';
-import {Imgur} from './commands/imgur.js';
-import {Order} from './commands/order.js';
-import {Reply} from './commands/reply.js';
-import {Time} from './commands/time.js';
-import {Twitter} from './commands/twitter.js';
-import {Youtube} from './commands/youtube.js';
+import { Choose } from './commands/choose.js';
+import { Imgur } from './commands/imgur.js';
+import { Order } from './commands/order.js';
+import { Reply } from './commands/reply.js';
+import { Showtimes } from './commands/showtimes.js';
+import { Time } from './commands/time.js';
+import { Twitter } from './commands/twitter.js';
+import { Youtube } from './commands/youtube.js';
 
 const log = debug('ARX-7');
 
@@ -21,6 +22,7 @@ export class ARX7 {
       new Imgur(client),
       new Order(client),
       new Reply(client),
+      new Showtimes(client),
       new Time(client),
       new Twitter(client),
       new Youtube(client),

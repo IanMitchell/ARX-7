@@ -1,7 +1,7 @@
 import debug from 'debug';
 import request from 'request';
 import config from './../../config';
-import {Command} from './command.js';
+import { Command } from './command.js';
 
 const log = debug('Imgur');
 
