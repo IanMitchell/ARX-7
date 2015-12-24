@@ -62,4 +62,8 @@ export class Imgur extends Command {
   addCommas(intNum) {
     return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
   }
+
+  help(from, to) {
+    this.send(to, `Imgur automatically reads image metadata from pasted urls.`);
+  }
 }

@@ -20,8 +20,12 @@ export class Command {
     ];
   }
 
-  // Pseudo interface
+  // Pseudo interfaces
   message() {
+    return;
+  }
+
+  help() {
     return;
   }
 

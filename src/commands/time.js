@@ -40,4 +40,8 @@ export class Time extends Command {
     const abbrMap = new Map(abbrArray);
     return abbrMap.get(abbr.toUpperCase()) || abbr;
   }
+
+  help(from, to) {
+    this.send(to, `.time [timezone]; returns the current time. (Ex: .time JST).`);
+  }
 }

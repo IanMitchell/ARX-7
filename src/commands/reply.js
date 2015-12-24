@@ -45,4 +45,8 @@ export class Reply extends Command {
       return resolve();
     });
   }
+
+  help(from, to) {
+    this.send(to, `Reply automatically responds to certain phrases.`);
+  }
 }

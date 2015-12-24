@@ -60,4 +60,8 @@ export class Twitter extends Command {
       );
     });
   }
+
+  help(from, to) {
+    this.send(to, `Twitter automatically reads tweets from pasted urls.`);
+  }
 }

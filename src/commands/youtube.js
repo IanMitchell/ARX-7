@@ -110,4 +110,8 @@ export class Youtube extends Command {
       });
     });
   }
+
+  help(from, to) {
+    this.send(to, `.yt [phrase]; returns video. YouTube also automatically reads metadata from pasted urls.`);
+  }
 }

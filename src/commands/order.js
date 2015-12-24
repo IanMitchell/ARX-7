@@ -113,4 +113,8 @@ export class Order extends Command {
 
     return choices;
   }
+
+  help(from, to) {
+    this.send(to, `.o[rder] [options...]; randomly arranges the list. (Ex: .o s, n, i, p, e).`);
+  }
 }
