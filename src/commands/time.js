@@ -41,7 +41,7 @@ export class Time extends Command {
     return abbrMap.get(abbr.toUpperCase()) || abbr;
   }
 
-  help(from, to) {
-    this.send(to, `.time [timezone]; returns the current time. (Ex: .time JST).`);
+  help(from) {
+    this.client.notice(from, `.time [timezone]; returns the current time. (Ex: .time JST).`);
   }
 }

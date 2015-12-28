@@ -96,7 +96,7 @@ export class Showtimes extends Command {
     return 'pending';
   }
 
-  help(from, to) {
-    this.send(to, `Help pending`);
+  help(from) {
+    this.client.notice(from, `Help pending`);
   }
 }

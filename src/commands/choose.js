@@ -83,7 +83,7 @@ export class Choose extends Command {
     return number.toString().split('.')[1].length || 0;
   }
 
-  help(from, to) {
-    this.send(to, `.c[hoose] [options...]; randomly chooses from list. (Ex: .c 1, 2).`);
+  help(from) {
+    this.client.notice(from, `.c[hoose] [options...]; randomly chooses from list. (Ex: .c 1, 2).`);
   }
 }

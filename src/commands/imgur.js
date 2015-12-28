@@ -63,7 +63,7 @@ export class Imgur extends Command {
     return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
   }
 
-  help(from, to) {
-    this.send(to, `Imgur automatically reads image metadata from pasted urls.`);
+  help(from) {
+    this.client.notice(from, `Imgur automatically reads image metadata from pasted urls.`);
   }
 }

@@ -46,7 +46,7 @@ export class Reply extends Command {
     });
   }
 
-  help(from, to) {
-    this.send(to, `Reply automatically responds to certain phrases.`);
+  help(from) {
+    this.client.notice(from, `Reply automatically responds to certain phrases.`);
   }
 }

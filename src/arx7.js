@@ -123,28 +123,31 @@ export class ARX7 {
         }
       }
 
-      const helpRegex = /^[.!](?:h(?:elp)?|man)(?:\s(.+))?$/i;
-      const help = text.match(helpRegex);
-
-      if (help) {
-        if (help[1] === undefined) {
-          log(`Help request from ${from}`);
-          const str = `Syntax: .help [module]. Modules: ${this.moduleList()}.`;
-          this.client.say(to, str);
-        } else {
-          log(`Request from ${from} on ${help[1]}`);
-          this.commands.forEach(command => {
-            const plugin = command.constructor.name.toLowerCase();
-
-            if (help[1] === plugin) {
-              command.help(from, to);
-            }
-          });
-        }
-      } else {
-        resolve();
-      }
+      this.helpRequest(from, to, text);
+      resolve();
     });
+  }
+
+  helpRequest(from, to, text) {
+    const helpRegex = /^[.!](?:man)(?:\s(.+))?$/i;
+    const help = text.match(helpRegex);
+
+    if (help) {
+      if (help[1] === undefined) {
+        log(`Help request from ${from}`);
+        const str = `Syntax: .help [module]. Modules: ${this.moduleList()}.`;
+        this.client.notice(from, str);
+      } else {
+        log(`Request from ${from} on ${help[1]}`);
+        this.commands.forEach(command => {
+          const plugin = command.constructor.name.toLowerCase();
+
+          if (help[1] === plugin) {
+            command.help(from);
+          }
+        });
+      }
+    }
   }
 
   isAuthorized(username) {
@@ -291,12 +294,7 @@ export class ARX7 {
   }
 
   moduleList() {
-    let list = '';
-
-    this.commands.forEach(command => {
-      list += command.constructor.name.toLowerCase() + ', ';
-    });
-
-    return list.substring(0, list.length - 2);
+    const list = this.commands.map(command => command.constructor.name.toLowerCase());
+    return list.join(', ');
   }
 }
