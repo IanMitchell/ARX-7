@@ -7,7 +7,7 @@ const MESSAGE_STACK_SIZE = 4;
 export class Same extends Command {
   constructor(client) {
     super(client);
-    this.messageStack = [];
+    this.messageStack = new Map();
   }
 
   message(from, to, text) {
@@ -17,7 +17,7 @@ export class Same extends Command {
       if (this.isSame(to, text)) {
         log(`Sending ${text}`);
         this.send(to, text);
-        this.messageStack[to] = [];
+        this.messageStack.set(to, []);
         return resolve();
       }
 
@@ -26,16 +26,15 @@ export class Same extends Command {
   }
 
   pushMessage(channel, text) {
-    if (!this.messageStack.includes(channel)) {
+    if (!this.messageStack.get(channel)) {
       log(`Creating entry for ${channel}`);
-      this.messageStack.push(channel);
-      this.messageStack[channel] = [];
+      this.messageStack.set(channel, []);
     }
 
-    this.messageStack[channel].push(text);
+    this.messageStack.get(channel).push(text);
 
-    if (this.messageStack[channel].length > MESSAGE_STACK_SIZE) {
-      this.messageStack[channel].shift();
+    if (this.messageStack.get(channel).length > MESSAGE_STACK_SIZE) {
+      this.messageStack.get(channel).shift();
     }
   }
 
@@ -44,15 +43,15 @@ export class Same extends Command {
   }
 
   isSame(channel, message) {
-    if (!this.messageStack.includes(channel)) {
+    if (!this.messageStack.get(channel)) {
       return false;
     }
 
-    if (this.messageStack[channel].length !== MESSAGE_STACK_SIZE) {
+    if (this.messageStack.get(channel).length !== MESSAGE_STACK_SIZE) {
       return false;
     }
 
-    const unique = this.messageStack[channel].filter(this.onlyUnique);
+    const unique = this.messageStack.get(channel).filter(this.onlyUnique);
 
     if (unique.length === 1 && unique[0] === message) {
       return true;

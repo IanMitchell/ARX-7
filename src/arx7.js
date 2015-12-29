@@ -112,7 +112,7 @@ export class ARX7 {
           }
         });
 
-        resolve();
+        return resolve();
       } else if (to === this.client.nick && from !== this.client.nick) {
         // Query Handling
         if (this.config.admins.includes(from)) {
