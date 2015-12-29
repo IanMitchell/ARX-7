@@ -118,8 +118,7 @@ export class ARX7 {
         } else {
           log(`Query from ${from}: ${text}`);
           const admins = this.config.admins.join(', ');
-          this.client.say(from, `I'm a bot! Contact [${admins}] for help.`);
-          this.client.say(from, `For help using me, use '.guide'.`);
+          this.client.say(from, `I'm a bot! Contact [${admins}] for help. For help using me, use '.guide'.`);
           resolve();
         }
       }
