@@ -118,7 +118,8 @@ export class ARX7 {
         } else {
           log(`Query from ${from}: ${text}`);
           const admins = this.config.admins.join(', ');
-          this.client.say(from, `I'm a bot! Contact [${admins}] for help`);
+          this.client.say(from, `I'm a bot! Contact [${admins}] for help.`);
+          this.client.say(from, `For help using me, use '.guide'.`);
           resolve();
         }
       }
@@ -129,13 +130,13 @@ export class ARX7 {
   }
 
   helpRequest(from, to, text) {
-    const helpRegex = /^[.!](?:man)(?:\s(.+))?$/i;
+    const helpRegex = /^[.!](?:g(?:uide)?)(?:\s(.+))?$/i;
     const help = text.match(helpRegex);
 
     if (help) {
       if (help[1] === undefined) {
         log(`Help request from ${from}`);
-        const str = `Syntax: .help [module]. Modules: ${this.moduleList()}.`;
+        const str = `Syntax: .guide [module]. Modules: ${this.moduleList()}.`;
         this.client.notice(from, str);
       } else {
         log(`Request from ${from} on ${help[1]}`);
@@ -143,7 +144,7 @@ export class ARX7 {
           const plugin = command.constructor.name.toLowerCase();
 
           if (help[1] === plugin) {
-            command.help(from);
+            command.help(from, to);
           }
         });
       }
