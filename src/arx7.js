@@ -5,6 +5,7 @@ import { Choose } from './commands/choose.js';
 import { Imgur } from './commands/imgur.js';
 import { Order } from './commands/order.js';
 import { Reply } from './commands/reply.js';
+import { Same } from './commands/same.js';
 import { Showtimes } from './commands/showtimes.js';
 import { Time } from './commands/time.js';
 import { Twitter } from './commands/twitter.js';
@@ -22,6 +23,7 @@ export class ARX7 {
       new Imgur(client),
       new Order(client),
       new Reply(client),
+      new Same(client),
       new Showtimes(client),
       new Time(client),
       new Twitter(client),
