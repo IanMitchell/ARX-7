@@ -2,7 +2,7 @@ import debug from 'debug';
 import { Command } from './command.js';
 
 const log = debug('Same');
-const MESSAGE_STACK_SIZE = 3;
+const MESSAGE_STACK_SIZE = 4;
 
 export class Same extends Command {
   constructor(client) {
@@ -12,6 +12,8 @@ export class Same extends Command {
 
   message(from, to, text) {
     return new Promise(resolve => {
+      this.pushMessage(to, text);
+
       if (this.isSame(to, text)) {
         log(`Sending ${text}`);
         this.send(to, text);
@@ -19,7 +21,6 @@ export class Same extends Command {
         return resolve();
       }
 
-      this.pushMessage(to, text);
       return resolve();
     });
   }
