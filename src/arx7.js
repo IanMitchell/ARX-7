@@ -1,13 +1,14 @@
 import debug from 'debug';
 import pkg from '../package';
 
-import {Choose} from './commands/choose.js';
-import {Imgur} from './commands/imgur.js';
-import {Order} from './commands/order.js';
-import {Reply} from './commands/reply.js';
-import {Time} from './commands/time.js';
-import {Twitter} from './commands/twitter.js';
-import {Youtube} from './commands/youtube.js';
+import { Choose } from './commands/choose.js';
+import { Imgur } from './commands/imgur.js';
+import { Order } from './commands/order.js';
+import { Reply } from './commands/reply.js';
+import { Showtimes } from './commands/showtimes.js';
+import { Time } from './commands/time.js';
+import { Twitter } from './commands/twitter.js';
+import { Youtube } from './commands/youtube.js';
 
 const log = debug('ARX-7');
 
@@ -21,6 +22,7 @@ export class ARX7 {
       new Imgur(client),
       new Order(client),
       new Reply(client),
+      new Showtimes(client),
       new Time(client),
       new Twitter(client),
       new Youtube(client),
@@ -116,13 +118,36 @@ export class ARX7 {
         } else {
           log(`Query from ${from}: ${text}`);
           const admins = this.config.admins.join(', ');
-          this.client.say(from, `I'm a bot! Contact [${admins}] for help`);
+          this.client.say(from, `I'm a bot! Contact [${admins}] for help. For help using me, use '.guide'.`);
           resolve();
         }
-      } else {
-        resolve();
       }
+
+      this.helpRequest(from, to, text);
+      resolve();
     });
+  }
+
+  helpRequest(from, to, text) {
+    const helpRegex = /^[.!](?:g(?:uide)?)(?:\s(.+))?$/i;
+    const help = text.match(helpRegex);
+
+    if (help) {
+      if (help[1] === undefined) {
+        log(`Help request from ${from}`);
+        const str = `Syntax: .guide [module]. Modules: ${this.moduleList()}.`;
+        this.client.notice(from, str);
+      } else {
+        log(`Request from ${from} on ${help[1]}`);
+        this.commands.forEach(command => {
+          const plugin = command.constructor.name.toLowerCase();
+
+          if (help[1] === plugin) {
+            command.help(from, to);
+          }
+        });
+      }
+    }
   }
 
   isAuthorized(username) {
@@ -266,5 +291,10 @@ export class ARX7 {
       // Log other errors
       log(`ERROR: ${message.command}`);
     }
+  }
+
+  moduleList() {
+    const list = this.commands.map(command => command.constructor.name.toLowerCase());
+    return list.join(', ');
   }
 }

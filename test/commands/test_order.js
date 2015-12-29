@@ -1,8 +1,8 @@
-import 'babel-polyfill'
-import {describe, afterEach, it} from 'mocha';
+import 'babel-polyfill';
+import { describe, afterEach, it } from 'mocha';
 import assert from 'assert';
-import {Client} from '../helpers.js';
-import {Order} from '../../src/commands/order';
+import { Client } from '../helpers.js';
+import { Order } from '../../src/commands/order';
 
 const client = new Client();
 const order = new Order(client);

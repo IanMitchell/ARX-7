@@ -1,5 +1,5 @@
 import debug from 'debug';
-import {Command} from './command.js';
+import { Command } from './command.js';
 
 const log = debug('Reply');
 
@@ -44,5 +44,9 @@ export class Reply extends Command {
 
       return resolve();
     });
+  }
+
+  help(from) {
+    this.client.notice(from, `Reply automatically responds to certain phrases.`);
   }
 }

@@ -9,6 +9,10 @@
   "ssl": false,
   "allowInvalidSSL": false,
   "admins": ["Desch"],
+  "showtimes": {
+    "server": "http://localhost:3000",
+    "key": "secretpassword"
+  },
   "channels": [
     {
       "name": "#arx-7"

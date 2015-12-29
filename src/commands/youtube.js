@@ -1,7 +1,7 @@
 import debug from 'debug';
 import request from 'request';
 import config from './../../config';
-import {Command} from './command.js';
+import { Command } from './command.js';
 
 const log = debug('YouTube');
 
@@ -109,5 +109,9 @@ export class Youtube extends Command {
         }
       });
     });
+  }
+
+  help(from) {
+    this.client.notice(from, `.yt [phrase]; returns video. YouTube also automatically reads metadata from pasted urls.`);
   }
 }

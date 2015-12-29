@@ -1,5 +1,5 @@
 import debug from 'debug';
-import {Command} from './command.js';
+import { Command } from './command.js';
 
 const log = debug('Choose');
 
@@ -81,5 +81,9 @@ export class Choose extends Command {
     }
 
     return number.toString().split('.')[1].length || 0;
+  }
+
+  help(from) {
+    this.client.notice(from, `.c[hoose] [options...]; randomly chooses from list. (Ex: .c 1, 2).`);
   }
 }

@@ -1,8 +1,8 @@
-import 'babel-polyfill'
-import {describe, afterEach, it} from 'mocha';
+import 'babel-polyfill';
+import { describe, afterEach, it } from 'mocha';
 import assert from 'assert';
-import {Client} from '../helpers.js';
-import {Imgur} from '../../src/commands/imgur';
+import { Client } from '../helpers.js';
+import { Imgur } from '../../src/commands/imgur';
 
 const client = new Client();
 const imgur = new Imgur(client);

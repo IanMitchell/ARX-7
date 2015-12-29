@@ -6,6 +6,10 @@
   "ssl": false,
   "userName": "chidori",
   "admins": ["Desch", "Jukey", "Aoi-chan"],
+  "showtimes": {
+    "server": "http://localhost:3000",
+    "key": "secretpassword"
+  },
   "channels": [
     {
       "name": "#arbalest",

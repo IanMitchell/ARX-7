@@ -1,7 +1,7 @@
 import debug from 'debug';
 import request from 'request';
 import config from './../../config';
-import {Command} from './command.js';
+import { Command } from './command.js';
 
 const log = debug('Imgur');
 
@@ -61,5 +61,9 @@ export class Imgur extends Command {
 
   addCommas(intNum) {
     return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+  }
+
+  help(from) {
+    this.client.notice(from, `Imgur automatically reads image metadata from pasted urls.`);
   }
 }

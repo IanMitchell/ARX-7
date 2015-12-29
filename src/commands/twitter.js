@@ -2,7 +2,7 @@ import debug from 'debug';
 import he from 'he';
 import * as TwitterClient from 'twitter-node-client';
 import config from './../../config';
-import {Command} from './command.js';
+import { Command } from './command.js';
 
 const log = debug('Twitter');
 
@@ -38,7 +38,7 @@ export class Twitter extends Command {
     });
 
     return new Promise((resolve, reject) => {
-      twitter.getTweet({id: tweetId},
+      twitter.getTweet({ id: tweetId },
         error => {
           log(`Twitter Request Error: ${error}`);
           return reject(Error(`Twitter Request Error: ${error}`));
@@ -59,5 +59,9 @@ export class Twitter extends Command {
         }
       );
     });
+  }
+
+  help(from) {
+    this.client.notice(from, `Twitter automatically reads tweets from pasted urls.`);
   }
 }

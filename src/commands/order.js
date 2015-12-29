@@ -1,5 +1,5 @@
 import debug from 'debug';
-import {Command} from './command.js';
+import { Command } from './command.js';
 
 const log = debug('Order');
 
@@ -112,5 +112,9 @@ export class Order extends Command {
     });
 
     return choices;
+  }
+
+  help(from) {
+    this.client.notice(from, `.o[rder] [options...]; randomly arranges the list. (Ex: .o s, n, i, p, e).`);
   }
 }

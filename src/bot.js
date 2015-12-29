@@ -1,7 +1,7 @@
 import debug from 'debug';
 import irc from 'irc';
 import config from '../config';
-import {ARX7} from './arx7.js';
+import { ARX7 } from './arx7.js';
 
 const log = debug('Bot');
 
