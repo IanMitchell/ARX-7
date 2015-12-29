@@ -10,8 +10,11 @@ const imgur = new Imgur(client);
 const link = 'http://imgur.com/gallery/E5bGFZE';
 const title = "I heard it was Mecha Monday, so here's ARX-7 Arbalest.";
 
+const malformed = 'http://imgur.com/gallery/0000000';
+
 const standard = 'http://imgur.com/E5bGFZE';
 const direct = 'http://i.imgur.com/E5bGFZE.jpg';
+const silent = 'http://imgur.com/fg8c8dB';
 
 describe('Imgur', () => {
   afterEach(() => {
@@ -37,13 +40,13 @@ describe('Imgur', () => {
       });
     });
 
-    // TODO: Fix
-    // it('should log and handle malformed links', () => {
-    //   return assert.throws(
-    //     imgur.message('Mocha', '#test', `${link}AEIOU`).then(() => {
-    //       assert.equal('Sorry, could not find Imgur info.', client.lastMessage);
-    //     }), Error);
-    // });
+    it('should log and handle malformed links', () => {
+      return imgur.message('Mocha', '#test', `${malformed}`).catch(error => {
+        assert(error instanceof Error);
+        assert(error.message.startsWith('Imgur Info'));
+        assert.equal('Sorry, could not find Imgur info.', client.lastMessage);
+      });
+    });
   });
 
   describe('General Usage', () => {
@@ -61,7 +64,11 @@ describe('Imgur', () => {
   });
 
   describe('Picture Lookup', () => {
-    // TODO: Test no title
+    it('should be silent on low traffic images', () => {
+      return imgur.message('Mocha', '#test', silent).then(() => {
+        assert.equal(client.lastMessage, null);
+      });
+    });
 
     it('should display correct title', () => {
       return imgur.message('Mocha', '#test', link).then(() => {
@@ -69,6 +76,11 @@ describe('Imgur', () => {
       });
     });
 
-    it('should include view count');
+    it('should include view count', () => {
+      return imgur.message('Mocha', '#test', link).then(() => {
+        const views = client.lastMessage.split('Views: ')[1];
+        assert((parseInt(views, 10) > 300));
+      });
+    });
   });
 });
