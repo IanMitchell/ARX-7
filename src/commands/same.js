@@ -47,7 +47,7 @@ export class Same extends Command {
       return false;
     }
 
-    if (this.messageStack[channel].length !== MESSAGE_STACK_SIZE - 1) {
+    if (this.messageStack[channel].length !== MESSAGE_STACK_SIZE) {
       return false;
     }
 
