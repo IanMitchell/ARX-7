@@ -158,8 +158,8 @@ export class ARX7 {
         log(`NOTICE ${from}: ${text}`);
 
         if (text.startsWith(`STATUS ${username}`)) {
-          this.client.removeListener(callbackWrapper);
-          resolve(parseInt(text[text.length - 1], 10) > 1);
+          this.client.removeListener('notice', callbackWrapper);
+          return resolve(parseInt(text[text.length - 1], 10) > 1);
         }
       };
 
