@@ -98,9 +98,7 @@ describe('ARX-7', () => {
   describe('Responds to Queries', () => {
     beforeEach(() => {
       arx7.isAuthorized = () => {
-        return new Promise((resolve) => {
-          resolve(true);
-        });
+        return new Promise(resolve => resolve(true));
       };
     });
 
