@@ -3,6 +3,8 @@ import FormData from 'form-data';
 import fetch from 'node-fetch';
 import config from './../../config';
 import { Command } from './command.js';
+import colors from 'irc-colors';
+import moment from 'moment';
 
 const log = debug('Showtimes');
 const SHOWTIMES_URL = `${config.showtimes.server}`;
@@ -32,7 +34,7 @@ export class Showtimes extends Command {
       });
     } else if (blame) {
       return new Promise((resolve, reject) => {
-        this.blameRequest(to, blame[1]).then(response => {
+        this.blameRequest(from, to, blame[1]).then(response => {
           this.send(to, response);
           return resolve();
         }, error => {
@@ -80,9 +82,49 @@ export class Showtimes extends Command {
     });
   }
 
-  blameRequest(irc, show) {
-    log(`Blame`);
-    return new Promise(resolve => resolve(`Blame not implemented yet (${show})`));
+  blameRequest(from, to, show) {
+    log(`Blame request by ${from} in ${to} for ${show}`);
+
+    return new Promise((resolve, reject) => {
+      let uri = `${SHOWTIMES_URL}/blame.json?`;
+      uri += `irc=${encodeURIComponent(to)}`;
+      uri += `&show=${encodeURIComponent(show)}`;
+
+      fetch(uri).then(response => {
+        if (response.ok) {
+          response.json().then(data => {
+            let message = '';
+
+            if (data.message) {
+              message = data.message;
+            } else {
+              const date = moment(new Date(data.updated_at)).fromNow();
+              const status = [];
+              let job = '';
+
+              data.status.forEach(staff => {
+                if (staff.status === 'finished') {
+                  status.push(colors.green(staff.acronym));
+                } else {
+                  status.push(colors.red(staff.acronym));
+                  if (!job) {
+                    job = staff.position;
+                  }
+                }
+              });
+
+              message = `Ep ${data.episode} of ${data.name}`;
+              message += ` is at ${job} as of ${date}. `;
+              message += `[${status.join(' ')}]`;
+            }
+
+            resolve(message);
+          });
+        } else {
+          response.json().then(data => reject(Error(data.message)));
+        }
+      }).catch(error => reject(Error(error)));
+    });
   }
 
   releaseRequest(from, to, show) {

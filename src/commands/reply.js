@@ -6,40 +6,19 @@ const log = debug('Reply');
 export class Reply extends Command {
   message(from, to, text) {
     return new Promise(resolve => {
-      if (text.toLowerCase() === 'ping') {
-        log(`${from} ping reply`);
-        this.send(to, 'pong');
-        return resolve();
-      }
+      const responses = new Map();
+      responses.set('ping', 'pong');
+      responses.set('bot respond', "I'm a pretty stupid bot.");
+      responses.set('bot be nice', 'sorry :(');
+      responses.set('gj bot', 'thx');
+      responses.set('thx bot', 'np');
+      responses.set('bot pls', '( ¬‿¬)');
+      responses.set('!bugreport', 'Hi! To file a feature request or bug, go to: https://github.com/IanMitchell/ARX-7');
 
-      if (text.toLowerCase() === 'bot respond') {
-        log(`${from} respond reply`);
-        this.send(to, "I'm a pretty stupid bot.");
-        return resolve();
-      }
-
-      if (text.toLowerCase() === 'bot be nice') {
-        log(`${from} apology reply`);
-        this.send(to, 'sorry :(');
-        return resolve();
-      }
-
-      if (text.toLowerCase() === 'gj bot') {
-        log(`${from} congrats reply`);
-        this.send(to, 'thx');
-        return resolve();
-      }
-
-      if (text.toLowerCase() === 'thx bot') {
-        log(`${from} thanks reply`);
-        this.send(to, 'np');
-        return resolve();
-      }
-
-      if (text.toLowerCase() === 'bot pls') {
-        log(`${from} please reply`);
-        this.send(to, '( ¬‿¬)');
-        return resolve();
+      const reply = responses.get(text.toLowerCase());
+      if (reply) {
+        log(`${from} ${reply} reply`);
+        this.send(to, reply);
       }
 
       return resolve();

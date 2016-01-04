@@ -12,6 +12,12 @@ describe('Reply', () => {
     client.resetLog();
   });
 
+  it('should not respond to invalid triggers', () => {
+    return reply.message('Mocha', '#test', 'Hi Desch').then(() => {
+      assert(!client.lastMessage);
+    });
+  });
+
   describe('> ping', () => {
     it('should respond', () => {
       return reply.message('Mocha', '#test', 'ping').then(() => {
@@ -91,6 +97,20 @@ describe('Reply', () => {
 
     it('should respond in correct channel', () => {
       return reply.message('Mocha', '#test', 'bot pls').then(() => {
+        assert.equal('#test', client.lastTarget);
+      });
+    });
+  });
+
+  describe('> !bugreport', () => {
+    it('should respond', () => {
+      return reply.message('Mocha', '#test', '!bugreport').then(() => {
+        assert.equal('Hi! To file a feature request or bug, go to: https://github.com/IanMitchell/ARX-7', client.lastMessage);
+      });
+    });
+
+    it('should respond in correct channel', () => {
+      return reply.message('Mocha', '#test', '!bugreport').then(() => {
         assert.equal('#test', client.lastTarget);
       });
     });
