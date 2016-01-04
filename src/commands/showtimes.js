@@ -155,6 +155,6 @@ export class Showtimes extends Command {
   }
 
   help(from, to) {
-    this.client.send(to, `Help pending`);
+    this.client.send(to, `.blame [show]; returns show information. .release show; marks show as finished. .(done|undone) show [!position]; marks (optional) position as done.`);
   }
 }
