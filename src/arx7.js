@@ -111,8 +111,6 @@ export class ARX7 {
             command.message(from, to, text);
           }
         });
-
-        return resolve();
       } else if (to === this.client.nick && from !== this.client.nick) {
         // Query Handling
         if (this.config.admins.includes(from)) {
@@ -121,12 +119,11 @@ export class ARX7 {
           log(`Query from ${from}: ${text}`);
           const admins = this.config.admins.join(', ');
           this.client.say(from, `I'm a bot! Contact [${admins}] for help. For help using me, use '.guide'.`);
-          resolve();
         }
       }
 
       this.helpRequest(from, to, text);
-      resolve();
+      return resolve();
     });
   }
 
