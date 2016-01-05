@@ -100,14 +100,18 @@ export class Showtimes extends Command {
             } else {
               const updatedDate = moment(new Date(data.updated_at));
               const airDate = moment(new Date(data.air_date));
-              const status = [];
+              const status = new Map();
               let job;
 
               data.status.forEach(staff => {
                 if (staff.status === 'finished') {
-                  status.push(colors.green(staff.acronym));
+                  // Pending takes precedence
+                  if (!status.get(staff.acronym)) {
+                    status.set(staff.acronym, colors.green(staff.acronym));
+                  }
                 } else {
-                  status.push(colors.red(staff.acronym));
+                  status.set(staff.acronym, colors.red(staff.acronym));
+
                   if (!job) {
                     job = staff.position;
                   }
@@ -122,7 +126,7 @@ export class Showtimes extends Command {
                 message += ` will air in ${airDate.fromNow()}. `;
               }
 
-              message += `[${status.join(' ')}]`;
+              message += `[${[...status.values()].join(' ')}]`;
             }
 
             resolve(message);
