@@ -98,9 +98,10 @@ export class Showtimes extends Command {
             if (data.message) {
               message = data.message;
             } else {
-              const date = moment(new Date(data.updated_at)).fromNow();
+              const updatedDate = moment(new Date(data.updated_at));
+              const airDate = moment(new Date(data.air_date));
               const status = [];
-              let job = '';
+              let job;
 
               data.status.forEach(staff => {
                 if (staff.status === 'finished') {
@@ -114,7 +115,13 @@ export class Showtimes extends Command {
               });
 
               message = `Ep ${data.episode} of ${data.name}`;
-              message += ` is at ${job} as of ${date}. `;
+
+              if (updatedDate > airDate) {
+                message += ` is at ${job} as of ${updatedDate.fromNow()}. `;
+              } else {
+                message += ` will air in ${airDate.fromNow()}. `;
+              }
+
               message += `[${status.join(' ')}]`;
             }
 
@@ -154,7 +161,7 @@ export class Showtimes extends Command {
     return 'pending';
   }
 
-  help(from, to) {
-    this.client.send(to, `.blame [show]; returns show information. .release show; marks show as finished. .(done|undone) show [!position]; marks (optional) position as done.`);
+  help(from) {
+    this.client.notice(from, `.blame [show]; returns show information. .release show; marks show as finished. .(done|undone) show [!position]; marks (optional) position as done.`);
   }
 }
