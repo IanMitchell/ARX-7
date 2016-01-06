@@ -104,7 +104,7 @@ export class Showtimes extends Command {
               let job;
 
               data.status.forEach(staff => {
-                if (staff.status === 'finished') {
+                if (staff.finished) {
                   // Pending takes precedence
                   if (!status.get(staff.acronym)) {
                     status.set(staff.acronym, colors.green(staff.acronym));
