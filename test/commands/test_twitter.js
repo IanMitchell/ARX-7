@@ -8,6 +8,7 @@ const client = new Client();
 const twitter = new Twitter(client);
 
 const link = 'https://twitter.com/IanMitchel1/status/636939838512500736';
+const malformed = 'https://twitter.com/IanMitchel1/status/6369398385125007365';
 
 describe('Twitter', () => {
   afterEach(() => {
@@ -21,13 +22,13 @@ describe('Twitter', () => {
       });
     });
 
-    // TODO: Fix
-    // it('should log and handle malformed links', () => {
-    //   return assert.throws(
-    //     twitter.message('Mocha', '#test', `${link}AEIOU`).then(() => {
-    //       assert.equal('Sorry, could not find Twitter info.', client.lastMessage);
-    //     }), Error);
-    // });
+    it('should log and handle malformed links', () => {
+      return twitter.message('Mocha', '#test', `${malformed}`).catch(error => {
+        assert(error instanceof Error);
+        assert(error.message.startsWith('Twitter Info'));
+        assert.equal('Sorry, could not find Twitter info.', client.lastMessage);
+      });
+    });
   });
 
   describe('General Usage', () => {

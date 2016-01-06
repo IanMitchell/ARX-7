@@ -40,8 +40,8 @@ export class Twitter extends Command {
     return new Promise((resolve, reject) => {
       twitter.getTweet({ id: tweetId },
         error => {
-          log(`Twitter Request Error: ${error}`);
-          return reject(Error(`Twitter Request Error: ${error}`));
+          log(`Twitter Info Request Error: ${error}`);
+          return reject(Error(`Twitter Info Request Error: ${error}`));
         },
         success => {
           try {
@@ -53,8 +53,8 @@ export class Twitter extends Command {
               username: data.user.name,
             });
           } catch (exception) {
-            log(`Twitter Response Error: ${exception}`);
-            return reject(Error(`Twitter Response Error: ${exception}`));
+            log(`Twitter Info Response Error: ${exception}`);
+            return reject(Error(`Twitter Info Response Error: ${exception}`));
           }
         }
       );

@@ -58,13 +58,13 @@ describe('YouTube', () => {
       });
     });
 
-    // TODO: Fix
-    // it('should log and handle malformed links', () => {
-    //   return assert.throws(
-    //     youtube.message('Mocha', '#test', `${malformed}`).then(() => {
-    //       assert.equal('Sorry, could not find YouTube info.', client.lastMessage);
-    //     }), Error);
-    // });
+    it('should log and handle malformed links', () => {
+      return youtube.message('Mocha', '#test', `${malformed}`).catch(error => {
+        assert(error instanceof Error);
+        assert(error.message.startsWith('YouTube Info'));
+        assert.equal('Sorry, could not find YouTube info.', client.lastMessage);
+      });
+    });
   });
 
   describe('General Usage', () => {

@@ -60,6 +60,12 @@ export class Youtube extends Command {
         if (!error && response.statusCode === 200) {
           try {
             const data = JSON.parse(body);
+
+            if (data.items.length === 0) {
+              log(`No information found for ${id}`);
+              return reject(Error(`YouTube Info Empty Item Response`));
+            }
+
             const video = {
               title: data.items[0].snippet.title,
               views: this.addCommas(data.items[0].statistics.viewCount),

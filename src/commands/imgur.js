@@ -4,6 +4,7 @@ import config from './../../config';
 import { Command } from './command.js';
 
 const log = debug('Imgur');
+const IMGUR_VIEW_LIMIT = 20;
 
 export class Imgur extends Command {
   message(from, to, text) {
@@ -16,7 +17,9 @@ export class Imgur extends Command {
         log(`Retrieving information for ${match[3]}`);
 
         this.info(match[3]).then(imgur => {
-          this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
+          if (imgur.title !== 'Untitled' && imgur.views > IMGUR_VIEW_LIMIT) {
+            this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
+          }
           return resolve();
         }, error => {
           this.send(to, 'Sorry, could not find Imgur info.');
@@ -48,12 +51,12 @@ export class Imgur extends Command {
 
             return resolve(imgur);
           } catch (exception) {
-            log(`Imgur Response Error: ${exception}`);
-            return reject(Error(`Imgur Response Error: ${exception}`));
+            log(`Imgur Info Response Error: ${exception}`);
+            return reject(Error(`Imgur Info Response Error: ${exception}`));
           }
         } else {
-          log(`Imgur Request Error: ${error}`);
-          return reject(Error(`Imgur Request Error: ${error}`));
+          log(`Imgur Info Request Error: ${error}`);
+          return reject(Error(`Imgur Info Request Error: ${error}`));
         }
       });
     });

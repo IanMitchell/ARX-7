@@ -17,6 +17,7 @@ export class Command {
       '.lewd',
       'cooldudeirc',
       'valbot',
+      'ciao',
     ];
   }
 
