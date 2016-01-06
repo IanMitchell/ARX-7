@@ -159,10 +159,10 @@ export class Showtimes extends Command {
 
   convertStatus(status) {
     if (status === 'done') {
-      return 'finished';
+      return 'true';
     }
 
-    return 'pending';
+    return 'false';
   }
 
   help(from) {
