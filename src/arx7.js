@@ -1,6 +1,7 @@
 import debug from 'debug';
 import pkg from '../package';
 
+import { Blame } from './commands/blame.js';
 import { Choose } from './commands/choose.js';
 import { Imgur } from './commands/imgur.js';
 import { Order } from './commands/order.js';
@@ -19,12 +20,13 @@ const BAN_RETRY_DELAY = 1000 * 60 * 3;
 export class ARX7 {
   constructor(client, config) {
     this.commands = [
+      new Blame(client),
       new Choose(client),
       new Imgur(client),
       new Order(client),
       new Reply(client),
       new Same(client),
-      new Showtimes(client),
+      new Showtimes(client, this.isAuthorized),
       new Time(client),
       new Twitter(client),
       new Youtube(client),
