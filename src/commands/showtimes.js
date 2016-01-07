@@ -111,10 +111,10 @@ export class Showtimes extends Command {
                 if (staff.finished) {
                   // Pending takes precedence
                   if (!status.get(staff.acronym)) {
-                    status.set(staff.acronym, colors.green(staff.acronym));
+                    status.set(staff.acronym, colors.bold.green(staff.acronym));
                   }
                 } else {
-                  status.set(staff.acronym, colors.red(staff.acronym));
+                  status.set(staff.acronym, colors.bold.red(staff.acronym));
 
                   if (!job) {
                     job = staff.position;
