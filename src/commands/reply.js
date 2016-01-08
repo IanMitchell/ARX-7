@@ -14,6 +14,7 @@ export class Reply extends Command {
     this.responses.set('thx bot', 'np');
     this.responses.set('bot pls', '( ¬‿¬)');
     this.responses.set('!bugreport', 'Hi! To file a feature request or bug, go to: https://github.com/IanMitchell/ARX-7');
+    this.responses.set('.blame', 'Please use: ".blame <show>" (ie, `.blame bokumachi`)');
   }
 
   message(from, to, text) {
