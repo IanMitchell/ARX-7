@@ -63,6 +63,10 @@ export class Blame extends Command {
                 }
               });
 
+              if (job === undefined) {
+                job = 'release';
+              }
+
               message = `Ep ${data.episode} of ${data.name}`;
 
               if (updatedDate > airDate) {
