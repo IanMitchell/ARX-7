@@ -24,6 +24,8 @@ export class Blame extends Command {
           return reject(error);
         });
       });
+    } else if (text.toLowerCase() === '.blame') {
+      this.send(to, 'Please use: ".blame <show>" (ie, `.blame bokumachi`)');
     }
   }
 
