@@ -15,22 +15,22 @@ describe('Command', () => {
   describe('Blacklist', () => {
     it('should block .ly links', () => {
       command.send('#test', 'Desch: http://bit.ly link');
-      assert.equal('Blacklist triggered.', client.lastMessage);
+      assert.equal(client.lastMessage, 'Blacklist triggered.');
     });
 
     it('should block .lewd', () => {
       command.send('#test', 'Desch: .lewd');
-      assert.equal('Blacklist triggered.', client.lastMessage);
+      assert.equal(client.lastMessage, 'Blacklist triggered.');
     });
 
     it('should block `xd`', () => {
       command.send('#test', 'Desch: xd');
-      assert.equal('Blacklist triggered.', client.lastMessage);
+      assert.equal(client.lastMessage, 'Blacklist triggered.');
     });
 
     it('should not block xdcc', () => {
       command.send('#test', 'Desch: xdcc');
-      assert.equal('Desch: xdcc', client.lastMessage);
+      assert.equal(client.lastMessage, 'Desch: xdcc');
     });
   });
 });

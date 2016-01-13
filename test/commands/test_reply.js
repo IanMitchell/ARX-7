@@ -12,106 +12,60 @@ describe('Reply', () => {
     client.resetLog();
   });
 
-  it('should not respond to invalid triggers', () => {
-    return reply.message('Mocha', '#test', 'Hi Desch').then(() => {
-      assert(!client.lastMessage);
-    });
-  });
-
-  describe('> ping', () => {
-    it('should respond', () => {
+  describe('Triggers', () => {
+    it('should respond to `ping`', () => {
       return reply.message('Mocha', '#test', 'ping').then(() => {
-        assert.equal('pong', client.lastMessage);
+        assert.equal(client.lastMessage, 'pong');
       });
     });
 
-    it('should respond in correct channel', () => {
-      return reply.message('Mocha', '#test', 'ping').then(() => {
-        assert.equal('#test', client.lastTarget);
-      });
-    });
-  });
-
-  describe('> bot respond', () => {
-    it('should respond', () => {
+    it('should respond to `bot respond`', () => {
       return reply.message('Mocha', '#test', 'bot respond').then(() => {
-        assert.equal("I'm a pretty stupid bot.", client.lastMessage);
+        assert.equal(client.lastMessage, "I'm a pretty stupid bot.");
       });
     });
 
-    it('should respond in correct channel', () => {
-      return reply.message('Mocha', '#test', 'bot respond').then(() => {
-        assert.equal('#test', client.lastTarget);
-      });
-    });
-  });
-
-  describe('> bot be nice', () => {
-    it('should respond', () => {
+    it('should respond to `bot be nice`', () => {
       return reply.message('Mocha', '#test', 'bot be nice').then(() => {
-        assert.equal('sorry :(', client.lastMessage);
+        assert.equal(client.lastMessage, 'sorry :(');
       });
     });
 
-    it('should respond in correct channel', () => {
-      return reply.message('Mocha', '#test', 'bot be nice').then(() => {
-        assert.equal('#test', client.lastTarget);
-      });
-    });
-  });
-
-  describe('> gj bot', () => {
-    it('should respond', () => {
+    it('should respond to `gj bot`', () => {
       return reply.message('Mocha', '#test', 'gj bot').then(() => {
-        assert.equal('thx', client.lastMessage);
+        assert.equal(client.lastMessage, 'thx');
       });
     });
 
-    it('should respond in correct channel', () => {
-      return reply.message('Mocha', '#test', 'gj bot').then(() => {
-        assert.equal('#test', client.lastTarget);
-      });
-    });
-  });
-
-  describe('> thx bot', () => {
-    it('should respond', () => {
+    it('should respond to `thx bot`', () => {
       return reply.message('Mocha', '#test', 'thx bot').then(() => {
-        assert.equal('np', client.lastMessage);
+        assert.equal(client.lastMessage, 'np');
       });
     });
 
-    it('should respond in correct channel', () => {
-      return reply.message('Mocha', '#test', 'thx bot').then(() => {
-        assert.equal('#test', client.lastTarget);
-      });
-    });
-  });
-
-  describe('> bot pls', () => {
-    it('should respond', () => {
+    it('should respond to `bot pls`', () => {
       return reply.message('Mocha', '#test', 'bot pls').then(() => {
-        assert.equal('( ¬‿¬)', client.lastMessage);
+        assert.equal(client.lastMessage, '( ¬‿¬)');
       });
     });
 
+    it('should respond to `!bugreport`', () => {
+      return reply.message('Mocha', '#test', '!bugreport').then(() => {
+        assert.equal(client.lastMessage, 'Hi! To file a feature request or bug, go to: https://github.com/IanMitchell/ARX-7');
+      });
+    });
+
+    it('should not respond to invalid triggers', () => {
+      return reply.message('Mocha', '#test', 'Hi Desch').then(() => {
+        assert.equal(client.lastMessage, null);
+      });
+    });
+  });
+
+  describe('General', () => {
     it('should respond in correct channel', () => {
       return reply.message('Mocha', '#test', 'bot pls').then(() => {
-        assert.equal('#test', client.lastTarget);
-      });
-    });
-  });
-
-  describe('> !bugreport', () => {
-    it('should respond', () => {
-      return reply.message('Mocha', '#test', '!bugreport').then(() => {
-        assert.equal('Hi! To file a feature request or bug, go to: https://github.com/IanMitchell/ARX-7', client.lastMessage);
-      });
-    });
-
-    it('should respond in correct channel', () => {
-      return reply.message('Mocha', '#test', '!bugreport').then(() => {
-        assert.equal('#test', client.lastTarget);
+        assert.equal(client.lastTarget, '#test');
       });
     });
   });

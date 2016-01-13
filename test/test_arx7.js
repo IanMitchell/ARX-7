@@ -36,32 +36,32 @@ describe('ARX-7', () => {
     it('should identify on connect', () => {
       arx7.connect();
       assert.equal(client.lastTarget, 'NickServ');
-      assert.equal(client.lastMessage, `identify password`);
+      assert.equal(client.lastMessage, 'identify password');
     });
 
     it('should join channels after identify', () => {
       assert.equal(client.lastMessage, null);
       assert.equal(client.channelLog.length, 0);
       arx7.connect();
-      assert(client.lastMessage);
-      assert(client.channelLog.length > 0);
+      assert.notEqual(client.lastMessage, null);
+      assert.notEqual(client.channelLog.length, 0, 'Channel log is empty');
     });
 
     it('should handle uppercase channel names', () => {
       arx7.connect();
-      assert(client.channelLog.includes('#arx-7'));
+      assert(client.channelLog.includes('#arx-7'), 'Channel log missing #arx-7');
     });
 
     it('should join +k channels', () => {
       arx7.connect();
-      assert(client.channelLog.includes('#arbalest sagara'));
+      assert(client.channelLog.includes('#arbalest sagara'), 'Channl log missing join');
     });
   });
 
   describe('Responds to CTCP Version', () => {
     it('should respond with VERSION', () => {
       arx7.version('Mocha', 'ARX-7');
-      assert(client.lastMessage.includes('VERSION'));
+      assert(client.lastMessage.includes('VERSION'), 'VERSION not in response');
       assert.equal(client.lastType, 'notice');
     });
   });
@@ -69,22 +69,22 @@ describe('ARX-7', () => {
   describe('Responds to Messages', () => {
     it('should send message to plugins', () => {
       arx7.message('Mocha', '#arx-7', '.c 1 2 3');
-      arx7.commands.forEach(command => assert.equal(command.log.length, 1));
+      arx7.commands.forEach(command => assert.equal(command.log.length, 1, 'Command log missing response'));
     });
 
     // Aoi-chan Test
     it('should send message to plugins for non-lowercase channel', () => {
       arx7.join('#Some-Channel', 'ARX-7');
       arx7.message('Mocha', '#Some-Channel', '.c 1 2 3');
-      assert(arx7.commands[0].log.includes('.c 1 2 3'));
+      assert(arx7.commands[0].log.includes('.c 1 2 3'), 'Command log missing response');
     });
 
     it('should channel-restrict plugins', () => {
       arx7.message('Mocha', '#arbalest', '.c 1 2 3');
-      assert(arx7.commands[0].log.includes('.c 1 2 3'));
+      assert(arx7.commands[0].log.includes('.c 1 2 3'), 'Command log missing choose');
 
       for (let i = 1; i < arx7.commands.length; i++) {
-        assert.equal(arx7.commands[i].log.length, 0);
+        assert.equal(arx7.commands[i].log.length, 0, 'Command log is not empty');
       }
     });
   });
@@ -104,14 +104,14 @@ describe('ARX-7', () => {
 
     it('should respond to Query', () => {
       return arx7.message('Mocha', 'ARX-7', 'Hi').then(() => {
-        assert(client.lastMessage);
-        assert(client.lastMessage.includes('Desch, Jukey, Aoi-chan'));
+        assert(client.lastMessage, 'Query response incorrect');
+        assert(client.lastMessage.includes('Desch, Jukey, Aoi-chan'), 'Query admin list incorrect');
       });
     });
 
     it('should respond to Admin Query', () => {
       return arx7.message('Desch', 'ARX-7', 'Hi').then(() => {
-        assert(client.lastMessage.includes('Command not recognized'));
+        assert(client.lastMessage.includes('Command not recognized'), 'Invalid query admin response');
       });
     });
 
@@ -185,14 +185,18 @@ describe('ARX-7', () => {
   });
 
   describe('Responds to Kicks and Bans', () => {
-    // TODO: Fix setTimeout
-    // it('should attempt to rejoin after kicks in 3 seconds', () => {
-    //   arx7.kick('#test', 'ARX-7', 'Mocha', 'Testing');
-    //   assert.equal(null, client.getLastChannel());
-    //   setTimeout(() => {
-    //     assert.equal('#test', client.getLastChannel());
-    //   }, 1000 * 3);
-    // });
+    // Arrow functions prevent us from using `this.timeout`
+    it('should attempt to rejoin after kicks in 3 seconds', function() {
+      this.timeout(4500);
+      arx7.kick('#test', 'ARX-7', 'Mocha', 'Testing');
+      assert.equal(null, client.getLastChannel());
+      return new Promise(resolve => {
+        setTimeout(() => {
+          assert.equal('#test', client.getLastChannel());
+          resolve();
+        }, 1000 * 4);
+      });
+    });
 
     it('should attempt to rejoin after bans in 3 minutes');
 
