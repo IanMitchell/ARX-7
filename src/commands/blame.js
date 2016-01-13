@@ -72,7 +72,7 @@ export class Blame extends Command {
               message = `Ep ${data.episode} of ${data.name}`;
 
               if (updatedDate > airDate) {
-                message += ` is at ${job} as of ${updatedDate.fromNow()}. `;
+                message += ` is at ${job} (last update ${updatedDate.fromNow()}). `;
               } else {
                 message += ` will air in ${airDate.fromNow()}. `;
               }
