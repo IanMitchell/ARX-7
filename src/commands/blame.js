@@ -33,7 +33,7 @@ export class Blame extends Command {
     return new Promise((resolve, reject) => {
       let uri = `${SHOWTIMES_URL}/blame.json?`;
       uri += `irc=${encodeURIComponent(to)}`;
-      uri += `&show=${encodeURIComponent(show)}`;
+      uri += `&show=${encodeURIComponent(show.trim())}`;
 
       fetch(uri).then(response => {
         if (response.ok) {
