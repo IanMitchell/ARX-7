@@ -31,7 +31,7 @@ export class Showtimes extends Command {
             this.showtimesRequest(from, to, status, show, position).then(response => {
               const msg = response;
 
-              this.blame.blameRequest(from, to, show).then(res => {
+              this.blame.blameRequest(from, to, show, true).then(res => {
                 this.send(to, `${msg}. ${res}`);
                 return resolve();
               });

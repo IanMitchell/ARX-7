@@ -29,7 +29,7 @@ export class Blame extends Command {
     }
   }
 
-  blameRequest(from, to, show) {
+  blameRequest(from, to, show, names = false) {
     log(`Blame request by ${from} in ${to} for ${show}`);
 
     return new Promise((resolve, reject) => {
@@ -60,7 +60,11 @@ export class Blame extends Command {
                   status.set(staff.acronym, colors.bold.red(staff.acronym));
 
                   if (!job) {
-                    job = staff.position;
+                    if (names) {
+                      job = staff.staff;
+                    } else {
+                      job = staff.position;
+                    }
                   }
                 }
               });
