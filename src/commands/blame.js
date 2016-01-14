@@ -74,7 +74,13 @@ export class Blame extends Command {
               if (updatedDate > airDate) {
                 message += ` is at ${job} (last update ${updatedDate.fromNow()}). `;
               } else {
-                message += ` will air in ${airDate.fromNow()}. `;
+                if (airDate > Date.now()) {
+                  message += ' airs';
+                } else {
+                  message += ' aired';
+                }
+
+                message += ` ${airDate.fromNow()}. `;
               }
 
               message += `[${[...status.values()].join(' ')}]`;
