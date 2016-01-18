@@ -24,16 +24,18 @@ export class Blame extends Command {
           return reject(error);
         });
       });
+    } else if (text.trim().toLowerCase() === '.blame') {
+      this.send(to, 'Please use: ".blame <show>" (ie, `.blame bokumachi`)');
     }
   }
 
-  blameRequest(from, to, show) {
+  blameRequest(from, to, show, names = false) {
     log(`Blame request by ${from} in ${to} for ${show}`);
 
     return new Promise((resolve, reject) => {
       let uri = `${SHOWTIMES_URL}/blame.json?`;
       uri += `irc=${encodeURIComponent(to)}`;
-      uri += `&show=${encodeURIComponent(show)}`;
+      uri += `&show=${encodeURIComponent(show.trim())}`;
 
       fetch(uri).then(response => {
         if (response.ok) {
@@ -58,7 +60,11 @@ export class Blame extends Command {
                   status.set(staff.acronym, colors.bold.red(staff.acronym));
 
                   if (!job) {
-                    job = staff.position;
+                    if (names) {
+                      job = staff.staff;
+                    } else {
+                      job = staff.position;
+                    }
                   }
                 }
               });
@@ -70,9 +76,15 @@ export class Blame extends Command {
               message = `Ep ${data.episode} of ${data.name}`;
 
               if (updatedDate > airDate) {
-                message += ` is at ${job} as of ${updatedDate.fromNow()}. `;
+                message += ` is at ${job} (last update ${updatedDate.fromNow()}). `;
               } else {
-                message += ` will air in ${airDate.fromNow()}. `;
+                if (airDate > Date.now()) {
+                  message += ' airs';
+                } else {
+                  message += ' aired';
+                }
+
+                message += ` ${airDate.fromNow()}. `;
               }
 
               message += `[${[...status.values()].join(' ')}]`;

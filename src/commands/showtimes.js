@@ -31,7 +31,7 @@ export class Showtimes extends Command {
             this.showtimesRequest(from, to, status, show, position).then(response => {
               const msg = response;
 
-              this.blame.blameRequest(from, to, show).then(res => {
+              this.blame.blameRequest(from, to, show, true).then(res => {
                 this.send(to, `${msg}. ${res}`);
                 return resolve();
               });
@@ -69,7 +69,7 @@ export class Showtimes extends Command {
       form.append('username', from);
       form.append('status', this.convertStatus(status));
       form.append('irc', to);
-      form.append('name', show);
+      form.append('name', show.trim());
       form.append('auth', config.showtimes.key);
 
       if (position) {
@@ -92,7 +92,7 @@ export class Showtimes extends Command {
     return new Promise((resolve, reject) => {
       const form = new FormData();
       form.append('irc', to);
-      form.append('name', show);
+      form.append('name', show.trim());
       form.append('auth', config.showtimes.key);
 
       fetch(`${SHOWTIMES_URL}/release`, { method: 'PUT', body: form }).then(response => {
