@@ -19,7 +19,7 @@ export class Blame extends Command {
           this.send(to, response);
           return resolve();
         }, error => {
-          this.send(to, error.message);
+          this.send(to, 'Error connecting to Deschtimes');
           log(`Error: ${error.message}`);
           return reject(error);
         });
