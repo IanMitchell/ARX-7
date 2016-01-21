@@ -7,13 +7,20 @@
   "main": "app.js",
   "scripts": {
     "start": "DEBUG=* node app.js",
+    "start-windows": "set DEBUG=* & node app.js",
     "background": "DEBUG=* DEBUG_FD=3 node app.js 3> output.log &",
     "build": "babel src --out-dir build",
     "arx7": "DEBUG=* node build/arx7.js",
-    "test": "DEBUG=-* mocha --recursive --compilers js:babel-core/register"
+    "test": "DEBUG=-* mocha --recursive --compilers js:babel-core/register",
+    "test-windows": "set DEBUG=-* & mocha --recursive --compilers js:babel-core/register"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
   },
   "dependencies": {
-    "babel-cli": "^6.3.17",
+    "babel-cli": "^6.4.5",
     "babel-core": "6.4.0",
     "babel-polyfill": "6.3.14",
     "babel-preset-es2015": "6.3.13",
@@ -23,13 +30,14 @@
     "irc": "0.4.0",
     "irc-colors": "^1.2.0",
     "moment": "^2.11.0",
+    "moment-timezone": "^0.5.0",
     "node-fetch": "^1.3.3",
     "request": "2.67.0",
-    "timezone": "0.0.48",
     "twitter-node-client": "0.0.6"
   },
   "devDependencies": {
     "babel-eslint": "4.1.3",
+    "eslint": "^1.10.3",
     "eslint-config-airbnb": "3.1.0",
     "mocha": "2.2.5"
   }

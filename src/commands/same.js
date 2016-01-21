@@ -2,7 +2,8 @@ import debug from 'debug';
 import { Command } from './command.js';
 
 const log = debug('Same');
-const MESSAGE_STACK_SIZE = 4;
+
+export const MESSAGE_STACK_SIZE = 4;
 
 export class Same extends Command {
   constructor(client) {
@@ -11,18 +12,13 @@ export class Same extends Command {
   }
 
   message(from, to, text) {
-    return new Promise(resolve => {
-      this.pushMessage(to, text);
+    this.pushMessage(to, text);
 
-      if (this.isSame(to, text)) {
-        log(`Sending ${text}`);
-        this.send(to, text);
-        this.messageStack.set(to, []);
-        return resolve();
-      }
-
-      return resolve();
-    });
+    if (this.isSame(to, text)) {
+      log(`Sending ${text}`);
+      this.send(to, text);
+      this.messageStack.set(to, []);
+    }
   }
 
   pushMessage(channel, text) {
@@ -33,11 +29,13 @@ export class Same extends Command {
 
     this.messageStack.get(channel).push(text);
 
+    // Only track last couple messages
     if (this.messageStack.get(channel).length > MESSAGE_STACK_SIZE) {
       this.messageStack.get(channel).shift();
     }
   }
 
+  // Reduces array to only unique values
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
