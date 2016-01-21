@@ -18,15 +18,15 @@ describe('Twitter', () => {
   describe('Triggers', () => {
     it('should activate anywhere in phrase', () => {
       return twitter.message('Mocha', '#test', `Tweet ${link}!`).then(() => {
-        assert(client.lastMessage);
+        assert.notEqual(client.lastMessage, null);
       });
     });
 
     it('should log and handle malformed links', () => {
       return twitter.message('Mocha', '#test', `${malformed}`).catch(error => {
-        assert(error instanceof Error);
-        assert(error.message.startsWith('Twitter Info'));
-        assert.equal('Sorry, could not find Twitter info.', client.lastMessage);
+        assert(error instanceof Error, 'Incorrect Error returned');
+        assert(error.message.startsWith('Twitter Info'), 'Incorrect Error message');
+        assert.equal(client.lastMessage, 'Sorry, could not find Twitter info.');
       });
     });
   });
@@ -34,13 +34,13 @@ describe('Twitter', () => {
   describe('General Usage', () => {
     it('should respond in correct channel', () => {
       return twitter.message('Mocha', '#test', link).then(() => {
-        assert.equal('#test', client.lastTarget);
+        assert.equal(client.lastTarget, '#test');
       });
     });
 
     it('should include [Twitter]', () => {
       return twitter.message('Mocha', '#test', link).then(() => {
-        assert(client.lastMessage.startsWith('[Twitter]: '));
+        assert(client.lastMessage.startsWith('[Twitter]: '), 'Message not properly tagged');
       });
     });
   });
@@ -50,14 +50,14 @@ describe('Twitter', () => {
       return twitter.message('Mocha', '#test', link).then(() => {
         const tweet = client.lastMessage.toLowerCase();
         const expected = ' | By Ian Mitchell (@IanMitchel1)'.toLowerCase();
-        assert(tweet.includes(expected));
+        assert(tweet.includes(expected), 'Incorrect tweet information');
       });
     });
 
     it('should handle special characters', () => {
       return twitter.message('Mocha', '#test', link).then(() => {
         const tweet = client.lastMessage.toLowerCase();
-        assert((tweet.includes('<') && tweet.includes('>')));
+        assert((tweet.includes('<') && tweet.includes('>')), 'Message missing special characters');
       });
     });
   });

@@ -24,27 +24,27 @@ describe('Imgur', () => {
   describe('Triggers', () => {
     it('should activate anywhere in phrase with Gallery URL', () => {
       return imgur.message('Mocha', '#test0', `ARX-7 ${link}!`).then(() => {
-        assert(client.lastMessage);
+        assert.notEqual(client.lastMessage, null);
       });
     });
 
     it('should activate anywhere in phrase with Standard URL', () => {
       return imgur.message('Mocha', '#test', `ARX-7 ${standard}!`).then(() => {
-        assert(client.lastMessage);
+        assert.notEqual(client.lastMessage, null);
       });
     });
 
     it('should activate anywhere in phrase with Direct URL', () => {
       return imgur.message('Mocha', '#test4', `ARX-7 ${direct}!`).then(() => {
-        assert(client.lastMessage);
+        assert.notEqual(client.lastMessage, null);
       });
     });
 
     it('should log and handle malformed links', () => {
       return imgur.message('Mocha', '#test', `${malformed}`).catch(error => {
-        assert(error instanceof Error);
-        assert(error.message.startsWith('Imgur Info'));
-        assert.equal('Sorry, could not find Imgur info.', client.lastMessage);
+        assert(error instanceof Error, 'Incorrect Error returned');
+        assert(error.message.startsWith('Imgur Info'), 'Incorrect Error message');
+        assert.equal(client.lastMessage, 'Sorry, could not find Imgur info.');
       });
     });
   });
@@ -52,13 +52,13 @@ describe('Imgur', () => {
   describe('General Usage', () => {
     it('should respond in correct channel', () => {
       return imgur.message('Mocha', '#test', link).then(() => {
-        assert.equal('#test', client.lastTarget);
+        assert.equal(client.lastTarget, '#test');
       });
     });
 
     it('should include [Imgur]', () => {
       return imgur.message('Mocha', '#test', link).then(() => {
-        assert(client.lastMessage.startsWith('[Imgur] '));
+        assert(client.lastMessage.startsWith('[Imgur] '), 'Message not properly tagged');
       });
     });
   });
@@ -72,14 +72,14 @@ describe('Imgur', () => {
 
     it('should display correct title', () => {
       return imgur.message('Mocha', '#test', link).then(() => {
-        assert(client.lastMessage.includes(title));
+        assert(client.lastMessage.includes(title), 'Message does not include title');
       });
     });
 
     it('should include view count', () => {
       return imgur.message('Mocha', '#test', link).then(() => {
         const views = client.lastMessage.split('Views: ')[1];
-        assert((parseInt(views, 10) > 300));
+        assert((parseInt(views, 10) > 300), 'Message contains invalid view amount');
       });
     });
   });

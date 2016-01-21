@@ -22,37 +22,37 @@ describe('Order', () => {
   describe('Triggers', () => {
     it('should respond to .o trigger', () => {
       return order.message('Mocha', '#test', '.o this, that').then(() => {
-        assert(client.lastMessage);
+        assert.notEqual(client.lastMessage, null);
       });
     });
 
     it('should respond to .order trigger', () => {
       return order.message('Mocha', '#test', '.order one, two').then(() => {
-        assert(client.lastMessage);
+        assert.notEqual(client.lastMessage, null);
       });
     });
 
     it('should not respond to .orde trigger', () => {
       return order.message('Mocha', '#test', '.orde one, two').then(() => {
-        assert.equal(null, client.lastMessage);
+        assert.equal(client.lastMessage, null);
       });
     });
 
     it('should activate in beginning of phrase', () => {
       return order.message('Mocha', '#test', '.o this, that').then(() => {
-        assert.notEqual(null, client.lastMessage);
+        assert.notEqual(client.lastMessage, null);
       });
     });
 
     it('should not activate in middle of phrase', () => {
       return order.message('Mocha', '#test', 'test .o this, that').then(() => {
-        assert.equal(null, client.lastMessage);
+        assert.equal(client.lastMessage, null);
       });
     });
 
     it('should not activate with an empty list', () => {
       return order.message('Mocha', '#test', '.o').then(() => {
-        assert.equal(null, client.lastMessage);
+        assert.equal(client.lastMessage, null);
       });
     });
 
@@ -64,19 +64,19 @@ describe('Order', () => {
       ];
 
       return order.message('Mocha', '#test', '.o ,, , ,,').then(() => {
-        assert(outputs.includes(client.lastMessage));
+        assert(outputs.includes(client.lastMessage), 'Output not found in valid list');
       });
     });
 
     it('should activate with a single comma', () => {
       return order.message('Mocha', '#test', '.o ,').then(() => {
-        assert.equal('Mocha: ,', client.lastMessage);
+        assert.equal(client.lastMessage, 'Mocha: ,');
       });
     });
 
     it('should be case insensitive', () => {
       return order.message('Mocha', '#test', '.ORDER A').then(() => {
-        assert.equal('Mocha: A', client.lastMessage);
+        assert.equal(client.lastMessage, 'Mocha: A');
       });
     });
   });
@@ -84,7 +84,7 @@ describe('Order', () => {
   describe('General Usage', () => {
     it('should respond in correct channel', () => {
       return order.message('Mocha', '#test', '.o this, that').then(() => {
-        assert.equal('#test', client.lastTarget);
+        assert.equal(client.lastTarget, '#test');
       });
     });
 
@@ -105,8 +105,8 @@ describe('Order', () => {
       return order.message('Mocha', '#test', `.o ${range}`).then(() => {
         const values = client.lastMessage.replace('Mocha: ', '').split(', ');
         values.forEach(val => {
-          assert(val >= lowerBound);
-          assert(val <= upperBound);
+          assert(val >= lowerBound, 'Value less than lower bound');
+          assert(val <= upperBound, 'Value greater than upper bound');
         });
       });
     });
@@ -118,7 +118,7 @@ describe('Order', () => {
       ];
 
       return order.message('Mocha', '#test', '.o 6-5').then(() => {
-        assert(expected.includes(client.lastMessage));
+        assert(expected.includes(client.lastMessage), 'Output not found in valid list');
       });
     });
 
@@ -129,7 +129,7 @@ describe('Order', () => {
       ];
 
       return order.message('Mocha', '#test', '.o -5--6').then(() => {
-        assert(expected.includes(client.lastMessage));
+        assert(expected.includes(client.lastMessage), 'Output not found in valid list');
       });
     });
 
@@ -140,15 +140,15 @@ describe('Order', () => {
 
       return order.message('Mocha', '#test', `.o ${range}`).then(() => {
         const values = client.lastMessage.replace('Mocha: ', '').split(', ');
-        assert(values.includes(lowerBound.toString()));
-        assert(values.includes(upperBound.toString()));
+        assert(values.includes(lowerBound.toString()), 'Lowerbound not included');
+        assert(values.includes(upperBound.toString()), 'Upperbound not included');
       });
     });
 
     it('should only include a max of 20 items', () => {
       return order.message('Mocha', '#test', '.o 1-25').then(() => {
-        assert.equal(21, client.lastMessage.split(', ').length);
-        assert(client.lastMessage.includes('and some more...'));
+        assert.equal(21, client.lastMessage.split(', ').length, 'More results than expected');
+        assert(client.lastMessage.includes('and some more...'), "'More' not included");
       });
     });
 
@@ -156,7 +156,7 @@ describe('Order', () => {
       return order.message('Mocha', '#test', '.o 1-2048').then(() => {
         let msg = client.lastMessage.replace('Mocha: ', '');
         msg = msg.replace(', and some more...', '');
-        msg.split(', ').forEach(val => assert(val <= 1024));
+        msg.split(', ').forEach(val => assert(val <= 1024, 'Value over 1024'));
       });
     });
 
@@ -181,7 +181,7 @@ describe('Order', () => {
       ];
 
       return order.message('Mocha', '#test', '.o a, b c, d').then(() => {
-        assert(expected.includes(client.lastMessage));
+        assert(expected.includes(client.lastMessage), 'Value not in expected list');
       });
     });
 
@@ -201,7 +201,7 @@ describe('Order', () => {
       return new Promise(resolve => {
         for (let i = 0; i < runs; i++) {
           order.message('Mocha', '#test', '.o a b c');
-          assert(expected.includes(client.lastMessage));
+          assert(expected.includes(client.lastMessage), 'Value not in expected list');
           results.push(client.lastMessage);
 
           // Still can fail, but has a [(0.167^20) * 100]% chance of it
@@ -213,7 +213,7 @@ describe('Order', () => {
           }
         }
       }).then(() => {
-        assert(uniq(results).length > 1);
+        assert(uniq(results).length > 1, 'Results not randomized (possible)');
       });
     });
   });

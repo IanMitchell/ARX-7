@@ -28,23 +28,23 @@ describe('Time', () => {
   describe('Triggers', () => {
     it('should activate in beginning of phrase', () => {
       time.message('Mocha', '#test', '.time JST');
-      assert.notEqual(null, client.lastMessage);
+      assert.notEqual(client.lastMessage, null);
     });
 
     it('should not activate in middle of phrase', () => {
       time.message('Mocha', '#test', 'test .time JST');
-      assert.equal(null, client.lastMessage);
+      assert.equal(client.lastMessage, null);
     });
 
     it('should handle regions', () => {
       time.message('Mocha', '#test', '.time Asia/Tokyo');
       assert.notEqual(client.lastMessage, null);
-      assert(!client.lastMessage.includes('Invalid timezone'));
+      assert(!client.lastMessage.includes('Invalid timezone'), 'Region not recognized');
     });
 
     it('should handle incorrect timezones', () => {
       time.message('Mocha', '#test', `.time JET`);
-      assert(client.lastMessage.includes('Invalid timezone'));
+      assert(client.lastMessage.includes('Invalid timezone'), 'Invalid timezone not reported');
     });
 
     it('should ignore incorrect formatting', () => {
@@ -61,22 +61,22 @@ describe('Time', () => {
   describe('General Usage', () => {
     it('should respond in correct channel', () => {
       time.message('Mocha', '#test', '.time JST');
-      assert.equal('#test', client.lastTarget);
+      assert.equal(client.lastTarget, '#test');
     });
 
     it("should include user's name", () => {
       time.message('Mocha', '#test', '.time JST');
-      assert(client.lastMessage.startsWith('Mocha: '));
+      assert(client.lastMessage.startsWith('Mocha: '), 'Does not contain username');
     });
 
     it('should display the correct time', () => {
       time.message('Mocha', '#test', '.time JST');
-      assert(client.lastMessage.includes(getJST()));
+      assert(client.lastMessage.includes(getJST()), 'Current time incorrect');
     });
 
     it('should be case insensitive', () => {
       time.message('Mocha', '#test', '.time jst');
-      assert(client.lastMessage.includes(getJST()));
+      assert(client.lastMessage.includes(getJST()), 'Current time incorrect');
     });
   });
 });
