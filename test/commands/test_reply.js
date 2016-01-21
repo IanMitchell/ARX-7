@@ -8,9 +8,7 @@ const client = new Client();
 const reply = new Reply(client);
 
 describe('Reply', () => {
-  afterEach(() => {
-    client.resetLog();
-  });
+  afterEach(() => client.resetLog());
 
   describe('Triggers', () => {
     it('should respond to `ping`', () => {

@@ -17,9 +17,7 @@ const direct = 'http://i.imgur.com/E5bGFZE.jpg';
 const silent = 'http://imgur.com/fg8c8dB';
 
 describe('Imgur', () => {
-  afterEach(() => {
-    client.resetLog();
-  });
+  afterEach(() => client.resetLog());
 
   describe('Triggers', () => {
     it('should activate anywhere in phrase with Gallery URL', () => {

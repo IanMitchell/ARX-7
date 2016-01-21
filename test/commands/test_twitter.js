@@ -11,9 +11,7 @@ const link = 'https://twitter.com/IanMitchel1/status/636939838512500736';
 const malformed = 'https://twitter.com/IanMitchel1/status/6369398385125007365';
 
 describe('Twitter', () => {
-  afterEach(() => {
-    client.resetLog();
-  });
+  afterEach(() => client.resetLog());
 
   describe('Triggers', () => {
     it('should activate anywhere in phrase', () => {

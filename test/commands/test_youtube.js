@@ -11,9 +11,7 @@ const link = 'https://www.youtube.com/watch?v=JmwVZ-p9XOk';
 const malformed = 'youtube.com/watch?v=8WZr6f…';
 
 describe('YouTube', () => {
-  afterEach(() => {
-    client.resetLog();
-  });
+  afterEach(() => client.resetLog());
 
   describe('Triggers', () => {
     it('should respond to .yt trigger', () => {

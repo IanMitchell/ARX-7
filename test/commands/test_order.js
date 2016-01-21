@@ -15,9 +15,7 @@ function uniq(arr) {
 }
 
 describe('Order', () => {
-  afterEach(() => {
-    client.resetLog();
-  });
+  afterEach(() => client.resetLog());
 
   describe('Triggers', () => {
     it('should respond to .o trigger', () => {

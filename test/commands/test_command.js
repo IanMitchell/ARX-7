@@ -8,9 +8,7 @@ const client = new Client();
 const command = new Command(client);
 
 describe('Command', () => {
-  afterEach(() => {
-    client.resetLog();
-  });
+  afterEach(() => client.resetLog());
 
   describe('Blacklist', () => {
     it('should block .ly links', () => {

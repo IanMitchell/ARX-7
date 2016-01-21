@@ -21,9 +21,7 @@ function getJST() {
 }
 
 describe('Time', () => {
-  afterEach(() => {
-    client.resetLog();
-  });
+  afterEach(() => client.resetLog());
 
   describe('Triggers', () => {
     it('should activate in beginning of phrase', () => {
