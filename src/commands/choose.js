@@ -5,19 +5,15 @@ const log = debug('Choose');
 
 export class Choose extends Command {
   message(from, to, text) {
-    return new Promise(resolve => {
-      const regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/i;
-      const choose = text.match(regex);
+    const regex = /^\.(?:(?:c(?:hoose)?)|(?:erande)|(?:選んで)|(?:選ぶがよい)) (.+)/i;
+    const choose = text.match(regex);
 
-      if (choose) {
-        log(`${from} on: ${choose[1]}`);
+    if (choose) {
+      log(`${from} on: ${choose[1]}`);
 
-        const result = this.choose(choose[1]);
-        this.send(to, `${from}: ${result}`);
-      }
-
-      resolve();
-    });
+      const result = this.choose(choose[1]);
+      this.send(to, `${from}: ${result}`);
+    }
   }
 
   choose(input) {
