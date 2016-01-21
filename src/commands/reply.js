@@ -17,15 +17,11 @@ export class Reply extends Command {
   }
 
   message(from, to, text) {
-    return new Promise(resolve => {
-      const reply = this.responses.get(text.toLowerCase());
-      if (reply) {
-        log(`${from} ${reply} reply`);
-        this.send(to, reply);
-      }
-
-      return resolve();
-    });
+    const reply = this.responses.get(text.toLowerCase());
+    if (reply) {
+      log(`${from} ${reply} reply`);
+      this.send(to, reply);
+    }
   }
 
   help(from) {
