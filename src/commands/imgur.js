@@ -2,6 +2,7 @@ import debug from 'debug';
 import fetch from 'node-fetch';
 import config from './../../config';
 import { Command } from './command.js';
+import { addCommas } from '../modules/number_helpers.js';
 
 const log = debug('Imgur');
 const IMGUR_VIEW_LIMIT = 20;
@@ -49,7 +50,7 @@ export class Imgur extends Command {
     try {
       const imgur = {
         title: data.data.title || 'Untitled',
-        views: this.addCommas(data.data.views),
+        views: addCommas(data.data.views),
       };
 
       return imgur;
@@ -57,10 +58,6 @@ export class Imgur extends Command {
       log(`Imgur Info Response Error: ${exception}`);
       return Error(`Imgur Info Response Error: ${exception}`);
     }
-  }
-
-  addCommas(intNum) {
-    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
   }
 
   help(from) {
