@@ -1,6 +1,6 @@
 import debug from 'debug';
 import he from 'he';
-import * as TwitterClient from 'twitter-node-client';
+import TwitterClient from 'twitter';
 import config from './../../config';
 import { Command } from './command.js';
 
@@ -13,51 +13,47 @@ export class Twitter extends Command {
     const match = text.match(tweetRegex);
 
     if (match) {
-      return new Promise((resolve, reject) => {
-        log(`${from} on: ${match[2]}/${match[4]}`);
+      log(`${from} on: ${match[2]}/${match[4]}`);
 
-        this.info(match[2], match[4]).then(tweet => {
-          this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
-          return resolve();
-        }, error => {
-          this.send(to, 'Sorry, could not find Twitter info.');
-          return reject(error);
-        });
+      return this.info(match[2], match[4]).then(tweet => {
+        this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
+      }, error => {
+        this.send(to, 'Sorry, could not find Twitter info.');
+        log(error);
+        return error;
       });
     }
 
+    // Needed for tests
     return new Promise(resolve => resolve());
   }
 
   info(username, tweetId) {
-    const twitter = new TwitterClient.Twitter({
-      'consumerKey': config.keys.twitter_consumer,
-      'consumerSecret': config.keys.twitter_consumer_secret,
-      'accessToken': config.keys.twitter_access_token,
-      'accessTokenSecret': config.keys.twitter_access_token_secret,
+    const client = new TwitterClient({
+      consumer_key: config.keys.twitter_consumer,
+      consumer_secret: config.keys.twitter_consumer_secret,
+      access_token_key: config.keys.twitter_access_token,
+      access_token_secret: config.keys.twitter_access_token_secret,
     });
 
     return new Promise((resolve, reject) => {
-      twitter.getTweet({ id: tweetId },
-        error => {
+      client.get('statuses/show/', { id: tweetId }, (error, tweet) => {
+        if (error) {
           log(`Twitter Info Request Error: ${error}`);
           return reject(Error(`Twitter Info Request Error: ${error}`));
-        },
-        success => {
-          try {
-            const data = JSON.parse(success);
-
-            return resolve({
-              // Remove linebreaks
-              text: he.decode(data.text.replace(/\r?\n|\r/g, ' ')),
-              username: data.user.name,
-            });
-          } catch (exception) {
-            log(`Twitter Info Response Error: ${exception}`);
-            return reject(Error(`Twitter Info Response Error: ${exception}`));
-          }
         }
-      );
+
+        try {
+          return resolve({
+            // Remove linebreaks
+            text: he.decode(tweet.text.replace(/\r?\n|\r/g, ' ')),
+            username: tweet.user.name,
+          });
+        } catch (exception) {
+          log(`Twitter Info Response Error: ${exception}`);
+          return reject(Error(`Twitter Info Response Error: ${exception}`));
+        }
+      });
     });
   }
 
