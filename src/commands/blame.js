@@ -6,7 +6,6 @@ import colors from 'irc-colors';
 import moment from 'moment';
 
 const log = debug('Blame');
-const SHOWTIMES_URL = `${config.showtimes.server}`;
 
 export class Blame extends Command {
   message(from, to, text) {
@@ -14,89 +13,75 @@ export class Blame extends Command {
     const blame = text.match(blameRegex);
 
     if (blame) {
-      return new Promise((resolve, reject) => {
-        this.blameRequest(from, to, blame[1]).then(response => {
-          this.send(to, response);
-          return resolve();
-        }, error => {
-          this.send(to, 'Error connecting to Deschtimes');
-          log(`Error: ${error.message}`);
-          return reject(error);
-        });
+      return this.blameRequest(from, to, blame[1]).then(response => {
+        this.send(to, response);
+      }, error => {
+        this.send(to, error.message);
+        log(`Error: ${error.message}`);
+        return error;
       });
     } else if (text.trim().toLowerCase() === '.blame') {
       this.send(to, 'Please use: ".blame <show>" (ie, `.blame bokumachi`)');
     }
+
+    // Needed for tests
+    return new Promise(resolve => resolve());
   }
 
-  blameRequest(from, to, show, names = false) {
+  blameRequest(from, to, show, useNames = false) {
     log(`Blame request by ${from} in ${to} for ${show}`);
 
-    return new Promise((resolve, reject) => {
-      let uri = `${SHOWTIMES_URL}/blame.json?`;
-      uri += `irc=${encodeURIComponent(to)}`;
-      uri += `&show=${encodeURIComponent(show.trim())}`;
+    let uri = `${config.showtimes.server}/blame.json?`;
+    uri += `irc=${encodeURIComponent(to)}`;
+    uri += `&show=${encodeURIComponent(show.trim())}`;
 
-      fetch(uri).then(response => {
-        if (response.ok) {
-          response.json().then(data => {
-            let message = '';
+    return fetch(uri).then(response => {
+      if (response.ok) {
+        return response.json().then(data => this.createMessage(data, useNames));
+      }
 
-            if (data.message) {
-              message = data.message;
-            } else {
-              const updatedDate = moment(new Date(data.updated_at));
-              const airDate = moment(new Date(data.air_date));
-              const status = new Map();
-              let job;
+      return response.json().then(data => {
+        log(`Blame Request Error: ${data}`);
+        Error(data.message);
+      });
+    }).catch(error => Error(error));
+  }
 
-              data.status.forEach(staff => {
-                if (staff.finished) {
-                  // Pending takes precedence
-                  if (!status.get(staff.acronym)) {
-                    status.set(staff.acronym, colors.bold.green(staff.acronym));
-                  }
-                } else {
-                  status.set(staff.acronym, colors.bold.red(staff.acronym));
+  createMessage(json, useNames) {
+    if (json.message) {
+      return json.message;
+    }
 
-                  if (!job) {
-                    if (names) {
-                      job = staff.staff;
-                    } else {
-                      job = staff.position;
-                    }
-                  }
-                }
-              });
+    const updatedDate = moment(new Date(json.updated_at));
+    const airDate = moment(new Date(json.air_date));
+    const status = new Map();
+    let job = 'release';
 
-              if (job === undefined) {
-                job = 'release';
-              }
+    let message = `Ep ${json.episode} of ${json.name}`;
 
-              message = `Ep ${data.episode} of ${data.name}`;
+    json.status.forEach(staff => {
+      // Pending takes precedence
+      if (staff.finished && !status.has(staff.acronym)) {
+        status.set(staff.acronym, colors.bold.green(staff.acronym));
+      } else {
+        status.set(staff.acronym, colors.bold.red(staff.acronym));
 
-              if (updatedDate > airDate) {
-                message += ` is at ${job} (last update ${updatedDate.fromNow()}). `;
-              } else {
-                if (airDate > Date.now()) {
-                  message += ' airs';
-                } else {
-                  message += ' aired';
-                }
-
-                message += ` ${airDate.fromNow()}. `;
-              }
-
-              message += `[${[...status.values()].join(' ')}]`;
-            }
-
-            resolve(message);
-          });
-        } else {
-          response.json().then(data => reject(Error(data.message)));
+        if (job === 'release') {
+          job = useNames ? staff.staff : staff.position;
         }
-      }).catch(error => reject(Error(error)));
+      }
     });
+
+    if (updatedDate > airDate) {
+      message += ` is at ${job} (last update ${updatedDate.fromNow()}). `;
+    } else {
+      message += airDate > Date.now() ? ' airs' : ' aired';
+      message += ` ${airDate.fromNow()}. `;
+    }
+
+    message += `[${[...status.values()].join(' ')}]`;
+
+    return message;
   }
 
   help(from) {

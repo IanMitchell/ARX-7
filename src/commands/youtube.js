@@ -113,9 +113,7 @@ export class Youtube extends Command {
         log(`YouTube Search Request Error: ${data}`);
         return Error(`YouTube Search Request Error: ${data}`);
       });
-    }).catch(error => {
-      return Error(error);
-    });
+    }).catch(error => Error(error));
   }
 
   help(from) {
