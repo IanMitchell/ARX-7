@@ -16,7 +16,7 @@ export class ShowtimesStatus extends Command {
   }
 
   message(from, to, text) {
-    const showtimesRegex = /^[.!](?:(?:st|(?:show(?:times)?))(?:\s))?(done|undone)(?:\s)(.+?)(?:\s!(\w+))?$/i;
+    const showtimesRegex = /^[.!](done|undone)(?:\s)(.+?)(?:\s!(\w+))?$/i;
     const showtimes = text.match(showtimesRegex);
 
     if (showtimes) {
