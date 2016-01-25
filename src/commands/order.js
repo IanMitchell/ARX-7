@@ -9,29 +9,23 @@ export const ORDER_RESULTS_LIMIT = 20;
 
 export class Order extends Command {
   message(from, to, text) {
-    return new Promise(resolve => {
-      const orderRegex = /^[.!]o(?:rder)? (.+)$/i;
-      const order = text.match(orderRegex);
+    const orderRegex = /^[.!]o(?:rder)? (.+)$/i;
+    const order = text.match(orderRegex);
 
-      if (order) {
-        const rangeRegex = /(-?\d+)-(-?\d+)$/i;
-        const range = text.match(rangeRegex);
+    if (order) {
+      const rangeRegex = /(-?\d+)-(-?\d+)$/i;
+      const range = text.match(rangeRegex);
 
-        if (range) {
-          log(`${from} on: ${range}`);
-          const result = this.orderRange(range);
-          this.send(to, `${from}: ${result}`);
-          return resolve();
-        }
-
+      if (range) {
+        log(`${from} on: ${range}`);
+        const result = this.orderRange(range);
+        this.send(to, `${from}: ${result}`);
+      } else {
         log(`${from} on: ${order[1]}`);
         const result = this.orderList(order[1]);
         this.send(to, `${from}: ${result}`);
-        return resolve();
       }
-
-      return resolve();
-    });
+    }
   }
 
   orderRange(order) {

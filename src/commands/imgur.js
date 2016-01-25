@@ -1,7 +1,8 @@
 import debug from 'debug';
-import request from 'request';
+import fetch from 'node-fetch';
 import config from './../../config';
 import { Command } from './command.js';
+import { addCommas } from '../modules/number_helpers.js';
 
 const log = debug('Imgur');
 const IMGUR_VIEW_LIMIT = 20;
@@ -13,57 +14,50 @@ export class Imgur extends Command {
     const match = text.match(imgurRegex);
 
     if (match) {
-      return new Promise((resolve, reject) => {
-        log(`Retrieving information for ${match[3]}`);
+      log(`Retrieving information for ${match[3]}`);
 
-        this.info(match[3]).then(imgur => {
-          if (imgur.title !== 'Untitled' && imgur.views > IMGUR_VIEW_LIMIT) {
-            this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
-          }
-          return resolve();
-        }, error => {
-          this.send(to, 'Sorry, could not find Imgur info.');
-          return reject(error);
-        });
+      return this.info(match[3]).then(imgur => {
+        if (imgur.title !== 'Untitled' && imgur.views > IMGUR_VIEW_LIMIT) {
+          this.send(to, `[Imgur] ${imgur.title} | Views: ${imgur.views}`);
+        }
+      }, error => {
+        this.send(to, 'Sorry, could not find Imgur info.');
+        log(error);
+        return error;
       });
     }
-
-    return new Promise(resolve => resolve());
   }
 
   info(id) {
-    const options = {
-      url: `https://api.imgur.com/3/image/${id}`,
-      headers: {
-        'Authorization': `Client-ID ${config.keys.imgur_client}`,
-      },
-    };
+    const url = `https://api.imgur.com/3/image/${id}`;
+    const headers = new fetch.Headers();
+    headers.append('Authorization', `Client-ID ${config.keys.imgur_client}`);
 
-    return new Promise((resolve, reject) => {
-      request(options, (error, response, body) => {
-        if (!error && response.statusCode === 200) {
-          try {
-            const data = JSON.parse(body);
-            const imgur = {
-              title: data.data.title || 'Untitled',
-              views: this.addCommas(data.data.views),
-            };
+    return fetch(url, { headers }).then(response => {
+      if (response.ok) {
+        return response.json().then(data => this.parseJSON(data));
+      }
 
-            return resolve(imgur);
-          } catch (exception) {
-            log(`Imgur Info Response Error: ${exception}`);
-            return reject(Error(`Imgur Info Response Error: ${exception}`));
-          }
-        } else {
-          log(`Imgur Info Request Error: ${error}`);
-          return reject(Error(`Imgur Info Request Error: ${error}`));
-        }
+      // Error State
+      return response.json().then(data => {
+        log(`Imgur Info Request Error: ${data}`);
+        return Error(`Imgur Info Request Error: ${data}`);
       });
-    });
+    }).catch(error => Error(error));
   }
 
-  addCommas(intNum) {
-    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+  parseJSON(data) {
+    try {
+      const imgur = {
+        title: data.data.title || 'Untitled',
+        views: addCommas(data.data.views),
+      };
+
+      return imgur;
+    } catch (exception) {
+      log(`Imgur Info Response Error: ${exception}`);
+      return Error(`Imgur Info Response Error: ${exception}`);
+    }
   }
 
   help(from) {

@@ -1,80 +1,80 @@
 import 'babel-polyfill';
 import { describe, afterEach, it } from 'mocha';
 import assert from 'assert';
-import timezone from 'timezone/loaded';
 import { Client } from '../helpers.js';
-import { TIME_FORMAT, Time } from '../../src/commands/time';
-
-// +9h UTC offset
-const JST_OFFSET = 1000 * 60 * 60 * 9;
+import { Time } from '../../src/commands/time';
 
 const client = new Client();
 const time = new Time(client);
 
+// I hate everything about this
 function getJST() {
-  return new Date(Date.now() + JST_OFFSET);
+  const jstOffset = 1000 * 60 * 60 * 9;
+  const localOffset = (new Date()).getTimezoneOffset() * 1000 * 60;
+
+  const jst = new Date((new Date()).getTime() + localOffset + jstOffset);
+
+  const hours = (jst.getHours() < 10 ? `0${jst.getHours()}` : jst.getHours());
+  const minutes = (jst.getMinutes() < 10 ? `0${jst.getMinutes()}` : jst.getMinutes());
+
+  return `${hours}:${minutes} JST`;
 }
 
 describe('Time', () => {
-  afterEach(() => {
-    client.resetLog();
-  });
+  afterEach(() => client.resetLog());
 
   describe('Triggers', () => {
     it('should activate in beginning of phrase', () => {
-      return time.message('Mocha', '#test', '.time JST').then(() => {
-        assert.notEqual(null, client.lastMessage);
-      });
+      time.message('Mocha', '#test', '.time JST');
+      assert.notEqual(client.lastMessage, null);
     });
 
     it('should not activate in middle of phrase', () => {
-      return time.message('Mocha', '#test', 'test .time JST').then(() => {
-        assert.equal(null, client.lastMessage);
-      });
+      time.message('Mocha', '#test', 'test .time JST');
+      assert.equal(client.lastMessage, null);
+    });
+
+    it('should handle regions', () => {
+      time.message('Mocha', '#test', '.time Asia/Tokyo');
+      assert.notEqual(client.lastMessage, null);
+      assert(!client.lastMessage.includes('Invalid timezone'), 'Region not recognized');
     });
 
     it('should handle incorrect timezones', () => {
-      return time.message('Mocha', '#test', `.time JET`).then(() => {
-        assert(client.lastMessage.endsWith(timezone(new Date(), TIME_FORMAT)));
-      });
+      time.message('Mocha', '#test', `.time JET`);
+      assert(client.lastMessage.includes('Invalid timezone'), 'Invalid timezone not reported');
+    });
+
+    it('should ignore incorrect formatting', () => {
+      time.message('Mocha', '#test', '.time Asia/Tokyo JST');
+      assert.equal(client.lastMessage, null);
     });
 
     it('should be case insensitive', () => {
-      return time.message('Mocha', '#test', '.TIME JST').then(() => {
-        assert.notEqual(client.lastMessage, null);
-      });
+      time.message('Mocha', '#test', '.TIME JST');
+      assert.notEqual(client.lastMessage, null);
     });
   });
 
   describe('General Usage', () => {
     it('should respond in correct channel', () => {
-      return time.message('Mocha', '#test', '.time JST').then(() => {
-        assert.equal('#test', client.lastTarget);
-      });
+      time.message('Mocha', '#test', '.time JST');
+      assert.equal(client.lastTarget, '#test');
     });
 
     it("should include user's name", () => {
-      return time.message('Mocha', '#test', '.time JST').then(() => {
-        assert(client.lastMessage.startsWith('Mocha: '));
-      });
+      time.message('Mocha', '#test', '.time JST');
+      assert(client.lastMessage.startsWith('Mocha: '), 'Does not contain username');
     });
 
     it('should display the correct time', () => {
-      const jst = getJST();
-
-      return time.message('Mocha', '#test', '.time JST').then(() => {
-        const currentTime = timezone(jst, TIME_FORMAT).split(' GMT')[0];
-        assert(client.lastMessage.includes(currentTime));
-      });
+      time.message('Mocha', '#test', '.time JST');
+      assert(client.lastMessage.includes(getJST()), 'Current time incorrect');
     });
 
     it('should be case insensitive', () => {
-      const jst = getJST();
-
-      return time.message('Mocha', '#test', '.time jst').then(() => {
-        const currentTime = timezone(jst, TIME_FORMAT).split(' GMT')[0];
-        assert(client.lastMessage.includes(currentTime));
-      });
+      time.message('Mocha', '#test', '.time jst');
+      assert(client.lastMessage.includes(getJST()), 'Current time incorrect');
     });
   });
 });

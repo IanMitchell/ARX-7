@@ -1,44 +1,45 @@
-import timezone from 'timezone/loaded';
+import debug from 'debug';
+import moment from 'moment-timezone';
 import { Command } from './command.js';
 
-export const TIME_FORMAT = `%a %b %d %Y %H:%M:%S GMT%z (%Z)`;
+const log = debug('Time');
 
 export class Time extends Command {
-  message(from, to, text) {
-    return new Promise(resolve => {
-      const timezoneMatch = text.match(/^[.!]time (.*)/i);
-
-      if (timezoneMatch) {
-        const timezoneQuery = this.abbreviationMap(timezoneMatch[1]);
-        this.getTime(timezoneQuery).then((result) => {
-          this.send(to, `${from}: ${result}`);
-        });
-      }
-      return resolve();
-    });
-  }
-
-  getTime(timezoneQuery) {
-    return new Promise(resolve => {
-      return resolve(timezone(new Date(), TIME_FORMAT, timezoneQuery));
-    });
-  }
-
-  // Timezone abbreviations are ambiguous but I'm smarter than timezones
-  abbreviationMap(abbr) {
-    const abbrArray = [
+  constructor(client) {
+    super(client);
+    this.zones = new Map([
       ['JST', 'Asia/Tokyo'],
-      ['JAPAN', 'Asia/Tokyo'],
-      ['JP', 'Asia/Tokyo'],
       ['EST', 'America/New_York'],
       ['EDT', 'America/New_York'],
       ['CST', 'America/Chicago'],
       ['CDT', 'America/Chicago'],
       ['PST', 'America/Los_Angeles'],
       ['PDT', 'America/Los_Angeles'],
-    ];
-    const abbrMap = new Map(abbrArray);
-    return abbrMap.get(abbr.toUpperCase()) || abbr;
+    ]);
+  }
+
+  message(from, to, text) {
+    const timezoneRegex = /^[.!]time ([\w/]+)$/i;
+    const match = text.match(timezoneRegex);
+
+    if (match) {
+      log(`${from} on: ${match[1]}`);
+      this.send(to, `${from}: ${this.getTime(match[1])}`);
+    }
+  }
+
+  getTime(input) {
+    let zone = input;
+
+    if (this.zones.has(input.toUpperCase())) {
+      zone = this.zones.get(input.toUpperCase());
+    }
+
+    if (moment.tz.zone(zone)) {
+      return moment(Date.now()).tz(zone).format('ddd MMM Do HH:mm z');
+    }
+
+    return `Invalid timezone (abbrs: ${[...this.zones.keys()].join(', ')})`;
   }
 
   help(from) {
