@@ -7,7 +7,7 @@ import moment from 'moment';
 
 const log = debug('Blame');
 
-export class Blame extends Command {
+export class ShowtimesBlame extends Command {
   message(from, to, text) {
     const blameRegex = /^[.!](?:show|blame)\s(.+)$/i;
     const blame = text.match(blameRegex);
