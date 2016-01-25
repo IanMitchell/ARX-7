@@ -102,31 +102,28 @@ export class ARX7 {
   }
 
   message(from, to, text) {
-    return new Promise(resolve => {
-      if (this.channels.includes(to)) {
-        // Command Handling
-        this.commands.forEach(command => {
-          const plugin = command.constructor.name.toLowerCase();
-          const index = this.channels.indexOf(to);
+    if (this.channels.includes(to)) {
+      // Command Handling
+      this.commands.forEach(command => {
+        const plugin = command.constructor.name.toLowerCase();
+        const index = this.channels.indexOf(to);
 
-          if (this.config.channels[index].plugins.includes(plugin)) {
-            command.message(from, to, text);
-          }
-        });
-      } else if (to === this.client.nick && from !== this.client.nick) {
-        // Query Handling
-        if (this.config.admins.includes(from)) {
-          this.handleAdminQuery(from, to, text).then(resolve());
-        } else {
-          log(`Query from ${from}: ${text}`);
-          const admins = this.config.admins.join(', ');
-          this.client.say(from, `I'm a bot! Contact [${admins}] for help. For help using me, use '.guide'.`);
+        if (this.config.channels[index].plugins.includes(plugin)) {
+          command.message(from, to, text);
         }
+      });
+    } else if (to === this.client.nick && from !== this.client.nick) {
+      // Query Handling
+      if (this.config.admins.includes(from)) {
+        return this.handleAdminQuery(from, to, text);
+      } else {
+        log(`Query from ${from}: ${text}`);
+        const admins = this.config.admins.join(', ');
+        this.client.say(from, `I'm a bot! Contact [${admins}] for help. For help using me, use '.guide'.`);
       }
+    }
 
-      this.helpRequest(from, to, text);
-      return resolve();
-    });
+    this.helpRequest(from, to, text);
   }
 
   helpRequest(from, to, text) {
@@ -168,88 +165,86 @@ export class ARX7 {
   }
 
   handleAdminQuery(from, to, text) {
-    return new Promise((resolve, reject) => {
-      log(`Admin Query from ${from}: ${text}`);
-      const usage = `[add|remove] [plugin] [channel]`;
-      const args = text.split(/\s+/);
+    log(`Admin Query from ${from}: ${text}`);
+    const usage = `[add|remove] [plugin] [channel]`;
+    const args = text.split(/\s+/);
 
-      // We only support add/remove commands
-      if (!(text.toLowerCase().startsWith('add ') ||
-            text.toLowerCase().startsWith('remove '))) {
-        log(`Unrecognized command`);
-        this.client.say(from, `Command not recognized, boss. ${usage}`);
-        return resolve();
+    // We only support add/remove commands
+    if (!(text.toLowerCase().startsWith('add ') ||
+          text.toLowerCase().startsWith('remove '))) {
+      log(`Unrecognized command`);
+      this.client.say(from, `Command not recognized, boss. ${usage}`);
+      return true;
+    }
+
+    // Verify command format
+    if (args.length !== 3) {
+      log(`Unrecognized command`);
+      this.client.say(from, `Incorrect number of commands. ${usage}`);
+      return false;
+    }
+
+    // Verify Authorization
+    return this.isAuthorized(from).then(status => {
+      if (status === false) {
+        log(`${from} is not identified.`);
+        this.client.say(from, `You are not identified.`);
+        return true;
       }
 
-      // Verify command format
-      if (args.length !== 3) {
-        log(`Unrecognized command`);
-        this.client.say(from, `Incorrect number of commands. ${usage}`);
-        return reject();
+      const channelIndex = this.channels.indexOf(args[2].toLowerCase());
+
+      // Verify Channel Existence
+      if (!this.config.channels[channelIndex]) {
+        log(`Invalid channel`);
+        this.client.say(from, `Invalid channel. ${usage}`);
+        return true;
       }
 
-      // Verify Authorization
-      this.isAuthorized(from).then(status => {
-        if (status === false) {
-          log(`${from} is not identified.`);
-          this.client.say(from, `You are not identified.`);
-          return resolve();
-        }
-
-        const channelIndex = this.channels.indexOf(args[2].toLowerCase());
-
-        // Verify Channel Existence
-        if (!this.config.channels[channelIndex]) {
-          log(`Invalid channel`);
-          this.client.say(from, `Invalid channel. ${usage}`);
-          return resolve();
-        }
-
-        // Search and Verify Plugin Existence
-        const exists = this.commands.some(command => {
-          return command.constructor.name.toLowerCase() === args[1].toLowerCase();
-        });
-
-        if (!exists) {
-          log(`Invalid plugin`);
-          this.client.say(from, `Invalid plugin. ${usage}`);
-          return resolve();
-        }
-
-        // Add Plugin
-        if (args[0].toLowerCase() === 'add') {
-          log(`ENABLE command for ${args[1]} in ${args[2]}`);
-          const plugin = args[1].toLowerCase();
-          const idx = this.config.channels[channelIndex].plugins.indexOf(plugin);
-
-          if (idx > -1) {
-            this.client.say(from, `Plugin ${args[1]} already enabled.`);
-            return resolve();
-          }
-
-          log(`Enabling ${args[1]} for ${args[2]}`);
-          this.config.channels[channelIndex].plugins.push(plugin);
-          this.client.say(from, `Enabled ${args[1]} for ${args[2]}`);
-          return resolve();
-        }
-
-        // Remove Plugin
-        if (args[0].toLowerCase() === 'remove') {
-          const plugin = args[1].toLowerCase();
-          const idx = this.config.channels[channelIndex].plugins.indexOf(plugin);
-
-          if (idx > -1) {
-            this.config.channels[channelIndex].plugins.splice(idx, 1);
-
-            log(`DISABLE command for ${args[1]} in ${args[2]}`);
-            this.client.say(from, `Disabled ${args[1]} for ${args[2]}`);
-            return resolve();
-          }
-
-          this.client.say(from, `Plugin ${args[1]} already disabled.`);
-          return resolve();
-        }
+      // Search and Verify Plugin Existence
+      const exists = this.commands.some(command => {
+        return command.constructor.name.toLowerCase() === args[1].toLowerCase();
       });
+
+      if (!exists) {
+        log(`Invalid plugin`);
+        this.client.say(from, `Invalid plugin. ${usage}`);
+        return true;
+      }
+
+      // Add Plugin
+      if (args[0].toLowerCase() === 'add') {
+        log(`ENABLE command for ${args[1]} in ${args[2]}`);
+        const plugin = args[1].toLowerCase();
+        const idx = this.config.channels[channelIndex].plugins.indexOf(plugin);
+
+        if (idx > -1) {
+          this.client.say(from, `Plugin ${args[1]} already enabled.`);
+          return true;
+        }
+
+        log(`Enabling ${args[1]} for ${args[2]}`);
+        this.config.channels[channelIndex].plugins.push(plugin);
+        this.client.say(from, `Enabled ${args[1]} for ${args[2]}`);
+        return true;
+      }
+
+      // Remove Plugin
+      if (args[0].toLowerCase() === 'remove') {
+        const plugin = args[1].toLowerCase();
+        const idx = this.config.channels[channelIndex].plugins.indexOf(plugin);
+
+        if (idx > -1) {
+          this.config.channels[channelIndex].plugins.splice(idx, 1);
+
+          log(`DISABLE command for ${args[1]} in ${args[2]}`);
+          this.client.say(from, `Disabled ${args[1]} for ${args[2]}`);
+          return true;
+        }
+
+        this.client.say(from, `Plugin ${args[1]} already disabled.`);
+        return true;
+      }
     });
   }
 

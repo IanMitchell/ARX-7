@@ -102,19 +102,29 @@ describe('ARX-7', () => {
       };
     });
 
+    // These don't rely on `isAuthorized`, so they don't need promise formatting
     it('should respond to Query', () => {
-      return arx7.message('Mocha', 'ARX-7', 'Hi').then(() => {
-        assert(client.lastMessage, 'Query response incorrect');
-        assert(client.lastMessage.includes('Desch, Jukey, Aoi-chan'), 'Query admin list incorrect');
-      });
+      arx7.message('Mocha', 'ARX-7', 'Hi');
+      assert(client.lastMessage, 'Query response incorrect');
+      assert(client.lastMessage.includes('Desch, Jukey, Aoi-chan'), 'Query admin list incorrect');
     });
 
     it('should respond to Admin Query', () => {
-      return arx7.message('Desch', 'ARX-7', 'Hi').then(() => {
-        assert(client.lastMessage.includes('Command not recognized'), 'Invalid query admin response');
-      });
+      arx7.message('Desch', 'ARX-7', 'Hi');
+      assert(client.lastMessage.includes('Command not recognized'), 'Invalid query admin response');
     });
 
+    it('should only respond to [add|remove]', () => {
+      arx7.message('Desch', 'ARX-7', 'Hi replies #arx-7');
+      assert(client.lastMessage.includes('Command not recognized'));
+    });
+
+    it('should only respond to the correct number of commands', () => {
+      arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 oops');
+      assert(client.lastMessage.includes('Incorrect number of commands'));
+    });
+
+    // These rely on `isAuthorized`, so they need promise formatting
     it('should respond to unidentified Admin Query', () => {
       arx7.isAuthorized = () => {
         return new Promise(resolve => resolve(false));
@@ -122,22 +132,6 @@ describe('ARX-7', () => {
 
       return arx7.message('Desch', 'ARX-7', 'add youtube #arx-7').then(() => {
         assert(client.lastMessage.includes('You are not identified.'));
-      });
-    });
-
-    it('should only respond to [add|remove]', () => {
-      return arx7.message('Desch', 'ARX-7', 'Hi replies #arx-7').then(() => {
-        assert(client.lastMessage.includes('Command not recognized'));
-      });
-    });
-
-    it('should only respond to the correct number of commands', () => {
-      return arx7.message('Desch', 'ARX-7', 'add youtube #arx-7 oops').then(() => {
-        assert(client.lastMessage.includes('Incorrect number of commands'));
-
-        arx7.message('Desch', 'ARX-7', 'add youtube #arx-7').then(() => {
-          assert(!client.lastMessage.includes('Incorrect number of commands'));
-        });
       });
     });
 
@@ -167,6 +161,7 @@ describe('ARX-7', () => {
 
     it('should add a disabled plugin', () => {
       assert(!arx7.config.channels[0].plugins.includes('youtube'));
+
       return arx7.message('Desch', 'ARX-7', 'add youtube #arbalest').then(() => {
         assert(client.lastMessage.includes('Enabled youtube for #arbalest'));
         assert(arx7.config.channels[0].plugins.includes('youtube'));
@@ -176,6 +171,7 @@ describe('ARX-7', () => {
 
     it('should remove an enabled plugin', () => {
       assert(arx7.config.channels[0].plugins.includes('choose'));
+
       return arx7.message('Desch', 'ARX-7', 'remove choose #arbalest').then(() => {
         assert(client.lastMessage.includes('Disabled choose for #arbalest'));
         assert(!arx7.config.channels[0].plugins.includes('choose'));
