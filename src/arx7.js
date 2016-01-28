@@ -2,6 +2,7 @@ import debug from 'debug';
 import pkg from '../package';
 
 import { Choose } from './commands/choose.js';
+import { Eightball } from './commands/eightball.js';
 import { Imgur } from './commands/imgur.js';
 import { Order } from './commands/order.js';
 import { Reply } from './commands/reply.js';
@@ -22,6 +23,7 @@ export class ARX7 {
   constructor(client, config) {
     this.commands = [
       new Choose(client),
+      new Eightball(client),
       new Imgur(client),
       new Order(client),
       new Reply(client),
