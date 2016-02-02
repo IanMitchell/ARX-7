@@ -35,7 +35,7 @@
     "twitter": "^1.2.5"
   },
   "devDependencies": {
-    "babel-eslint": "4.1.7",
+    "babel-eslint": "4.1.8",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "3.1.0",
     "mocha": "2.4.5"
