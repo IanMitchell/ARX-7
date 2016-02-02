@@ -7,6 +7,7 @@ import { Imgur } from './commands/imgur.js';
 import { Order } from './commands/order.js';
 import { Reply } from './commands/reply.js';
 import { Same } from './commands/same.js';
+import { ShowtimesAiring } from './commands/showtimes_airing.js';
 import { ShowtimesBlame } from './commands/showtimes_blame.js';
 import { ShowtimesRelease } from './commands/showtimes_release.js';
 import { ShowtimesStatus } from './commands/showtimes_status.js';
@@ -28,6 +29,7 @@ export class ARX7 {
       new Order(client),
       new Reply(client),
       new Same(client),
+      new ShowtimesAiring(client),
       new ShowtimesBlame(client),
       new ShowtimesRelease(client, this.isAuthorized),
       new ShowtimesStatus(client, this.isAuthorized),

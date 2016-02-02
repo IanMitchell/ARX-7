@@ -63,7 +63,7 @@ export class ShowtimesBlame extends Command {
       // Pending takes precedence
       if (staff.finished && !status.has(staff.acronym)) {
         status.set(staff.acronym, colors.bold.green(staff.acronym));
-      } else {
+      } else if (!staff.finished) {
         status.set(staff.acronym, colors.bold.red(staff.acronym));
 
         if (job === 'release') {
