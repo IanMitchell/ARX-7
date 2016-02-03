@@ -46,7 +46,7 @@ export class ShowtimesAiring extends Command {
 
     json.shows.forEach(show => {
       const date = moment(new Date(show.air_date)).fromNow();
-      message += `${show.alias} #${show.episode_number} airs in ${date}, `;
+      message += `${show.alias} #${show.episode_number} airs ${date}, `;
     });
 
     return message.slice(0, -2);
