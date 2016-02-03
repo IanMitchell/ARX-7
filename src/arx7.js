@@ -9,6 +9,7 @@ import { Reply } from './commands/reply.js';
 import { Same } from './commands/same.js';
 import { ShowtimesAiring } from './commands/showtimes_airing.js';
 import { ShowtimesBlame } from './commands/showtimes_blame.js';
+import { ShowtimesNext } from './commands/showtimes_next.js';
 import { ShowtimesRelease } from './commands/showtimes_release.js';
 import { ShowtimesStatus } from './commands/showtimes_status.js';
 import { Time } from './commands/time.js';
@@ -31,6 +32,7 @@ export class ARX7 {
       new Same(client),
       new ShowtimesAiring(client),
       new ShowtimesBlame(client),
+      new ShowtimesNext(client),
       new ShowtimesRelease(client, this.isAuthorized),
       new ShowtimesStatus(client, this.isAuthorized),
       new Time(client),
