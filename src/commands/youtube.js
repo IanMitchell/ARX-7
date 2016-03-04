@@ -31,7 +31,7 @@ export class Youtube extends Command {
       log(`${from} on: ${match[2]}`);
 
       return this.info(match[2]).then(video => {
-        this.send(to, `[YouTube] ${video.title} | Views: ${video.views}, Time: ${video.time}`);
+        this.send(to, `[YouTube] ${video.title} | Views: ${video.views}`);
       }, error => {
         this.send(to, 'Sorry, could not find YouTube info.');
         log(error);
