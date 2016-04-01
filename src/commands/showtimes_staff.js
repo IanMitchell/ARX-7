@@ -8,7 +8,7 @@ import { ShowtimesBlame } from './showtimes_blame.js';
 const log = debug('Showtimes');
 const SHOWTIMES_URL = `${config.showtimes.server}`;
 
-export class ShowtimesStatus extends Command {
+export class ShowtimesStaff extends Command {
   constructor(client, authorized) {
     super(client);
     this.isAuthorized = authorized;
@@ -64,11 +64,7 @@ export class ShowtimesStatus extends Command {
   }
 
   convertStatus(status) {
-    if (status === 'done') {
-      return 'true';
-    }
-
-    return 'false';
+    return (status === 'done' ? 'true' : 'false');
   }
 
   help(from) {
