@@ -2,10 +2,10 @@ import 'babel-polyfill';
 import { describe, before, beforeEach, afterEach, it } from 'mocha';
 import assert from 'assert';
 import { Client } from '../helpers.js';
-import { ShowtimesStatus } from '../../src/commands/showtimes_status';
+import { ShowtimesStaff } from '../../src/commands/showtimes_staff';
 
 const client = new Client();
-const showtimes = new ShowtimesStatus(client, null);
+const showtimes = new ShowtimesStaff(client, null);
 
 describe('Blame', () => {
   describe('Triggers', () => {

@@ -52,7 +52,7 @@ export class ShowtimesNext extends Command {
     }
 
     const date = moment(new Date(json.air_date)).fromNow();
-    return `Air date: ${json.alias} #${json.episode_number} airs ${date}`;
+    return `Air date: ${json.name} #${json.episode_number} airs ${date}`;
   }
 
   help(from) {

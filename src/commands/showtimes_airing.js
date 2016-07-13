@@ -14,7 +14,7 @@ export class ShowtimesAiring extends Command {
     if (text === '.airing') {
       log(`Airing request by ${from} in ${to}`);
 
-      return this.airingRequest().then(response => {
+      return this.airingRequest(to).then(response => {
         this.send(to, response);
       }, error => {
         this.send(to, error.message);
@@ -27,8 +27,9 @@ export class ShowtimesAiring extends Command {
     return new Promise(resolve => resolve());
   }
 
-  airingRequest() {
-    return fetch(`${SHOWTIMES.SERVER}/shows.json`).then(response => {
+  airingRequest(channel) {
+    const uri = `${SHOWTIMES.SERVER}/shows.json?irc=${encodeURIComponent(channel)}`;
+    return fetch(uri).then(response => {
       if (response.ok) {
         return response.json().then(data => this.createMessage(data));
       }
@@ -49,7 +50,7 @@ export class ShowtimesAiring extends Command {
 
     json.shows.forEach(show => {
       const date = moment(new Date(show.air_date)).fromNow();
-      message += `${show.alias} #${show.episode_number} airs ${date}, `;
+      message += `${show.name} #${show.episode_number} airs ${date}, `;
     });
 
     return message.slice(0, -2);

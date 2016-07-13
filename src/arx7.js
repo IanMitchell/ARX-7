@@ -11,7 +11,7 @@ import { ShowtimesAiring } from './commands/showtimes_airing.js';
 import { ShowtimesBlame } from './commands/showtimes_blame.js';
 import { ShowtimesNext } from './commands/showtimes_next.js';
 import { ShowtimesRelease } from './commands/showtimes_release.js';
-import { ShowtimesStatus } from './commands/showtimes_status.js';
+import { ShowtimesStaff } from './commands/showtimes_staff.js';
 import { Time } from './commands/time.js';
 import { Twitter } from './commands/twitter.js';
 import { Youtube } from './commands/youtube.js';
@@ -34,7 +34,7 @@ export class ARX7 {
       new ShowtimesBlame(client),
       new ShowtimesNext(client),
       new ShowtimesRelease(client, this.isAuthorized),
-      new ShowtimesStatus(client, this.isAuthorized),
+      new ShowtimesStaff(client, this.isAuthorized),
       new Time(client),
       new Twitter(client),
       new Youtube(client),
