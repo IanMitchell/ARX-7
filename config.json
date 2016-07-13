@@ -1,0 +1,52 @@
+{
+  "name": "ARX-7",
+  "userName": "chidori",
+  "server": "irc.rizon.net",
+  "mode": null,
+  "floodProtectionDelay": 500,
+  "ssl": false,
+  "allowInvalidSSL": true,
+  "admins": ["Desch", "Jukey", "Fyurie"],
+  "channels": [
+    {
+      "name": "#arx-7"
+    },
+    {
+      "name": "#gjm-dev"
+    },
+    {
+      "name": "#commie-subs",
+      "plugins": [
+        "choose",
+        "imgur",
+        "order",
+        "reply",
+        "same",
+        "time",
+        "twitter",
+        "youtube"
+      ]
+    },
+    {
+      "name": "#goodjob",
+      "plugins": [
+        "choose",
+        "eightball",
+        "imgur",
+        "order",
+        "reply",
+        "same",
+        "showtimesairing",
+        "showtimesblame",
+        "showtimesnext",
+        "time",
+        "twitter",
+        "youtube"
+      ]
+    },
+    {
+      "name": "#goodjobclub",
+      "key": true
+    }
+  ]
+}
