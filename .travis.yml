@@ -1,5 +1,3 @@
 language: node_js
 node_js:
 - stable
-before_install:
-- openssl aes-256-cbc -K $encrypted_8216d40451d0_key -iv $encrypted_8216d40451d0_iv -in config.json.enc -out config.json -d

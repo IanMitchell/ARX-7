@@ -1,8 +1,8 @@
 import debug from 'debug';
 import he from 'he';
 import TwitterClient from 'twitter';
-import config from './../../config';
 import { Command } from './command.js';
+import { ProtectedError } from '../modules/custom_errors';
 
 const log = debug('Twitter');
 
@@ -18,8 +18,13 @@ export class Twitter extends Command {
       return this.info(match[2], match[4]).then(tweet => {
         this.send(to, `[Twitter]: ${tweet.text} | By ${tweet.username} (@${match[2]})`);
       }, error => {
-        this.send(to, 'Sorry, could not find Twitter info.');
-        log(error);
+        if (error instanceof ProtectedError) {
+          this.send(to, error.message);
+        } else {
+          log(error);
+          this.send(to, 'Sorry, could not find Twitter info.');
+        }
+
         return error;
       });
     }
@@ -30,10 +35,10 @@ export class Twitter extends Command {
 
   info(username, tweetId) {
     const client = new TwitterClient({
-      consumer_key: config.keys.twitter_consumer,
-      consumer_secret: config.keys.twitter_consumer_secret,
-      access_token_key: config.keys.twitter_access_token,
-      access_token_secret: config.keys.twitter_access_token_secret,
+      consumer_key: process.env.TWITTER_CONSUMER,
+      consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+      access_token_key: process.env.TWITTER_ACCESS_TOKEN,
+      access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
     });
 
     return new Promise((resolve, reject) => {
@@ -41,6 +46,11 @@ export class Twitter extends Command {
         if (error) {
           log(`Twitter Info Request Error: ${error}`);
           return reject(Error(`Twitter Info Request Error: ${error}`));
+        }
+
+        if (tweet.user.protected) {
+          log('Protected tweet linked');
+          return reject(new ProtectedError(`@${tweet.user.name} is a protected account.`));
         }
 
         try {

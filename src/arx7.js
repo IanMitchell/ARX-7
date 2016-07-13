@@ -54,6 +54,8 @@ export class ARX7 {
 
       if (channel.key === undefined) {
         channel.key = null;
+      } else {
+        channel.key = process.env[channel.name.substr(1).toUpperCase()];
       }
 
       if (channel.plugins === undefined) {
@@ -70,7 +72,7 @@ export class ARX7 {
 
   connect() {
     log('Connected to Server');
-    this.client.say('NickServ', `identify ${this.config.password}`);
+    this.client.say('NickServ', `identify ${process.env.ARX7_PASS}`);
     log('Identified');
 
     if (this.config.mode) {

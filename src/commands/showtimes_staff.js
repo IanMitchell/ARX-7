@@ -1,12 +1,15 @@
 import debug from 'debug';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
-import config from './../../config';
 import { Command } from './command.js';
 import { ShowtimesBlame } from './showtimes_blame.js';
 
+const SHOWTIMES = {
+  SERVER: process.env.SHOWTIMES_SERVER,
+  KEY: process.env.SHOWTIMES_KEY,
+};
+
 const log = debug('Showtimes');
-const SHOWTIMES_URL = `${config.showtimes.server}`;
 
 export class ShowtimesStaff extends Command {
   constructor(client, authorized) {
@@ -16,13 +19,21 @@ export class ShowtimesStaff extends Command {
   }
 
   message(from, to, text) {
-    const showtimesRegex = /^[.!](done|undone)(?:\s)(.+?)(?:\s!(\w+))?$/i;
+    const showtimesRegex = /^[.!](?:(done|undone) (tl|tlc|enc|ed|tm|ts|qc) (.+))|(?:(?:(done|undone) (.+?)(?: !(\w+))?))$/i;
     const showtimes = text.match(showtimesRegex);
 
     if (showtimes) {
       this.isAuthorized(from).then(auth => {
         if (auth) {
-          const [, status, show, position] = showtimes;
+          let status = null;
+          let position = null;
+          let show = null;
+
+          if (showtimes[2]) {
+            [, status, position, show] = showtimes;
+          } else {
+            [,,,, status, show, position] = showtimes;
+          }
 
           this.showtimesRequest(from, to, status, show, position).then(response => {
             const msg = response;
@@ -48,13 +59,13 @@ export class ShowtimesStaff extends Command {
     form.append('status', this.convertStatus(status));
     form.append('irc', to);
     form.append('name', show.trim());
-    form.append('auth', config.showtimes.key);
+    form.append('auth', SHOWTIMES.KEY);
 
     if (position) {
       form.append('position', position);
     }
 
-    return fetch(`${SHOWTIMES_URL}/staff`, { method: 'PUT', body: form }).then(response => {
+    return fetch(`${SHOWTIMES.SERVER}/staff`, { method: 'PUT', body: form }).then(response => {
       if (response.ok) {
         return response.json().then(data => data.message);
       }
