@@ -2,6 +2,7 @@ import debug from 'debug';
 import fetch from 'node-fetch';
 import { Command } from './command.js';
 import moment from 'moment';
+import { exactDate } from '../modules/dates';
 
 const log = debug('Next');
 const SHOWTIMES = {
@@ -51,8 +52,8 @@ export class ShowtimesNext extends Command {
       return json.message;
     }
 
-    const date = moment(new Date(json.air_date)).fromNow();
-    return `Air date: ${json.name} #${json.episode_number} airs ${date}`;
+    const date = exactDate(moment(new Date(json.air_date)));
+    return `Air date: ${json.name} #${json.episode_number} airs in ${date}`;
   }
 
   help(from) {

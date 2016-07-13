@@ -2,6 +2,7 @@ import debug from 'debug';
 import fetch from 'node-fetch';
 import { Command } from './command.js';
 import moment from 'moment';
+import { exactDate } from '../modules/dates';
 
 const log = debug('Airing');
 
@@ -49,8 +50,8 @@ export class ShowtimesAiring extends Command {
     let message = 'Air dates: ';
 
     json.shows.forEach(show => {
-      const date = moment(new Date(show.air_date)).fromNow();
-      message += `${show.name} #${show.episode_number} airs ${date}, `;
+      const date = exactDate(moment(new Date(show.air_date)));
+      message += `${show.name} #${show.episode_number} airs in ${date}, `;
     });
 
     return message.slice(0, -2);
