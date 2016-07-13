@@ -19,13 +19,21 @@ export class ShowtimesStaff extends Command {
   }
 
   message(from, to, text) {
-    const showtimesRegex = /^[.!](done|undone)(?:\s)(.+?)(?:\s!(\w+))?$/i;
+    const showtimesRegex = /^[.!](?:(done|undone) (tl|tlc|enc|ed|tm|ts|qc) (.+))|(?:(?:(done|undone) (.+?)(?: !(\w+))?))$/i;
     const showtimes = text.match(showtimesRegex);
 
     if (showtimes) {
       this.isAuthorized(from).then(auth => {
         if (auth) {
-          const [, status, show, position] = showtimes;
+          let status = null;
+          let position = null;
+          let show = null;
+
+          if (showtimes[2]) {
+            [, status, position, show] = showtimes;
+          } else {
+            [,,,, status, show, position] = showtimes;
+          }
 
           this.showtimesRequest(from, to, status, show, position).then(response => {
             const msg = response;
