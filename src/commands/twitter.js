@@ -1,7 +1,6 @@
 import debug from 'debug';
 import he from 'he';
 import TwitterClient from 'twitter';
-import config from './../../config';
 import { Command } from './command.js';
 import { ProtectedError } from '../modules/custom_errors';
 
@@ -36,10 +35,10 @@ export class Twitter extends Command {
 
   info(username, tweetId) {
     const client = new TwitterClient({
-      consumer_key: config.keys.twitter_consumer,
-      consumer_secret: config.keys.twitter_consumer_secret,
-      access_token_key: config.keys.twitter_access_token,
-      access_token_secret: config.keys.twitter_access_token_secret,
+      consumer_key: process.env.TWITTER_CONSUMER,
+      consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+      access_token_key: process.env.TWITTER_ACCESS_TOKEN,
+      access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
     });
 
     return new Promise((resolve, reject) => {

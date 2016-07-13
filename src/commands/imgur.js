@@ -1,6 +1,5 @@
 import debug from 'debug';
 import fetch from 'node-fetch';
-import config from './../../config';
 import { Command } from './command.js';
 import { addCommas } from '../modules/number_helpers.js';
 
@@ -31,7 +30,7 @@ export class Imgur extends Command {
   info(id) {
     const url = `https://api.imgur.com/3/image/${id}`;
     const headers = new fetch.Headers();
-    headers.append('Authorization', `Client-ID ${config.keys.imgur_client}`);
+    headers.append('Authorization', `Client-ID ${process.env.IMGUR_CLIENT}`);
 
     return fetch(url, { headers }).then(response => {
       if (response.ok) {

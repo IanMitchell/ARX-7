@@ -1,11 +1,13 @@
 import debug from 'debug';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
-import config from './../../config';
 import { Command } from './command.js';
 
 const log = debug('Release');
-const SHOWTIMES_URL = `${config.showtimes.server}`;
+const SHOWTIMES = {
+  SERVER: process.env.SHOWTIMES_SERVER,
+  KEY: process.env.SHOWTIMES_KEY,
+};
 
 export class ShowtimesRelease extends Command {
   constructor(client, authorized) {
@@ -38,9 +40,9 @@ export class ShowtimesRelease extends Command {
     const form = new FormData();
     form.append('irc', to);
     form.append('name', show.trim());
-    form.append('auth', config.showtimes.key);
+    form.append('auth', SHOWTIMES.KEY);
 
-    return fetch(`${SHOWTIMES_URL}/release`, { method: 'PUT', body: form }).then(response => {
+    return fetch(`${SHOWTIMES.SERVER}/release`, { method: 'PUT', body: form }).then(response => {
       if (response.ok) {
         return response.json().then(data => data.message);
       }

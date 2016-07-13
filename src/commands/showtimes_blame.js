@@ -1,11 +1,14 @@
 import debug from 'debug';
 import fetch from 'node-fetch';
-import config from './../../config';
 import { Command } from './command.js';
 import colors from 'irc-colors';
 import moment from 'moment';
 
 const log = debug('Blame');
+const SHOWTIMES = {
+  SERVER: process.env.SHOWTIMES_SERVER,
+  KEY: process.env.SHOWTIMES_KEY,
+};
 
 export class ShowtimesBlame extends Command {
   message(from, to, text) {
@@ -31,7 +34,7 @@ export class ShowtimesBlame extends Command {
   blameRequest(from, to, show, useNames = false) {
     log(`Blame request by ${from} in ${to} for ${show}`);
 
-    let uri = `${config.showtimes.server}/blame.json?`;
+    let uri = `${SHOWTIMES.SERVER}/blame.json?`;
     uri += `irc=${encodeURIComponent(to)}`;
     uri += `&show=${encodeURIComponent(show.trim())}`;
 

@@ -1,10 +1,13 @@
 import debug from 'debug';
 import fetch from 'node-fetch';
-import config from './../../config';
 import { Command } from './command.js';
 import moment from 'moment';
 
 const log = debug('Next');
+const SHOWTIMES = {
+  SERVER: process.env.SHOWTIMES_SERVER,
+  KEY: process.env.SHOWTIMES_KEY,
+};
 
 export class ShowtimesNext extends Command {
   message(from, to, text) {
@@ -29,7 +32,7 @@ export class ShowtimesNext extends Command {
 
   nextRequest(show) {
     const name = encodeURIComponent(show.trim());
-    const uri = `${config.showtimes.server}/shows/${name}.json`;
+    const uri = `${SHOWTIMES.SERVER}/shows/${name}.json`;
 
     return fetch(uri).then(response => {
       if (response.ok) {

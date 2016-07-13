@@ -1,12 +1,15 @@
 import debug from 'debug';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
-import config from './../../config';
 import { Command } from './command.js';
 import { ShowtimesBlame } from './showtimes_blame.js';
 
+const SHOWTIMES = {
+  SERVER: process.env.SHOWTIMES_SERVER,
+  KEY: process.env.SHOWTIMES_KEY,
+};
+
 const log = debug('Showtimes');
-const SHOWTIMES_URL = `${config.showtimes.server}`;
 
 export class ShowtimesStatus extends Command {
   constructor(client, authorized) {
@@ -48,13 +51,13 @@ export class ShowtimesStatus extends Command {
     form.append('status', this.convertStatus(status));
     form.append('irc', to);
     form.append('name', show.trim());
-    form.append('auth', config.showtimes.key);
+    form.append('auth', SHOWTIMES.KEY);
 
     if (position) {
       form.append('position', position);
     }
 
-    return fetch(`${SHOWTIMES_URL}/staff`, { method: 'PUT', body: form }).then(response => {
+    return fetch(`${SHOWTIMES.SERVER}/staff`, { method: 'PUT', body: form }).then(response => {
       if (response.ok) {
         return response.json().then(data => data.message);
       }

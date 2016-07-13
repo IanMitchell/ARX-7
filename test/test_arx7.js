@@ -106,7 +106,7 @@ describe('ARX-7', () => {
     it('should respond to Query', () => {
       arx7.message('Mocha', 'ARX-7', 'Hi');
       assert(client.lastMessage, 'Query response incorrect');
-      assert(client.lastMessage.includes('Desch, Jukey, Aoi-chan'), 'Query admin list incorrect');
+      assert(client.lastMessage.includes('Desch, Jukey, Fyurie'), 'Query admin list incorrect');
     });
 
     it('should respond to Admin Query', () => {

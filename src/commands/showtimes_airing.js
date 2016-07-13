@@ -1,10 +1,13 @@
 import debug from 'debug';
 import fetch from 'node-fetch';
-import config from './../../config';
 import { Command } from './command.js';
 import moment from 'moment';
 
 const log = debug('Airing');
+
+const SHOWTIMES = {
+  SERVER: process.env.SHOWTIMES_SERVER,
+};
 
 export class ShowtimesAiring extends Command {
   message(from, to, text) {
@@ -25,7 +28,7 @@ export class ShowtimesAiring extends Command {
   }
 
   airingRequest() {
-    return fetch(`${config.showtimes.server}/shows.json`).then(response => {
+    return fetch(`${SHOWTIMES.SERVER}/shows.json`).then(response => {
       if (response.ok) {
         return response.json().then(data => this.createMessage(data));
       }
