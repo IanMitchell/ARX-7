@@ -19,7 +19,7 @@ export class ShowtimesStaff extends Command {
   }
 
   message(from, to, text) {
-    const showtimesRegex = /^[.!](?:(done|undone) (tl|tlc|enc|ed|tm|ts|qc) (.+))|(?:(?:(done|undone) (.+?)(?: !(\w+))?))$/i;
+    const showtimesRegex = /^(?:[.!])(?:(?:(done|undone) (tl|tlc|enc|ed|tm|ts|qc) (.+))|(?:(?:(done|undone) (.+?)(?: !(\w+))?)))$/i;
     const showtimes = text.match(showtimesRegex);
 
     if (showtimes) {
