@@ -23,8 +23,19 @@
         "reply",
         "same",
         "time",
-        "twitter",
-        "youtube"
+        "twitter"
+      ]
+    },
+	{
+      "name": "#FFFpeeps",
+      "plugins": [
+        "choose",
+        "imgur",
+        "order",
+        "reply",
+        "same",
+        "time",
+        "twitter"
       ]
     },
     {
@@ -40,13 +51,34 @@
         "showtimesblame",
         "showtimesnext",
         "time",
-        "twitter",
-        "youtube"
+        "twitter"
       ]
     },
     {
       "name": "#goodjobclub",
       "key": true
+    },
+	  {
+      "name": "#flippyflappy"
+    },
+    {
+      "name": "#DameDesuYo",
+      "plugins": [
+        "choose",
+        "eightball",
+        "imgur",
+        "order",
+        "reply",
+        "same",
+        "showtimesairing",
+        "showtimesblame",
+        "showtimesnext",
+        "time",
+        "twitter"
+      ]
+    },
+    {
+      "name": "#DDYStaff"
     }
   ]
 }
