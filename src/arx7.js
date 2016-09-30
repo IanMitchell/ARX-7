@@ -14,7 +14,6 @@ import { ShowtimesRelease } from './commands/showtimes_release.js';
 import { ShowtimesStaff } from './commands/showtimes_staff.js';
 import { Time } from './commands/time.js';
 import { Twitter } from './commands/twitter.js';
-import { Youtube } from './commands/youtube.js';
 
 const log = debug('ARX-7');
 
@@ -37,7 +36,6 @@ export class ARX7 {
       new ShowtimesStaff(client, this.isAuthorized),
       new Time(client),
       new Twitter(client),
-      new Youtube(client),
     ];
 
     this.client = client;

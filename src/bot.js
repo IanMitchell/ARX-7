@@ -1,9 +1,6 @@
-import debug from 'debug';
 import irc from 'irc';
 import config from '../config';
 import { ARX7 } from './arx7.js';
-
-const log = debug('Bot');
 
 // Initialize the Bot
 const client = new irc.Client(config.server, config.name, {
@@ -19,35 +16,17 @@ const client = new irc.Client(config.server, config.name, {
 const arx7 = new ARX7(client, config);
 
 // On Server Connect
-client.addListener('registered', () => {
-  arx7.connect();
-});
+client.addListener('registered', () => arx7.connect());
 
 // Respond to Version requests
-client.addListener('ctcp-version', (from, to) => {
-  arx7.version(from, to);
-});
+client.addListener('ctcp-version', (from, to) => arx7.version(from, to));
 
 // Listen for channel / personal Messages
-client.addListener('message', (from, to, text) => {
-  arx7.message(from, to, text);
-});
+client.addListener('message', (from, to, text) => arx7.message(from, to, text));
 
 // Custom Auto-Rejoin
-client.addListener('kick', (channel, nick, by, reason) => {
-  arx7.kick(channel, nick, by, reason);
-});
+client.addListener('kick', (channel, nick, by, reason) => arx7.kick(channel, nick, by, reason));
 
-client.addListener('error', message => {
-  arx7.error(message);
-});
+client.addListener('error', message => arx7.error(message));
 
-client.addListener('join', (channel, nick) => {
-  arx7.join(channel, nick);
-
-  // Praise the Creator
-  if (nick === 'Desch' && channel === '#arx-7') {
-    log(`Praising the creator \o/`);
-    client.say(channel, 'Hello Master.');
-  }
-});
+client.addListener('join', (channel, nick) => arx7.join(channel, nick));

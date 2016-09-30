@@ -43,11 +43,8 @@ export class ShowtimesBlame extends Command {
         return response.json().then(data => this.createMessage(data, useNames));
       }
 
-      return response.json().then(data => {
-        log(`Blame Request Error: ${data}`);
-        Error(data.message);
-      });
-    }).catch(error => Error(error));
+      return response.json().then(data => Promise.reject(new Error(data.message)));
+    }).catch(error => Promise.reject(error));
   }
 
   createMessage(json, useNames) {

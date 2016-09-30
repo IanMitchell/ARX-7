@@ -49,12 +49,16 @@ export class ShowtimesAiring extends Command {
 
     let message = 'Air dates: ';
 
-    json.shows.forEach(show => {
-      const date = exactDate(moment(new Date(show.air_date)));
-      message += `${show.name} #${show.episode_number} airs in ${date}, `;
-    });
+    if (json.shows.length > 0) {
+      json.shows.forEach(show => {
+        const date = exactDate(moment(new Date(show.air_date)));
+        message += `${show.name} #${show.episode_number} airs in ${date}, `;
+      });
 
-    return message.slice(0, -2);
+      return message.slice(0, -2);
+    }
+
+    return 'No more airing shows this season!';
   }
 
   help(from) {

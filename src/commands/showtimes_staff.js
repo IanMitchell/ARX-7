@@ -70,8 +70,8 @@ export class ShowtimesStaff extends Command {
         return response.json().then(data => data.message);
       }
 
-      return response.json().then(data => Error(data.message));
-    }).catch(error => Error(error));
+      return response.json().then(data => Promise.reject(new Error(data.message)));
+    }).catch(error => Promise.reject(error));
   }
 
   convertStatus(status) {

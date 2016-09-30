@@ -40,11 +40,8 @@ export class ShowtimesNext extends Command {
         return response.json().then(data => this.createMessage(data));
       }
 
-      return response.json().then(data => {
-        log(`Next Request Error: ${data}`);
-        Error(data.message);
-      });
-    }).catch(error => Error(error));
+      return response.json().then(data => Promise.reject(new Error(data.message)));
+    }).catch(error => Promise.reject(error));
   }
 
   createMessage(json) {
@@ -52,8 +49,12 @@ export class ShowtimesNext extends Command {
       return json.message;
     }
 
-    const date = exactDate(moment(new Date(json.air_date)));
-    return `Air date: ${json.name} #${json.episode_number} airs in ${date}`;
+    if (json.air_date) {
+      const date = exactDate(moment(new Date(json.air_date)));
+      return `Air date: ${json.name} #${json.episode_number} airs in ${date}`;
+    }
+
+    return `${json.name} has finished airing!`;
   }
 
   help(from) {
