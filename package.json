@@ -8,25 +8,21 @@
   "scripts": {
     "start": "DEBUG=*,-babel node app.js",
     "start-windows": "set DEBUG=* & node app.js",
-    "background": "DEBUG=* DEBUG_FD=3 node app.js 3> output.log &",
-    "build": "babel src --out-dir build",
-    "arx7": "DEBUG=* node build/arx7.js",
     "test": "DEBUG=-* mocha --recursive --compilers js:babel-core/register --require ./test.js",
     "test-windows": "set DEBUG=-* & mocha --recursive --compilers js:babel-core/register --require ./test.js"
   },
   "babel": {
     "presets": [
-      "es2015-node5"
+      "node6"
     ]
   },
   "engines": {
-    "node": "5.8.0"
+    "node": "6.4.0"
   },
   "dependencies": {
     "babel-cli": "6.10.1",
     "babel-core": "6.10.4",
     "babel-polyfill": "6.9.1",
-    "babel-preset-es2015-node5": "1.2.0",
     "debug": "2.2.0",
     "dotenv": "^2.0.0",
     "form-data": "1.0.0-rc4",

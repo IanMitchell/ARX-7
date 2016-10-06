@@ -42,7 +42,7 @@ export class ShowtimesStaff extends Command {
               this.send(to, `${msg}. ${res}`);
             });
           }, error => {
-            this.send(to, 'Error connecting to Deschtimes');
+            this.send(to, `Error: ${error.message}`);
             log(`Error: ${error.message}`);
             return error;
           });
