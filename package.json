@@ -23,6 +23,7 @@
     "babel-cli": "6.10.1",
     "babel-core": "6.10.4",
     "babel-polyfill": "6.9.1",
+    "babel-preset-node6": "^11.0.0",
     "debug": "2.2.0",
     "dotenv": "^2.0.0",
     "form-data": "1.0.0-rc4",
