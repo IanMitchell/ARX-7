@@ -3,6 +3,7 @@ import FormData from 'form-data';
 import fetch from 'node-fetch';
 import { Command } from './command.js';
 import { ShowtimesBlame } from './showtimes_blame.js';
+import { ShowtimesError } from '../modules/custom_errors';
 
 const SHOWTIMES = {
   SERVER: process.env.SHOWTIMES_SERVER,
@@ -42,7 +43,12 @@ export class ShowtimesStaff extends Command {
               this.send(to, `${msg}. ${res}`);
             });
           }, error => {
-            this.send(to, `Error: ${error.message}`);
+            if (error instanceof ShowtimesError) {
+              this.send(to, `Error: ${error.message}`);
+            } else {
+              this.send(to, 'Sorry, there was an error. Poke Desch');
+            }
+
             log(`Error: ${error.message}`);
             return error;
           });
@@ -70,7 +76,7 @@ export class ShowtimesStaff extends Command {
         return response.json().then(data => data.message);
       }
 
-      return response.json().then(data => Promise.reject(new Error(data.message)));
+      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
     }).catch(error => Promise.reject(error));
   }
 

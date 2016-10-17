@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import { Command } from './command.js';
 import colors from 'irc-colors';
 import moment from 'moment';
+import { ShowtimesError } from '../modules/custom_errors';
 
 const log = debug('Blame');
 const SHOWTIMES = {
@@ -19,7 +20,12 @@ export class ShowtimesBlame extends Command {
       return this.blameRequest(from, to, blame[1]).then(response => {
         this.send(to, response);
       }, error => {
-        this.send(to, error.message);
+        if (error instanceof ShowtimesError) {
+          this.send(to, error.message);
+        } else {
+          this.send(to, 'Sorry, there was an error. Poke Desch');
+        }
+
         log(`Error: ${error.message}`);
         return error;
       });
@@ -43,7 +49,7 @@ export class ShowtimesBlame extends Command {
         return response.json().then(data => this.createMessage(data, useNames));
       }
 
-      return response.json().then(data => Promise.reject(new Error(data.message)));
+      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
     }).catch(error => Promise.reject(error));
   }
 

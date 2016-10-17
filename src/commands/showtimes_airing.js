@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import { Command } from './command.js';
 import moment from 'moment';
 import { exactDate } from '../modules/dates';
+import { ShowtimesError } from '../modules/custom_errors';
 
 const log = debug('Airing');
 
@@ -18,7 +19,12 @@ export class ShowtimesAiring extends Command {
       return this.airingRequest(to).then(response => {
         this.send(to, response);
       }, error => {
-        this.send(to, error.message);
+        if (error instanceof ShowtimesError) {
+          this.send(to, error.message);
+        } else {
+          this.send(to, 'Sorry, there was an error. Poke Desch');
+        }
+
         log(`Error: ${error.message}`);
         return error;
       });
@@ -35,11 +41,8 @@ export class ShowtimesAiring extends Command {
         return response.json().then(data => this.createMessage(data));
       }
 
-      return response.json().then(data => {
-        log(`Airing Request Error: ${data}`);
-        Error(data.message);
-      });
-    }).catch(error => Error(error));
+      return response.json().then(data => Promise.reject(new ShowtimesError(data.message)));
+    }).catch(error => Promise.reject(error));
   }
 
   createMessage(json) {
