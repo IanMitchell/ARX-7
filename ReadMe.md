@@ -53,7 +53,7 @@ You'll need to create a config file. Use the `.config.json` sample file, configu
 Create the `config.json` file, then build and run the image:
 
 ```
-docker build -ti arx-7 .
+docker build -t arx-7 .
 docker run --rm -ti arx-7
 ```
 
