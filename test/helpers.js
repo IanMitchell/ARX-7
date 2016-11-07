@@ -67,7 +67,6 @@ class CommandMock extends Command {
 }
 
 export class Choose extends CommandMock {}
-export class Imgur extends CommandMock {}
 export class Order extends CommandMock {}
 export class Reply extends CommandMock {}
 export class Time extends CommandMock {}

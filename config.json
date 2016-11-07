@@ -18,7 +18,6 @@
       "name": "#commie-subs",
       "plugins": [
         "choose",
-        "imgur",
         "order",
         "reply",
         "same",
@@ -30,7 +29,6 @@
       "name": "#FFFpeeps",
       "plugins": [
         "choose",
-        "imgur",
         "order",
         "reply",
         "same",
@@ -43,7 +41,6 @@
       "plugins": [
         "choose",
         "eightball",
-        "imgur",
         "order",
         "reply",
         "same",
@@ -66,7 +63,6 @@
       "plugins": [
         "choose",
         "eightball",
-        "imgur",
         "order",
         "reply",
         "same",

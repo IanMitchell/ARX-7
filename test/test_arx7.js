@@ -4,7 +4,6 @@ import assert from 'assert';
 import config from './test_config';
 import { Client,
          Choose,
-         Imgur,
          Order,
          Reply,
          Time,
@@ -16,7 +15,6 @@ const client = new Client();
 const arx7 = new ARX7(client, config);
 arx7.commands = [
   new Choose(client),
-  new Imgur(client),
   new Order(client),
   new Reply(client),
   new Time(client),

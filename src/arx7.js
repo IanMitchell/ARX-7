@@ -1,19 +1,18 @@
 import debug from 'debug';
-import pkg from '../package';
+import pkg from '../package.json';
 
-import { Choose } from './commands/choose.js';
-import { Eightball } from './commands/eightball.js';
-import { Imgur } from './commands/imgur.js';
-import { Order } from './commands/order.js';
-import { Reply } from './commands/reply.js';
-import { Same } from './commands/same.js';
-import { ShowtimesAiring } from './commands/showtimes_airing.js';
-import { ShowtimesBlame } from './commands/showtimes_blame.js';
-import { ShowtimesNext } from './commands/showtimes_next.js';
-import { ShowtimesRelease } from './commands/showtimes_release.js';
-import { ShowtimesStaff } from './commands/showtimes_staff.js';
-import { Time } from './commands/time.js';
-import { Twitter } from './commands/twitter.js';
+import { Choose } from './commands/choose';
+import { Eightball } from './commands/eightball';
+import { Order } from './commands/order';
+import { Reply } from './commands/reply';
+import { Same } from './commands/same';
+import { ShowtimesAiring } from './commands/showtimes_airing';
+import { ShowtimesBlame } from './commands/showtimes_blame';
+import { ShowtimesNext } from './commands/showtimes_next';
+import { ShowtimesRelease } from './commands/showtimes_release';
+import { ShowtimesStaff } from './commands/showtimes_staff';
+import { Time } from './commands/time';
+import { Twitter } from './commands/twitter';
 
 const log = debug('ARX-7');
 
@@ -25,7 +24,6 @@ export class ARX7 {
     this.commands = [
       new Choose(client),
       new Eightball(client),
-      new Imgur(client),
       new Order(client),
       new Reply(client),
       new Same(client),
