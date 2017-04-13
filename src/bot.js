@@ -11,6 +11,8 @@ const client = new irc.Client(config.server, config.name, {
   stripColors: true,
   floodProtection: true,
   floodProtectionDelay: config.floodProtectionDelay,
+  retryCount: 5,
+  retryDelay: 2000,
 });
 
 const arx7 = new ARX7(client, config);
