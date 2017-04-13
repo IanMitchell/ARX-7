@@ -2,10 +2,6 @@ const fs = require('fs');
 const debug = require('debug');
 const log = debug('Boot');
 
-// Initialize Babel
-require('babel-polyfill');
-require('babel-core/register');
-
 // Hacky check for dev/production startup
 fs.stat('.env', (err, stat) => {
   if (stat) {
