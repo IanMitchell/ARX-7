@@ -9,4 +9,5 @@ npm-debug.log
 deploy.txt
 
 # Build fles
-build/
+lib
+output.log
