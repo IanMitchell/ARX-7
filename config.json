@@ -6,13 +6,10 @@
   "floodProtectionDelay": 500,
   "ssl": false,
   "allowInvalidSSL": true,
-  "admins": ["Desch", "Jukey", "Fyurie"],
+  "admins": ["Desch", "Jukey", "Fyurie", "GrygrFlzr", "begna112", "Period"],
   "channels": [
     {
       "name": "#arx-7"
-    },
-    {
-      "name": "#gjm-dev"
     },
     {
       "name": "#commie-subs",
@@ -25,7 +22,7 @@
         "twitter"
       ]
     },
-	{
+	  {
       "name": "#FFFpeeps",
       "plugins": [
         "choose",
@@ -56,7 +53,7 @@
       "key": true
     },
 	  {
-      "name": "#flippyflappy"
+      "name": "#lifelessons"
     },
     {
       "name": "#DameDesuYo",
@@ -75,15 +72,6 @@
     },
     {
       "name": "#DDYStaff"
-    },
-    {
-      "name": "#DDYlewds2"
-    },
-    {
-      "name": "#DDYTheSacredSlayers"
-    },
-    {
-      "name": "#DDYWWWWorks"
     }
   ]
 }
