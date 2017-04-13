@@ -7,7 +7,7 @@
   "main": "app.js",
   "scripts": {
     "start": "DEBUG=*,-babel babel-node app.js",
-    "start-windows": "set DEBUG=* & babel-node app.js",
+    "start-windows": "set DEBUG=*,-babel & babel-node app.js",
     "test": "DEBUG=-* mocha --recursive --compilers js:babel-core/register --require ./test.js",
     "test-windows": "set DEBUG=-* & mocha --recursive --compilers js:babel-core/register --require ./test.js"
   },
