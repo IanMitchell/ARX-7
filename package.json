@@ -8,7 +8,7 @@
   "scripts": {
     "start": "DEBUG=*,-babel babel-node app.js",
     "start-windows": "set DEBUG=*,-babel & babel-node app.js",
-    "background": "DEBUG=*,-babel DEBUG_FD=3 babel-node app.js 3> output.log &",
+    "background": "DEBUG=*,-babel babel-node app.js 3> output.log &",
     "test": "DEBUG=-* mocha --recursive --compilers js:babel-core/register --require ./test.js",
     "test-windows": "set DEBUG=-* & mocha --recursive --compilers js:babel-core/register --require ./test.js"
   },
