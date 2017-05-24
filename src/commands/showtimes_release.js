@@ -46,6 +46,7 @@ export class ShowtimesRelease extends Command {
     const form = new FormData();
     form.append('irc', to);
     form.append('name', show.trim());
+    form.append('username', from);
     form.append('auth', SHOWTIMES.KEY);
 
     return fetch(`${SHOWTIMES.SERVER}/release`, { method: 'PUT', body: form }).then(response => {
